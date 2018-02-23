@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/colorPrimary"
     tools:context=".LoginActivity">
 
     <!-- Login progress -->
@@ -18,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:visibility="gone"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/colorPrimaryLight"
         android:theme="@style/EditTextTheme" />
 
     <ScrollView
@@ -36,7 +37,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimaryLight"
                 android:theme="@style/EditTextTheme">
 
                 <EditText
@@ -45,7 +46,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/app_id"
                     android:inputType="text"
-                    android:backgroundTint="@color/colorPrimary"
+                    android:backgroundTint="@color/colorPrimaryLight"
+                    android:textColor="@android:color/white"
                     android:theme="@style/EditTextTheme"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -55,7 +57,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimaryLight"
                 android:theme="@style/EditTextTheme">
 
                 <EditText
@@ -64,7 +66,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/app_key"
                     android:imeActionId="6"
-                    android:backgroundTint="@color/colorPrimary"
+                    android:backgroundTint="@color/colorPrimaryLight"
+                    android:textColor="@android:color/white"
                     android:theme="@style/EditTextTheme"
                     android:imeOptions="actionUnspecified"
                     android:inputType="text"

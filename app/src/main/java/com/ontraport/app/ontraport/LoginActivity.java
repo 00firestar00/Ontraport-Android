@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,16 +28,23 @@ public class LoginActivity extends AppCompatActivity {
     private EditText api_key;
     private View progress_spinner;
     private View login_form;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        preferences = getPreferences(MODE_PRIVATE);
+
         setContentView(R.layout.activity_login);
         // Set up the login form.
         api_id = findViewById(R.id.appid);
+        api_id.setText(preferences.getString("Api-Appid", ""));
         //populateAutoComplete();
 
         api_key = findViewById(R.id.key);
+        api_key.setText(preferences.getString("Api-Key", ""));
+
         api_key.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -108,11 +116,16 @@ public class LoginActivity extends AppCompatActivity {
         private final String api_id;
         private final String api_key;
         private final Activity activity;
+        private final OntraportApplication application;
+
+        private Ontraport ontraport;
 
         UserLoginTask(String api_id, String api_key, Activity activity) {
             this.api_id = api_id;
             this.api_key = api_key;
             this.activity = activity;
+            application = (OntraportApplication) getApplication();
+            ontraport = new Ontraport(api_id, api_key, new OkClient(application.getCacheDir()));
         }
 
         @Override
@@ -133,10 +146,16 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
             showProgress(false);
 
+            SharedPreferences.Editor editor = preferences.edit();
+
             if (response != null && response.getCode() == 0) {
-                OntraportApplication app = (OntraportApplication) getApplication();
-                app.setApi(new Ontraport(api_id, api_key, new OkClient(app.getCacheDir())));
-                app.setMeta(response);
+                application.setApi(ontraport);
+                application.setMeta(response);
+
+                editor.putString("Api-Appid", api_id);
+                editor.putString("Api-Key", api_key);
+                editor.apply();
+
                 Intent intent = new Intent(activity, MainActivity.class);
                 showProgress(false);
                 startActivity(intent);
@@ -144,6 +163,8 @@ public class LoginActivity extends AppCompatActivity {
             }
             else {
                 //api_key.setError(getString(R.string.error_incorrect_password));
+                ontraport = null;
+                editor.clear();
                 LoginActivity.this.api_key.requestFocus();
             }
         }
