@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -95,13 +94,11 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
                 new LinearLayout.LayoutParams(
                         0,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1f
+                        .8f
                 )
         );
-        temp.setGravity(Gravity.START);
         temp.setTextSize(TypedValue.COMPLEX_UNIT_PX, view.getResources().getDimension(R.dimen.card_text));
         temp.setTypeface(null, Typeface.BOLD);
-        temp.setPadding(0, 0, context.getResources().getDimensionPixelSize(R.dimen.card_label), 0);
         return temp;
     }
 
@@ -111,10 +108,9 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
                 new LinearLayout.LayoutParams(
                         0,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1f
+                        1.2f
                 )
         );
-        temp.setGravity(Gravity.START);
         temp.setTextSize(TypedValue.COMPLEX_UNIT_PX, view.getResources().getDimension(R.dimen.card_text));
         return temp;
     }
