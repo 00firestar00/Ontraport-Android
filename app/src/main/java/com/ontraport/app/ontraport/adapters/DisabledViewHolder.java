@@ -7,11 +7,11 @@ public class DisabledViewHolder extends RecordViewHolder {
 
     public DisabledViewHolder(View view) {
         super(view);
-        text_view.setFocusable(false);
-        text_view.setEnabled(false);
-        text_view.setCursorVisible(false);
-        text_view.setKeyListener(null);
-        text_view.setTextColor(Color.BLACK);
-        text_view.setBackgroundColor(Color.TRANSPARENT);
+        edit_text.setFocusable(false);
+        edit_text.setEnabled(false);
+        edit_text.setCursorVisible(false);
+        edit_text.setKeyListener(null);
+        edit_text.setTextColor(Color.BLACK);
+        edit_text.setBackgroundColor(Color.TRANSPARENT);
     }
 }

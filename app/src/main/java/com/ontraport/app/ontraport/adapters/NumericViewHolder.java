@@ -7,6 +7,6 @@ public class NumericViewHolder extends RecordViewHolder {
 
     public NumericViewHolder(View view) {
         super(view);
-        text_view.setInputType(InputType.TYPE_CLASS_NUMBER);
+        edit_text.setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 }

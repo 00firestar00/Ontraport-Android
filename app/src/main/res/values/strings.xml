@@ -12,4 +12,5 @@
     <string name="app_id">Api-Appid</string>
     <string name="app_key">Api-Key</string>
     <string name="action_sign_in">Sign In</string>
+    <string name="action_done">Done</string>
 </resources>

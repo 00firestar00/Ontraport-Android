@@ -7,6 +7,6 @@ public class TextViewHolder extends RecordViewHolder {
 
     public TextViewHolder(View view) {
         super(view);
-        text_view.setInputType(InputType.TYPE_CLASS_TEXT);
+        edit_text.setInputType(InputType.TYPE_CLASS_TEXT);
     }
 }

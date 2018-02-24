@@ -7,6 +7,6 @@ public class PhoneViewHolder extends RecordViewHolder {
 
     public PhoneViewHolder(View view) {
         super(view);
-        text_view.setInputType(InputType.TYPE_CLASS_PHONE);
+        edit_text.setInputType(InputType.TYPE_CLASS_PHONE);
     }
 }

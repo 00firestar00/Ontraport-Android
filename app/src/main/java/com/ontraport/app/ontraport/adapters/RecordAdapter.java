@@ -86,6 +86,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder> {
             value = first + " " + last;
         }
 
+        holder.setParams(object_id, data.get("id"));
         holder.setText(key, value, alias);
     }
 

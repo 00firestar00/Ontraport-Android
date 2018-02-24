@@ -40,6 +40,9 @@ public class GetList extends AsyncTask<RequestParams, Void, ListResponse> {
             if(!Arrays.asList(list_fields).contains("id")) {
                 list += ",id";
             }
+            if(Arrays.asList(list_fields).contains("fn")) {
+                list += ",firstname,lastname";
+            }
             first.put("listFields", list);
             OntraportApplication ontraport_app = OntraportApplication.getInstance();
             return ontraport_app.getApi().objects().retrieveMultiple(first);
