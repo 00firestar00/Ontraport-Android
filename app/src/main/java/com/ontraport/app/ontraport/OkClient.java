@@ -5,7 +5,13 @@ import com.ontraport.sdk.http.AbstractResponse;
 import com.ontraport.sdk.http.Client;
 import com.ontraport.sdk.http.RequestParams;
 import com.ontraport.sdk.http.SingleResponse;
-import okhttp3.*;
+import okhttp3.Cache;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.MediaType;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,8 +57,8 @@ public class OkClient extends Client {
 
     public <T extends AbstractResponse> T httpRequest(RequestParams params, String url, String method, Class<T> responseClazz) {
         HttpUrl.Builder http_builder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
-
-        if (method.toLowerCase().equals("get")) {
+        method = method.toUpperCase();
+        if (method.equals("GET")) {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 http_builder.addQueryParameter(entry.getKey(), (String) entry.getValue());
             }
@@ -61,10 +67,10 @@ public class OkClient extends Client {
         String http_url = http_builder.build().toString();
         Request.Builder request_builder = new Request.Builder().url(http_url);
 
-        if (!method.toLowerCase().equals("get")) {
+        if (!method.equals("GET")) {
             Gson gson = new Gson();
             RequestBody post_body = RequestBody.create(JSON, gson.toJson(params));
-            request_builder.post(post_body);
+            request_builder.method(method, post_body);
         }
 
         for (Map.Entry<String, String> entry : getRequestHeaders().entrySet()) {
