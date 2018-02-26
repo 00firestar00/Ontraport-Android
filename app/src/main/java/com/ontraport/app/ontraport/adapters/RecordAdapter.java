@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import com.ontraport.app.ontraport.OntraportApplication;
 import com.ontraport.app.ontraport.R;
 import com.ontraport.sdk.http.Meta;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder> {
+public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder> implements AsyncAdapter {
 
     private List<String> keys;
     private Map<String, String> data;
@@ -32,6 +33,11 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder> {
         this.data = data;
         keys = new ArrayList<>(data.keySet());
         notifyDataSetChanged();
+    }
+
+    public void handleNullResponse() {
+        Toast.makeText(application, "Could not retrieve information", Toast.LENGTH_SHORT).show();
+        fragment_manager.popBackStack();
     }
 
     @Override

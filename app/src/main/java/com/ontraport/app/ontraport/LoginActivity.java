@@ -15,6 +15,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.ontraport.app.ontraport.http.NullResponseException;
+import com.ontraport.app.ontraport.http.OkClient;
 import com.ontraport.sdk.Ontraport;
 import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.Meta;
@@ -117,6 +120,7 @@ public class LoginActivity extends AppCompatActivity {
         private final String api_key;
         private final Activity activity;
         private final OntraportApplication application;
+        private NullResponseException exception;
 
         private Ontraport ontraport;
 
@@ -132,10 +136,13 @@ public class LoginActivity extends AppCompatActivity {
         protected Meta doInBackground(Void... voids) {
             Meta response = null;
             try {
-                response = new Ontraport(api_id, api_key).objects().retrieveMeta(new RequestParams());
+                response = ontraport.objects().retrieveMeta(new RequestParams());
             }
             catch (RequiredParamsException e) {
                 e.printStackTrace();
+            }
+            catch (NullResponseException e) {
+                exception = e;
             }
 
             return response;
@@ -163,6 +170,9 @@ public class LoginActivity extends AppCompatActivity {
             }
             else {
                 //api_key.setError(getString(R.string.error_incorrect_password));
+                if (exception != null) {
+                    Toast.makeText(LoginActivity.this, "Could not login. No network connection!", Toast.LENGTH_SHORT).show();
+                }
                 ontraport = null;
                 editor.clear();
                 LoginActivity.this.api_key.requestFocus();

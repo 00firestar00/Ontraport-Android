@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import com.ontraport.app.ontraport.OntraportApplication;
 import com.ontraport.app.ontraport.R;
 import com.ontraport.sdk.http.Meta;
@@ -14,7 +15,7 @@ import com.ontraport.sdk.http.RequestParams;
 
 import java.util.Map;
 
-public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder> {
+public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder> implements AsyncAdapter {
 
     private RequestParams params;
     private FragmentManager fragment_manager;
@@ -34,6 +35,11 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
         this.data = data;
         this.list_fields = list_fields;
         notifyDataSetChanged();
+    }
+
+    public void handleNullResponse() {
+        Toast.makeText(application, "Could not retrieve information", Toast.LENGTH_SHORT).show();
+        fragment_manager.popBackStack();
     }
 
     @Override

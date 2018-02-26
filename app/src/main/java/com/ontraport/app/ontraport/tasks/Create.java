@@ -3,17 +3,15 @@ package com.ontraport.app.ontraport.tasks;
 import android.os.AsyncTask;
 import com.ontraport.app.ontraport.OntraportApplication;
 import com.ontraport.app.ontraport.adapters.RecordAdapter;
-import com.ontraport.app.ontraport.http.NullResponseException;
 import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.RequestParams;
 import com.ontraport.sdk.http.SingleResponse;
 
-public class GetOne extends AsyncTask<RequestParams, Void, SingleResponse> {
+public class Create extends AsyncTask<RequestParams, Void, SingleResponse> {
 
     private RecordAdapter adapter;
-    private NullResponseException exception;
 
-    public GetOne(RecordAdapter adapter) {
+    public Create(RecordAdapter adapter) {
         this.adapter = adapter;
     }
 
@@ -25,10 +23,6 @@ public class GetOne extends AsyncTask<RequestParams, Void, SingleResponse> {
     @Override
     protected void onPostExecute(SingleResponse one) {
         super.onPostExecute(one);
-        if (exception != null) {
-            adapter.handleNullResponse();
-            return;
-        }
         adapter.updateInfo(one.getData());
     }
 
@@ -37,13 +31,10 @@ public class GetOne extends AsyncTask<RequestParams, Void, SingleResponse> {
         try {
             RequestParams first = params[0];
             OntraportApplication ontraport_app = OntraportApplication.getInstance();
-            return ontraport_app.getApi().objects().retrieveSingle(first);
+            return ontraport_app.getApi().objects().create(first);
         }
         catch (RequiredParamsException e) {
             e.printStackTrace();
-        }
-        catch (NullResponseException e) {
-            exception = e;
         }
         return new SingleResponse();
     }

@@ -8,9 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import com.ontraport.app.ontraport.OntraportApplication;
 import com.ontraport.app.ontraport.R;
 import com.ontraport.app.ontraport.adapters.RecordAdapter;
+import com.ontraport.app.ontraport.http.NullResponseException;
 import com.ontraport.sdk.http.RequestParams;
 
 public class RecordFragment extends Fragment {
@@ -23,18 +25,29 @@ public class RecordFragment extends Fragment {
         if (bundle == null) {
             return root_view;
         }
-        String object_id = bundle.getString("objectID", "0");
+        int object_id = bundle.getInt("objectID", 0);
+        String id = bundle.getString("id", null);
         RequestParams params = new RequestParams();
         params.put("objectID", object_id);
-        params.put("id", bundle.getString("id"));
 
-        RecordAdapter adapter = new RecordAdapter(Integer.valueOf(object_id), getActivity());
+        RecordAdapter adapter = new RecordAdapter(object_id, getActivity());
         RecyclerView recyclerView = root_view.findViewById(R.id.record);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        OntraportApplication.getRecord(adapter, params);
+        try {
+            if (id == null) {
+                OntraportApplication.createRecord(adapter, params);
+            }
+            else {
+                params.put("id", id);
+                OntraportApplication.getRecord(adapter, params);
+            }
+        }
+        catch (NullResponseException e) {
+            Toast.makeText(getContext(), "Could not load record.", Toast.LENGTH_SHORT).show();
+        }
 
         return root_view;
     }

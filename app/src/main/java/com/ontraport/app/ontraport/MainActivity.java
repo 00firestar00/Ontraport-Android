@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
         // Contacts Collection
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container, getObjectFragment("0"))
+                .add(R.id.container, getObjectFragment(0))
                 .commit();
     }
 
@@ -91,28 +91,28 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_contacts) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, getObjectFragment("0"))
+                    .replace(R.id.container, getObjectFragment(0))
                     .addToBackStack("collection_" + 0)
                     .commit();
         }
         if (id == R.id.nav_customobject1) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, getObjectFragment("10000"))
+                    .replace(R.id.container, getObjectFragment(10000))
                     .addToBackStack("collection_" + 10000)
                     .commit();
         }
         if (id == R.id.nav_customobject2) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, getObjectFragment("10001"))
+                    .replace(R.id.container, getObjectFragment(10001))
                     .addToBackStack("collection_" + 10001)
                     .commit();
         }
         if (id == R.id.nav_customobject3) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, getObjectFragment("10002"))
+                    .replace(R.id.container, getObjectFragment(10002))
                     .addToBackStack("collection_" + 10002)
                     .commit();
         }
@@ -141,10 +141,10 @@ public class MainActivity extends AppCompatActivity
      * @param object_id The id of the object for the collection
      * @return a new CollectionFragment
      */
-    private CollectionFragment getObjectFragment(String object_id) {
+    private CollectionFragment getObjectFragment(int object_id) {
         CollectionFragment fragment = new CollectionFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("objectID", object_id);
+        bundle.putInt("objectID", object_id);
         fragment.setArguments(bundle);
         return fragment;
     }

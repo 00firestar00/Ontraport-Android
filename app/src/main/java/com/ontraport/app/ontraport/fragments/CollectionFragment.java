@@ -3,7 +3,6 @@ package com.ontraport.app.ontraport.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,33 +15,27 @@ import com.ontraport.app.ontraport.R;
 import com.ontraport.app.ontraport.adapters.CollectionAdapter;
 import com.ontraport.sdk.http.RequestParams;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class CollectionFragment extends Fragment {
+public class CollectionFragment extends Fragment implements View.OnClickListener {
+
+    private MainActivity activity;
+    private int object_id;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root_view = inflater.inflate(R.layout.collection_fragment, container, false);
 
         Bundle bundle = getArguments();
-        String object_id = bundle != null ? bundle.getString("objectID", "0") : "0";
+        object_id = bundle != null ? bundle.getInt("objectID", 0) : 0;
 
         RequestParams params = new RequestParams();
         params.put("objectID", object_id);
 
-        MainActivity activity = (MainActivity) getActivity();
+        activity = (MainActivity) getActivity();
         activity.onCollectionFragmentSetTitle(params.getAsInt("objectID"));
         FloatingActionButton fab = root_view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(this);
 
-        CollectionAdapter adapter = new CollectionAdapter(Integer.valueOf(object_id), params, getActivity());
+        CollectionAdapter adapter = new CollectionAdapter(object_id, params, getActivity());
         RecyclerView recyclerView = root_view.findViewById(R.id.collection);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -50,5 +43,20 @@ public class CollectionFragment extends Fragment {
 
         OntraportApplication.getCollection(adapter, params);
         return root_view;
+    }
+
+    @Override
+    public void onClick(View view) {
+        RecordFragment fragment = new RecordFragment();
+        Bundle bundle = getArguments();
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        bundle.putInt("objectID", object_id);
+        fragment.setArguments(bundle);
+        activity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack("record_" + object_id + "_" + "create")
+                .commit();
     }
 }

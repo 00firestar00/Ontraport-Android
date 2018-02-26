@@ -1,8 +1,12 @@
 package com.ontraport.app.ontraport;
 
 import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import com.ontraport.app.ontraport.adapters.CollectionAdapter;
 import com.ontraport.app.ontraport.adapters.RecordAdapter;
+import com.ontraport.app.ontraport.tasks.Create;
 import com.ontraport.app.ontraport.tasks.GetInfo;
 import com.ontraport.app.ontraport.tasks.GetOne;
 import com.ontraport.sdk.Ontraport;
@@ -58,4 +62,17 @@ public class OntraportApplication extends Application {
         new GetOne(adapter).execute(params);
     }
 
+    public static void createRecord(RecordAdapter adapter, RequestParams params) {
+        new Create(adapter).execute(params);
+    }
+
+    public static boolean isNetworkAvailable() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = null;
+        if (cm != null) {
+            activeNetwork = cm.getActiveNetworkInfo();
+        }
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
 }
