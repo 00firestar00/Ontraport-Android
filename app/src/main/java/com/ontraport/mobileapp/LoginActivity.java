@@ -2,43 +2,32 @@ package com.ontraport.mobileapp;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.ontraport.mobileapp.R;
-import com.ontraport.mobileapp.http.NullResponseException;
-import com.ontraport.mobileapp.http.OkClient;
-import com.ontraport.sdk.Ontraport;
-import com.ontraport.sdk.exceptions.RequiredParamsException;
-import com.ontraport.sdk.http.Meta;
-import com.ontraport.sdk.http.RequestParams;
+import com.ontraport.mobileapp.tasks.LoginTask;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private UserLoginTask mAuthTask = null;
+    private LoginTask mAuthTask = null;
 
-    private EditText api_id;
-    private EditText api_key;
+    private TextInputEditText api_id;
+    private TextInputEditText api_key;
     private View progress_spinner;
     private View login_form;
-    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 
         setContentView(R.layout.activity_login);
         // Set up the login form.
@@ -88,11 +77,17 @@ public class LoginActivity extends AppCompatActivity {
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
         showProgress(true);
-        mAuthTask = new UserLoginTask(email, password, this);
+        mAuthTask = new LoginTask(email, password, this);
         mAuthTask.execute((Void) null);
     }
 
-    private void showProgress(final boolean show) {
+    public void postLogin() {
+        mAuthTask = null;
+        showProgress(false);
+        api_key.requestFocus();
+    }
+
+    public void showProgress(final boolean show) {
 
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -115,76 +110,5 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public class UserLoginTask extends AsyncTask<Void, Void, Meta> {
-
-        private final String api_id;
-        private final String api_key;
-        private final Activity activity;
-        private final OntraportApplication application;
-        private NullResponseException exception;
-
-        private Ontraport ontraport;
-
-        UserLoginTask(String api_id, String api_key, Activity activity) {
-            this.api_id = api_id;
-            this.api_key = api_key;
-            this.activity = activity;
-            application = (OntraportApplication) getApplication();
-            ontraport = new Ontraport(api_id, api_key, new OkClient(application.getCacheDir()));
-        }
-
-        @Override
-        protected Meta doInBackground(Void... voids) {
-            Meta response = null;
-            try {
-                response = ontraport.objects().retrieveMeta(new RequestParams());
-            }
-            catch (RequiredParamsException e) {
-                e.printStackTrace();
-            }
-            catch (NullResponseException e) {
-                exception = e;
-            }
-
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(final Meta response) {
-            mAuthTask = null;
-            showProgress(false);
-
-            SharedPreferences.Editor editor = preferences.edit();
-
-            if (response != null && response.getCode() == 0) {
-                application.setApi(ontraport);
-                application.setMeta(response);
-
-                editor.putString("Api-Appid", api_id);
-                editor.putString("Api-Key", api_key);
-                editor.apply();
-
-                Intent intent = new Intent(activity, MainActivity.class);
-                showProgress(false);
-                startActivity(intent);
-                finish();
-            }
-            else {
-                //api_key.setError(getString(R.string.error_incorrect_password));
-                if (exception != null) {
-                    Toast.makeText(LoginActivity.this, "Could not login. No network connection!", Toast.LENGTH_SHORT).show();
-                }
-                ontraport = null;
-                editor.clear();
-                LoginActivity.this.api_key.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
 }
 

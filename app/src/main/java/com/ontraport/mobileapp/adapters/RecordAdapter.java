@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder> implements AsyncAdapter {
+public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
+        implements AsyncAdapter<RecordInfo> {
 
     private List<String> keys;
     private Map<String, String> data;
@@ -39,12 +40,14 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder> implem
         this.object_id = object_id;
     }
 
-    public void updateInfo(Map<String, String> data) {
-        this.data = data;
-        keys = new ArrayList<>(data.keySet());
+    @Override
+    public void updateInfo(RecordInfo info) {
+        this.data = info.getData();
+        keys = new ArrayList<>(this.data.keySet());
         notifyDataSetChanged();
     }
 
+    @Override
     public void handleNullResponse() {
         Toast.makeText(application, "Could not retrieve information", Toast.LENGTH_SHORT).show();
         fragment_manager.popBackStack();

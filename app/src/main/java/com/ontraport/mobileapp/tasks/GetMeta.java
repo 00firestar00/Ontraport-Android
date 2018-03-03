@@ -9,11 +9,6 @@ import com.ontraport.sdk.http.RequestParams;
 public class GetMeta extends AsyncTask<RequestParams, Void, Meta> {
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
     protected void onPostExecute(Meta one) {
         super.onPostExecute(one);
     }

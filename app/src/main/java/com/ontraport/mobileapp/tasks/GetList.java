@@ -1,64 +1,41 @@
 package com.ontraport.mobileapp.tasks;
 
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.adapters.CollectionAdapter;
-import com.ontraport.mobileapp.http.NullResponseException;
+import com.ontraport.mobileapp.adapters.CollectionInfo;
 import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.ListResponse;
 import com.ontraport.sdk.http.RequestParams;
 
 import java.util.Arrays;
 
-public class GetList extends AsyncTask<RequestParams, Void, ListResponse> {
+public class GetList extends AbstractTask<CollectionAdapter, ListResponse> {
 
-    private CollectionAdapter adapter;
     private String[] list_fields;
-    private NullResponseException exception;
 
     public GetList(CollectionAdapter adapter, String[] list_fields) {
-        this.adapter = adapter;
+        super(adapter);
         this.list_fields = list_fields;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
     }
 
     @Override
     protected void onPostExecute(ListResponse list) {
         super.onPostExecute(list);
-        if (exception != null) {
-            adapter.handleNullResponse();
-            return;
-        }
-        adapter.updateInfo(list.getData(), list_fields);
+        adapter.updateInfo(new CollectionInfo(list.getData(), list_fields));
     }
 
     @Override
-    protected ListResponse doInBackground(RequestParams... params) {
-        try {
-            RequestParams first = params[0];
-
-            String list = TextUtils.join(",", list_fields);
-            if (!Arrays.asList(list_fields).contains("id")) {
-                list += ",id";
-            }
-            if (Arrays.asList(list_fields).contains("fn")) {
-                list += ",firstname,lastname";
-            }
-            first.put("listFields", list);
-            OntraportApplication ontraport_app = OntraportApplication.getInstance();
-            return ontraport_app.getApi().objects().retrieveMultiple(first);
+    public ListResponse background(RequestParams params) throws RequiredParamsException {
+        String list = TextUtils.join(",", list_fields);
+        if (!Arrays.asList(list_fields).contains("id")) {
+            list += ",id";
         }
-        catch (RequiredParamsException e) {
-            e.printStackTrace();
+        if (Arrays.asList(list_fields).contains("fn")) {
+            list += ",firstname,lastname";
         }
-        catch (NullResponseException e) {
-            exception = e;
-        }
-        return new ListResponse();
+        params.put("listFields", list);
+        OntraportApplication ontraport_app = OntraportApplication.getInstance();
+        return ontraport_app.getApi().objects().retrieveMultiple(params);
     }
 }

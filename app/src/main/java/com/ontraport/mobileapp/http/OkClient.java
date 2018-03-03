@@ -23,30 +23,15 @@ import java.util.Objects;
 
 public class OkClient extends Client {
 
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient okHttpClient = new OkHttpClient();
-
-    public OkClient() {
-    }
 
     public OkClient(File cacheDir) {
         setCache(cacheDir);
     }
 
-    public OkClient(String siteID, String apiKey) {
-        super(siteID, apiKey);
-    }
-
-    public OkClient(String siteID, String apiKey, File cacheDir) {
-        super(siteID, apiKey);
-
-        if (cacheDir != null) {
-            setCache(cacheDir);
-        }
-    }
-
-    public void setCache(File cacheDir) {
+    private void setCache(File cacheDir) {
         int cacheSize = 10 * 1024 * 1024; // 10 MiB
         Cache cache = new Cache(cacheDir, cacheSize);
         okHttpClient = new OkHttpClient.Builder()

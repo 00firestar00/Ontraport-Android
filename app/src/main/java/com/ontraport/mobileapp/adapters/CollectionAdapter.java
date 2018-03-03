@@ -1,5 +1,6 @@
 package com.ontraport.mobileapp.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +17,8 @@ import com.ontraport.sdk.http.RequestParams;
 
 import java.util.Map;
 
-public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder> implements AsyncAdapter {
+public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder>
+        implements AsyncAdapter<CollectionInfo> {
 
     private RequestParams params;
     private FragmentManager fragment_manager;
@@ -32,19 +34,22 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
         this.object_id = object_id;
     }
 
-    public void updateInfo(Map<String, String>[] data, String[] list_fields) {
-        this.data = data;
-        this.list_fields = list_fields;
+    @Override
+    public void updateInfo(CollectionInfo info) {
+        this.data = info.getData();
+        this.list_fields = info.getListFields();
         notifyDataSetChanged();
     }
 
+    @Override
     public void handleNullResponse() {
         Toast.makeText(application, "Could not retrieve information", Toast.LENGTH_SHORT).show();
         fragment_manager.popBackStack();
     }
 
+    @NonNull
     @Override
-    public CollectionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CollectionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.collection_card, parent, false);
 
@@ -52,7 +57,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
     }
 
     @Override
-    public void onBindViewHolder(CollectionViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position) {
         if (data == null) {
             return;
         }

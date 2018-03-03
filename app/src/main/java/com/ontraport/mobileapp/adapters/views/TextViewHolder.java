@@ -1,11 +1,11 @@
 package com.ontraport.mobileapp.adapters.views;
 
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ontraport.mobileapp.R;
@@ -14,7 +14,7 @@ import com.ontraport.mobileapp.tasks.Update;
 public class TextViewHolder extends RecordViewHolder
         implements TextView.OnEditorActionListener, View.OnFocusChangeListener {
 
-    protected final EditText edit_text;
+    protected final TextInputEditText edit_text;
     protected final TextInputLayout text_input;
 
     public TextViewHolder(View view) {

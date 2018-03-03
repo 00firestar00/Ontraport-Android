@@ -17,11 +17,6 @@ public class Update extends AsyncTask<RequestParams, Void, UpdateResponse> {
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
     protected void onPostExecute(UpdateResponse one) {
         super.onPostExecute(one);
         Toast.makeText(context, "Updated", Toast.LENGTH_LONG).show();
