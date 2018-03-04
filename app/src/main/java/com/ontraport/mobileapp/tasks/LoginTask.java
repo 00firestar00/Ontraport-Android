@@ -9,7 +9,6 @@ import com.ontraport.mobileapp.LoginActivity;
 import com.ontraport.mobileapp.MainActivity;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.http.NullResponseException;
-import com.ontraport.mobileapp.http.OkClient;
 import com.ontraport.sdk.Ontraport;
 import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.Meta;
@@ -33,7 +32,7 @@ public class LoginTask extends AsyncTask<Void, Void, Meta> {
         this.activity = activity;
         preferences = activity.getPreferences(Context.MODE_PRIVATE);
         application = (OntraportApplication) activity.getApplication();
-        ontraport = new Ontraport(api_id, api_key, new OkClient(application.getCacheDir()));
+        ontraport = application.createApi(api_id, api_key);
     }
 
     @Override
@@ -58,7 +57,6 @@ public class LoginTask extends AsyncTask<Void, Void, Meta> {
         SharedPreferences.Editor editor = preferences.edit();
 
         if (response != null && response.getCode() == 0) {
-            application.setApi(ontraport);
             application.setMeta(response);
 
             editor.putString("Api-Appid", api_id);
@@ -76,6 +74,7 @@ public class LoginTask extends AsyncTask<Void, Void, Meta> {
                 Toast.makeText(activity, "Could not login. No network connection!", Toast.LENGTH_SHORT).show();
             }
             ontraport = null;
+            application.setApi(null);
             editor.clear();
         }
         activity.postLogin();

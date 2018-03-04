@@ -13,9 +13,15 @@ import java.util.Arrays;
 public class GetList extends AbstractTask<CollectionAdapter, ListResponse> {
 
     private String[] list_fields;
+    private boolean force_network = false;
 
     public GetList(CollectionAdapter adapter, String[] list_fields) {
+        this(adapter, list_fields, false);
+    }
+
+    public GetList(CollectionAdapter adapter, String[] list_fields, boolean force_network) {
         super(adapter);
+        this.force_network = force_network;
         this.list_fields = list_fields;
     }
 
@@ -36,6 +42,9 @@ public class GetList extends AbstractTask<CollectionAdapter, ListResponse> {
         }
         params.put("listFields", list);
         OntraportApplication ontraport_app = OntraportApplication.getInstance();
+        if (force_network) {
+            ontraport_app.getClient().forceNetwork();
+        }
         return ontraport_app.getApi().objects().retrieveMultiple(params);
     }
 }

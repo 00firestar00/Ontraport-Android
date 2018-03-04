@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.ontraport.mobileapp.adapters.CollectionAdapter;
 import com.ontraport.mobileapp.adapters.RecordAdapter;
+import com.ontraport.mobileapp.http.OkClient;
 import com.ontraport.mobileapp.tasks.Create;
 import com.ontraport.mobileapp.tasks.GetInfo;
 import com.ontraport.mobileapp.tasks.GetOne;
@@ -18,6 +19,7 @@ public class OntraportApplication extends Application {
     private static OntraportApplication instance;
 
     private Ontraport ontraportApi = null;
+    private OkClient client = null;
     private Meta meta = null;
 
     public OntraportApplication() {
@@ -31,6 +33,16 @@ public class OntraportApplication extends Application {
     }
 
     public Ontraport getApi() {
+        return ontraportApi;
+    }
+
+    public OkClient getClient() {
+        return client;
+    }
+
+    public Ontraport createApi(String api_id, String api_key) {
+        client = new OkClient(getCacheDir());
+        ontraportApi = new Ontraport(api_id, api_key, client);
         return ontraportApi;
     }
 
@@ -54,15 +66,39 @@ public class OntraportApplication extends Application {
         return instance;
     }
 
-    public static void getCollection(CollectionAdapter adapter, RequestParams params) {
-        new GetInfo(adapter, params).execute(params);
+    public void getCollection(CollectionAdapter adapter, RequestParams params) {
+        getCollection(adapter, params, false);
     }
 
-    public static void getRecord(RecordAdapter adapter, RequestParams params) {
+    public void getCollection(CollectionAdapter adapter, RequestParams params, boolean force) {
+        if (force) {
+            getClient().forceNetwork();
+            getApi().setHttpClient(getClient());
+        }
+        new GetInfo(adapter, params, force).execute(params);
+    }
+
+    public void getRecord(RecordAdapter adapter, RequestParams params) {
+        getRecord(adapter, params, false);
+    }
+
+    public void getRecord(RecordAdapter adapter, RequestParams params, boolean force) {
+        if (force) {
+            getClient().forceNetwork();
+            getApi().setHttpClient(getClient());
+        }
         new GetOne(adapter).execute(params);
     }
 
-    public static void createRecord(RecordAdapter adapter, RequestParams params) {
+    public void createRecord(RecordAdapter adapter, RequestParams params) {
+        createRecord(adapter, params, false);
+    }
+
+    public void createRecord(RecordAdapter adapter, RequestParams params, boolean force) {
+        if (force) {
+            getClient().forceNetwork();
+            getApi().setHttpClient(getClient());
+        }
         new Create(adapter).execute(params);
     }
 

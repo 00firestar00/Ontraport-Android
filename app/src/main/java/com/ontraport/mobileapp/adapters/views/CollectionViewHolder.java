@@ -43,7 +43,6 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
     public void onClick(View v) {
         String object_id = params.getVal("objectID");
         String id = (String) v.getTag();
-        params.put("id", id);
 
         RecordFragment fragment = new RecordFragment();
         Bundle bundle = new Bundle();

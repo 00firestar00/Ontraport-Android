@@ -38,11 +38,11 @@ public class RecordFragment extends Fragment {
 
         try {
             if (id == null) {
-                OntraportApplication.createRecord(adapter, params);
+                OntraportApplication.getInstance().createRecord(adapter, params);
             }
             else {
                 params.put("id", id);
-                OntraportApplication.getRecord(adapter, params);
+                OntraportApplication.getInstance().getRecord(adapter, params);
             }
         }
         catch (NullResponseException e) {

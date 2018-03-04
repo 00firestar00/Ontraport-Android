@@ -8,6 +8,7 @@ import com.ontraport.sdk.http.Client;
 import com.ontraport.sdk.http.RequestParams;
 import com.ontraport.sdk.http.SingleResponse;
 import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -24,21 +25,25 @@ import java.util.Objects;
 public class OkClient extends Client {
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final int CACHE_SIZE = 10 * 1024 * 1024; // 10 MiB
 
     private OkHttpClient okHttpClient = new OkHttpClient();
+    private boolean force_network = false;
 
     public OkClient(File cacheDir) {
         setCache(cacheDir);
     }
 
     private void setCache(File cacheDir) {
-        int cacheSize = 10 * 1024 * 1024; // 10 MiB
-        Cache cache = new Cache(cacheDir, cacheSize);
         okHttpClient = new OkHttpClient.Builder()
+                .cache(new Cache(cacheDir, CACHE_SIZE))
                 .addNetworkInterceptor(new ResponseCacheInterceptor())
                 .addInterceptor(new OfflineResponseCacheInterceptor())
-                .cache(cache)
                 .build();
+    }
+
+    public void forceNetwork() {
+        force_network = true;
     }
 
     public SingleResponse httpRequest(RequestParams params, String url, String method) {
@@ -64,6 +69,11 @@ public class OkClient extends Client {
 
         String http_url = http_builder.build().toString();
         Request.Builder request_builder = new Request.Builder().url(http_url);
+        if (force_network) {
+            System.out.println("Forcing network request");
+            request_builder.cacheControl(CacheControl.FORCE_NETWORK);
+            force_network = false;
+        }
 
         Gson gson = new Gson();
         if (!method.equals("GET")) {
@@ -99,8 +109,8 @@ public class OkClient extends Client {
 
     private static class ResponseCacheInterceptor implements Interceptor {
         @Override
-        public okhttp3.Response intercept(@NonNull Chain chain) throws IOException {
-            okhttp3.Response originalResponse = chain.proceed(chain.request());
+        public Response intercept(@NonNull Chain chain) throws IOException {
+            Response originalResponse = chain.proceed(chain.request());
             return originalResponse.newBuilder()
                     .header("Cache-Control", "public, max-age=" + 60)
                     .build();
@@ -109,7 +119,7 @@ public class OkClient extends Client {
 
     private static class OfflineResponseCacheInterceptor implements Interceptor {
         @Override
-        public okhttp3.Response intercept(@NonNull Chain chain) throws IOException {
+        public Response intercept(@NonNull Chain chain) throws IOException {
             Request request = chain.request();
             if (!OntraportApplication.isNetworkAvailable()) {
                 request = request.newBuilder()

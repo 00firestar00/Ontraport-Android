@@ -9,9 +9,15 @@ import com.ontraport.sdk.http.RequestParams;
 public class GetInfo extends AbstractTask<CollectionAdapter, ObjectInfo> {
 
     private RequestParams params;
+    private boolean force_network = false;
 
     public GetInfo(CollectionAdapter adapter, RequestParams params) {
+        this(adapter, params, false);
+    }
+
+    public GetInfo(CollectionAdapter adapter, RequestParams params, boolean force_network) {
         super(adapter);
+        this.force_network = force_network;
         this.params = params;
     }
 
@@ -26,7 +32,7 @@ public class GetInfo extends AbstractTask<CollectionAdapter, ObjectInfo> {
                 params.put("sort", field.getName());
             }
         }
-        new GetList(adapter, info.getData().getListFields()).execute(params);
+        new GetList(adapter, info.getData().getListFields(), force_network).execute(params);
     }
 
     @Override
