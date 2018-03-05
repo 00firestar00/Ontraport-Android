@@ -14,7 +14,7 @@ public abstract class SelectableListFragment<A extends SelectableItemAdapter>
         extends Fragment implements ActionMode.Callback {
 
     protected A adapter;
-    private ActionMode action_mode;
+    protected ActionMode action_mode;
 
     protected void setRecyclerView(View view, A adapter) {
         this.adapter = adapter;
