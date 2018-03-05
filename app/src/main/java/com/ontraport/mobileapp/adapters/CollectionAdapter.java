@@ -1,9 +1,12 @@
 package com.ontraport.mobileapp.adapters;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
     private RequestParams params;
     private FragmentManager fragment_manager;
     private OntraportApplication application;
+    private SparseBooleanArray selected_items;
     private Map<String, String>[] data;
     private String[] list_fields;
     private int object_id;
@@ -32,6 +36,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
         this.application = (OntraportApplication) activity.getApplication();
         this.params = params;
         this.object_id = object_id;
+        selected_items = new SparseBooleanArray();
     }
 
     @Override
@@ -62,7 +67,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
             return;
         }
 
-        Map<String, String> data = this.data[position];
+        Map<String, String> data = getDataAtPosition(position);
         Meta.Data meta = application.getMetaData(object_id);
         Map<String, Meta.Field> fields = meta.getFields();
 
@@ -79,6 +84,10 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
             holder.setValueText(i, value);
         }
 
+        holder.card.setBackgroundTintList(selected_items.get(position)
+                ? application.getResources().getColorStateList(R.color.colorSelection)
+                : ColorStateList.valueOf(Color.WHITE));
+
         LinearLayout layout_view = holder.view.findViewById(R.id.card_layout);
         layout_view.setTag(data.get("id"));
     }
@@ -86,5 +95,40 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
     @Override
     public int getItemCount() {
         return data == null ? 0 : data.length;
+    }
+
+    public Map<String, String> getDataAtPosition(int position) {
+        return data[position];
+    }
+
+    /***
+     * Methods required for do selections, remove selections, etc.
+     */
+    public void toggleSelection(int position) {
+        selectView(position, !selected_items.get(position));
+    }
+
+    public void removeSelection() {
+        selected_items = new SparseBooleanArray();
+        notifyDataSetChanged();
+    }
+
+    public void selectView(int position, boolean value) {
+        if (value) {
+            selected_items.put(position, value);
+        }
+        else {
+            selected_items.delete(position);
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedCount() {
+        return selected_items.size();
+    }
+
+    public SparseBooleanArray getSelectedIds() {
+        return selected_items;
     }
 }

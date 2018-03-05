@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.ontraport.sdk.http.RequestParams;
 public class CollectionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public View view;
-
+    public CardView card;
     private Context context;
     private TextView[] labels;
     private TextView[] values;
@@ -31,6 +32,7 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
         this.manager = manager;
         values = new TextView[textview_count];
         labels = new TextView[textview_count];
+        card = view.findViewById(R.id.card);
         LinearLayout layout_view = view.findViewById(R.id.card_layout);
         for (int i = 0; i < textview_count; i++) {
             layout_view.addView(createInnerLayout(i));
