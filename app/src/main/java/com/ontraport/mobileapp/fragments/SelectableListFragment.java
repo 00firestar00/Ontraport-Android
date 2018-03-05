@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.adapters.SelectableItemAdapter;
+import com.ontraport.mobileapp.listeners.OnTouchListener;
 
 public abstract class SelectableListFragment<A extends SelectableItemAdapter>
         extends Fragment implements ActionMode.Callback {
@@ -16,12 +17,12 @@ public abstract class SelectableListFragment<A extends SelectableItemAdapter>
     protected A adapter;
     protected ActionMode action_mode;
 
-    protected void setRecyclerView(View view, A adapter) {
+    protected RecyclerView setRecyclerView(View view, A adapter, LinearLayoutManager manager) {
         this.adapter = adapter;
 
         RecyclerView recycler_view = view.findViewById(R.id.collection);
         recycler_view.setHasFixedSize(true);
-        recycler_view.setLayoutManager(new LinearLayoutManager(getContext()));
+        recycler_view.setLayoutManager(manager);
         recycler_view.addOnItemTouchListener(new OnTouchListener(getContext(), recycler_view) {
             @Override
             public void onClick(View view, int position) {
@@ -36,6 +37,7 @@ public abstract class SelectableListFragment<A extends SelectableItemAdapter>
             }
         });
         recycler_view.setAdapter(adapter);
+        return recycler_view;
     }
 
     @Override

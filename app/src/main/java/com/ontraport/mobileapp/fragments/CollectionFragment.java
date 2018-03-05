@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -16,6 +18,7 @@ import com.ontraport.mobileapp.MainActivity;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.adapters.CollectionAdapter;
+import com.ontraport.mobileapp.listeners.EndlessScrollListener;
 import com.ontraport.sdk.http.RequestParams;
 
 import java.util.Map;
@@ -45,7 +48,15 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         swipe_layout = root_view.findViewById(R.id.swipeContainer);
         swipe_layout.setOnRefreshListener(this);
 
-        setRecyclerView(root_view, new CollectionAdapter(object_id, params, activity));
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        RecyclerView recycler_view = setRecyclerView(root_view, new CollectionAdapter(object_id, params, activity), manager);
+        recycler_view.addOnScrollListener(new EndlessScrollListener(manager) {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                OntraportApplication.getInstance().getCollection(adapter, params);
+                return true;
+            }
+        });
 
         OntraportApplication.getInstance().getCollection(adapter, params);
         return root_view;
