@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,7 @@ import com.ontraport.sdk.http.RequestParams;
 
 import java.util.Map;
 
-public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder>
+public class CollectionAdapter extends SelectableItemAdapter
         implements AsyncAdapter<CollectionInfo> {
 
     private RequestParams params;
@@ -36,7 +35,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
         this.application = (OntraportApplication) activity.getApplication();
         this.params = params;
         this.object_id = object_id;
-        selected_items = new SparseBooleanArray();
+        this.selected_items = new SparseBooleanArray();
     }
 
     @Override
@@ -99,36 +98,5 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionViewHolder
 
     public Map<String, String> getDataAtPosition(int position) {
         return data[position];
-    }
-
-    /***
-     * Methods required for do selections, remove selections, etc.
-     */
-    public void toggleSelection(int position) {
-        selectView(position, !selected_items.get(position));
-    }
-
-    public void removeSelection() {
-        selected_items = new SparseBooleanArray();
-        notifyDataSetChanged();
-    }
-
-    public void selectView(int position, boolean value) {
-        if (value) {
-            selected_items.put(position, value);
-        }
-        else {
-            selected_items.delete(position);
-        }
-
-        notifyDataSetChanged();
-    }
-
-    public int getSelectedCount() {
-        return selected_items.size();
-    }
-
-    public SparseBooleanArray getSelectedIds() {
-        return selected_items;
     }
 }

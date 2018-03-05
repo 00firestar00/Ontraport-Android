@@ -3,15 +3,11 @@ package com.ontraport.mobileapp.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +20,11 @@ import com.ontraport.sdk.http.RequestParams;
 
 import java.util.Map;
 
-public class CollectionFragment extends Fragment
+public class CollectionFragment extends SelectableListFragment<CollectionAdapter>
         implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, ActionMode.Callback {
 
     private MainActivity activity;
-    private CollectionAdapter adapter;
     private SwipeRefreshLayout swipe_layout;
-    private ActionMode action_mode;
     private RequestParams params = new RequestParams();
     private int object_id;
 
@@ -51,34 +45,10 @@ public class CollectionFragment extends Fragment
         swipe_layout = root_view.findViewById(R.id.swipeContainer);
         swipe_layout.setOnRefreshListener(this);
 
-        adapter = new CollectionAdapter(object_id, params, activity);
-        RecyclerView recycler_view = root_view.findViewById(R.id.collection);
-        recycler_view.setHasFixedSize(true);
-        recycler_view.setLayoutManager(new LinearLayoutManager(getContext()));
-        recycler_view.setAdapter(adapter);
-
-        recycler_view.addOnItemTouchListener(new OnTouchListener(getContext(), recycler_view) {
-            @Override
-            public void onClick(View view, int position) {
-                if (action_mode != null) {
-                    onListItemSelect(position);
-                }
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-                onListItemSelect(position);
-            }
-        });
+        setRecyclerView(root_view, new CollectionAdapter(object_id, params, activity));
 
         OntraportApplication.getInstance().getCollection(adapter, params);
         return root_view;
-    }
-
-    @Override
-    public void onRefresh() {
-        OntraportApplication.getInstance().getCollection(adapter, params, true);
-        swipe_layout.setRefreshing(false);
     }
 
     @Override
@@ -96,38 +66,10 @@ public class CollectionFragment extends Fragment
                 .commit();
     }
 
-    private void onListItemSelect(int position) {
-        adapter.toggleSelection(position);
-
-        boolean hasCheckedItems = adapter.getSelectedCount() > 0;
-
-        if (hasCheckedItems && action_mode == null)
-        {
-            action_mode = getActivity().startActionMode(this);
-        }
-        else if (!hasCheckedItems && action_mode != null)
-        {
-            action_mode.finish();
-        }
-
-        if (action_mode != null)
-        {
-            action_mode.setTitle(String.valueOf(adapter.getSelectedCount()) + " selected");
-        }
-    }
-
     @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mode.getMenuInflater().inflate(R.menu.menu_action, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        menu.findItem(R.id.action_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.findItem(R.id.action_copy).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.findItem(R.id.action_forward).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        return true;
+    public void onRefresh() {
+        OntraportApplication.getInstance().getCollection(adapter, params, true);
+        swipe_layout.setRefreshing(false);
     }
 
     @Override
@@ -138,13 +80,12 @@ public class CollectionFragment extends Fragment
 
                 for (int i = (selected.size() - 1); i >= 0; i--) {
                     if (selected.valueAt(i)) {
-                        //If current id is selected remove the item via key
                         Map<String, String> data = adapter.getDataAtPosition(selected.keyAt(i));
                         adapter.notifyDataSetChanged();
                     }
                 }
                 Toast.makeText(getActivity(), selected.size() + " item deleted.", Toast.LENGTH_SHORT).show();
-                action_mode.finish();
+                mode.finish();
                 break;
             case R.id.action_copy:
                 selected = adapter.getSelectedIds();
@@ -152,7 +93,6 @@ public class CollectionFragment extends Fragment
 
                 for (int i = (selectedMessageSize - 1); i >= 0; i--) {
                     if (selected.valueAt(i)) {
-                        //get selected data in Model
                         Map<String, String> data = adapter.getDataAtPosition(selected.keyAt(i));
                         Log.e("Selected Items", "Title - " + data.get("id") + "n" + "Sub Title - " + data.get("email"));
                     }
@@ -166,13 +106,5 @@ public class CollectionFragment extends Fragment
                 break;
         }
         return false;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        adapter.removeSelection();
-        if (action_mode != null) {
-            action_mode = null;
-        }
     }
 }
