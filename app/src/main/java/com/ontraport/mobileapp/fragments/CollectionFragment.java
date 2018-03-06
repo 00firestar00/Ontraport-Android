@@ -88,7 +88,9 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     public void onRefresh() {
         OntraportApplication.getInstance().getCollection(adapter, params, true);
         swipe_layout.setRefreshing(false);
-        action_mode.finish();
+        if (action_mode != null) {
+            action_mode.finish();
+        }
     }
 
     @Override

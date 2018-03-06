@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ public class CollectionAdapter extends SelectableItemAdapter
     private RequestParams params;
     private FragmentManager fragment_manager;
     private OntraportApplication application;
-    private SparseBooleanArray selected_items;
     private ArrayList<Map<String, String>> data;
     private String[] list_fields;
     private int object_id;
@@ -38,7 +36,6 @@ public class CollectionAdapter extends SelectableItemAdapter
         this.application = (OntraportApplication) activity.getApplication();
         this.params = params;
         this.object_id = object_id;
-        this.selected_items = new SparseBooleanArray();
     }
 
     public int getMaxCount() {

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public abstract class SelectableItemAdapter extends RecyclerView.Adapter<CollectionViewHolder> {
 
-    private SparseBooleanArray selected_items;
+    protected SparseBooleanArray selected_items = new SparseBooleanArray();
 
     public void toggleSelection(int position) {
         selectView(position, !selected_items.get(position));
