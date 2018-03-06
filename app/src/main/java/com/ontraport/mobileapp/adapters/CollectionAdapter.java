@@ -17,6 +17,8 @@ import com.ontraport.mobileapp.adapters.views.CollectionViewHolder;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 public class CollectionAdapter extends SelectableItemAdapter
@@ -26,9 +28,10 @@ public class CollectionAdapter extends SelectableItemAdapter
     private FragmentManager fragment_manager;
     private OntraportApplication application;
     private SparseBooleanArray selected_items;
-    private Map<String, String>[] data;
+    private ArrayList<Map<String, String>> data;
     private String[] list_fields;
     private int object_id;
+    private int max_count;
 
     public CollectionAdapter(int object_id, RequestParams params, FragmentActivity activity) {
         this.fragment_manager = activity.getSupportFragmentManager();
@@ -38,10 +41,21 @@ public class CollectionAdapter extends SelectableItemAdapter
         this.selected_items = new SparseBooleanArray();
     }
 
+    public int getMaxCount() {
+        return max_count;
+    }
+
     @Override
     public void updateInfo(CollectionInfo info) {
-        this.data = info.getData();
+        if (data != null && data.size() > 0) {
+            System.out.println("Appending to adapter");
+            this.data.addAll(Arrays.asList(info.getData()));
+        }
+        else {
+            this.data = new ArrayList<>(Arrays.asList(info.getData()));
+        }
         this.list_fields = info.getListFields();
+        this.max_count = info.getCount();
         notifyDataSetChanged();
     }
 
@@ -93,10 +107,10 @@ public class CollectionAdapter extends SelectableItemAdapter
 
     @Override
     public int getItemCount() {
-        return data == null ? 0 : data.length;
+        return data == null ? 0 : data.size();
     }
 
     public Map<String, String> getDataAtPosition(int position) {
-        return data[position];
+        return data.get(position);
     }
 }

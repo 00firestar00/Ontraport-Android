@@ -29,6 +29,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     private MainActivity activity;
     private SwipeRefreshLayout swipe_layout;
     private RequestParams params = new RequestParams();
+    private RequestParams endless = new RequestParams();
     private int object_id;
 
     @Override
@@ -38,7 +39,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         Bundle bundle = getArguments();
         object_id = bundle != null ? bundle.getInt("objectID", 0) : 0;
         params.put("objectID", object_id);
-
+        endless.putAll(params);
         activity = (MainActivity) getActivity();
         activity.onCollectionFragmentSetTitle(params.getAsInt("objectID"));
 
@@ -53,7 +54,13 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         recycler_view.addOnScrollListener(new EndlessScrollListener(manager) {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
-                OntraportApplication.getInstance().getCollection(adapter, params);
+                int next_count = --page * 50;
+                if (next_count >= adapter.getMaxCount() + 50) {
+                    return false;
+                }
+                System.out.println("getting more data");
+                endless.put("start", next_count);
+                OntraportApplication.getInstance().getCollection(adapter, endless);
                 return true;
             }
         });

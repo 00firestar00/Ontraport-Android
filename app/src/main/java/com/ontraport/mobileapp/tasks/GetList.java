@@ -14,21 +14,23 @@ public class GetList extends AbstractTask<CollectionAdapter, ListResponse> {
 
     private String[] list_fields;
     private boolean force_network = false;
+    private int count = 0;
 
-    public GetList(CollectionAdapter adapter, String[] list_fields) {
-        this(adapter, list_fields, false);
+    public GetList(CollectionAdapter adapter, String[] list_fields, int count) {
+        this(adapter, list_fields, count, false);
     }
 
-    public GetList(CollectionAdapter adapter, String[] list_fields, boolean force_network) {
+    public GetList(CollectionAdapter adapter, String[] list_fields, int count, boolean force_network) {
         super(adapter);
         this.force_network = force_network;
         this.list_fields = list_fields;
+        this.count = count;
     }
 
     @Override
     protected void onPostExecute(ListResponse list) {
         super.onPostExecute(list);
-        adapter.updateInfo(new CollectionInfo(list.getData(), list_fields));
+        adapter.updateInfo(new CollectionInfo(list.getData(), list_fields, count));
     }
 
     @Override
