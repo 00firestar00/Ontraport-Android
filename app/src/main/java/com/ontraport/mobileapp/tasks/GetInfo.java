@@ -32,6 +32,7 @@ public class GetInfo extends AbstractTask<CollectionAdapter, ObjectInfo> {
                 params.put("sort", field.getName());
             }
         }
+        adapter.setCountTitle(Integer.toString(info.getCount()));
         new GetList(adapter, info.getData().getListFields(), info.getCount(), force_network).execute(params);
     }
 

@@ -3,8 +3,8 @@ package com.ontraport.mobileapp.adapters;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +23,19 @@ import java.util.Map;
 public class CollectionAdapter extends SelectableItemAdapter
         implements AsyncAdapter<CollectionInfo> {
 
+    private final FragmentManager fragment_manager;
+    private final AppCompatActivity activity;
+    private final OntraportApplication application;
+
     private RequestParams params;
-    private FragmentManager fragment_manager;
-    private OntraportApplication application;
     private ArrayList<Map<String, String>> data;
     private String[] list_fields;
     private int object_id;
     private int max_count;
 
-    public CollectionAdapter(int object_id, RequestParams params, FragmentActivity activity) {
+    public CollectionAdapter(int object_id, RequestParams params, AppCompatActivity activity) {
         this.fragment_manager = activity.getSupportFragmentManager();
+        this.activity = activity;
         this.application = (OntraportApplication) activity.getApplication();
         this.params = params;
         this.object_id = object_id;
@@ -40,6 +43,10 @@ public class CollectionAdapter extends SelectableItemAdapter
 
     public int getMaxCount() {
         return max_count;
+    }
+
+    public void setCountTitle(String string) {
+        activity.getSupportActionBar().setSubtitle(string);
     }
 
     @Override
