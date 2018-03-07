@@ -46,6 +46,9 @@ public class CollectionAdapter extends SelectableItemAdapter
     }
 
     public void setCountTitle(String string) {
+        if (!string.toLowerCase().startsWith("count:")) {
+            string = "Count: " + string;
+        }
         activity.getSupportActionBar().setSubtitle(string);
     }
 

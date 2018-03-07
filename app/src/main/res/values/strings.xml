@@ -19,4 +19,6 @@
     <string name="app_key">Api-Key</string>
     <string name="action_sign_in">Sign In</string>
     <string name="action_done">Done</string>
+    <string name="action_delete">delete</string>
+    <string name="action_copy">copy</string>
 </resources>

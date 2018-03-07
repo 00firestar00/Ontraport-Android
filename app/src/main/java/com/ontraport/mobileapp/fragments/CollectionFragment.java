@@ -45,11 +45,12 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         FloatingActionButton fab = root_view.findViewById(R.id.fab);
         fab.setOnClickListener(this);
+        //fab.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.ic_person_add_black_24dp));
 
         swipe_layout = root_view.findViewById(R.id.swipeContainer);
         swipe_layout.setOnRefreshListener(this);
 
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        LinearLayoutManager manager = new LinearLayoutManager(activity);
         RecyclerView recycler_view = setRecyclerView(root_view, new CollectionAdapter(object_id, params, activity), manager);
         recycler_view.addOnScrollListener(new EndlessScrollListener(manager) {
             @Override
@@ -118,11 +119,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
                         Log.e("Selected Items", "Title - " + data.get("id") + "n" + "Sub Title - " + data.get("email"));
                     }
                 }
-                Toast.makeText(getContext(), "You selected Copy menu.", Toast.LENGTH_SHORT).show();
-                mode.finish();
-                break;
-            case R.id.action_forward:
-                Toast.makeText(getContext(), "You selected Forward menu.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "You selected Copy menu.", Toast.LENGTH_SHORT).show();
                 mode.finish();
                 break;
         }
