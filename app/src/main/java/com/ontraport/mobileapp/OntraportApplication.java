@@ -6,7 +6,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.ontraport.mobileapp.adapters.CollectionAdapter;
 import com.ontraport.mobileapp.adapters.RecordAdapter;
-import com.ontraport.mobileapp.http.OkClient;
+import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
+import com.ontraport.mobileapp.sdk.http.OkClient;
 import com.ontraport.mobileapp.tasks.Create;
 import com.ontraport.mobileapp.tasks.GetInfo;
 import com.ontraport.mobileapp.tasks.GetOne;
@@ -18,9 +19,10 @@ public class OntraportApplication extends Application {
 
     private static OntraportApplication instance;
 
-    private Ontraport ontraportApi = null;
-    private OkClient client = null;
-    private Meta meta = null;
+    private Ontraport ontraportApi;
+    private OkClient client;
+    private Meta meta;
+    private CustomObjectResponse custom_objects;
 
     public OntraportApplication() {
         super();
@@ -56,6 +58,10 @@ public class OntraportApplication extends Application {
 
     public Meta getMeta() {
         return meta;
+    }
+
+    public void setCustomObjects(CustomObjectResponse custom_objects) {
+        this.custom_objects = custom_objects;
     }
 
     public Meta.Data getMetaData(int object_id) {

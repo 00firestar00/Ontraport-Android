@@ -1,4 +1,4 @@
-package com.ontraport.mobileapp.http;
+package com.ontraport.mobileapp.sdk.http;
 
 import android.support.annotation.NonNull;
 import com.google.gson.Gson;

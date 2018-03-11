@@ -8,13 +8,16 @@ import android.widget.Toast;
 import com.ontraport.mobileapp.LoginActivity;
 import com.ontraport.mobileapp.MainActivity;
 import com.ontraport.mobileapp.OntraportApplication;
-import com.ontraport.mobileapp.http.NullResponseException;
+import com.ontraport.mobileapp.sdk.http.CombinedMeta;
+import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
+import com.ontraport.mobileapp.sdk.http.NullResponseException;
+import com.ontraport.mobileapp.sdk.objects.CustomObjectsMeta;
 import com.ontraport.sdk.Ontraport;
 import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
 
-public class LoginTask extends AsyncTask<Void, Void, Meta> {
+public class LoginTask extends AsyncTask<Void, Void, CombinedMeta> {
 
     private final String api_id;
     private final String api_key;
@@ -36,26 +39,10 @@ public class LoginTask extends AsyncTask<Void, Void, Meta> {
     }
 
     @Override
-    protected Meta doInBackground(Void... voids) {
-        Meta response = null;
-        try {
-            response = ontraport.objects().retrieveMeta(new RequestParams());
-        }
-        catch (RequiredParamsException e) {
-            e.printStackTrace();
-        }
-        catch (NullResponseException e) {
-            exception = e;
-        }
-
-        return response;
-    }
-
-    @Override
-    protected void onPostExecute(final Meta response) {
-
+    protected void onPostExecute(final CombinedMeta combined) {
         SharedPreferences.Editor editor = preferences.edit();
-
+        Meta response = combined.getMeta();
+        application.setCustomObjects(combined.getCustomObjectResponse());
         if (response != null && response.getCode() == 0) {
             application.setMeta(response);
 
@@ -83,5 +70,23 @@ public class LoginTask extends AsyncTask<Void, Void, Meta> {
     @Override
     protected void onCancelled() {
         activity.postLogin();
+    }
+
+    @Override
+    protected CombinedMeta doInBackground(Void... voids) {
+        CombinedMeta response = new CombinedMeta();
+        try {
+            Meta mres = ontraport.objects().retrieveMeta(new RequestParams());
+            CustomObjectResponse cores = new CustomObjectsMeta(ontraport).meta(new RequestParams());
+            response = new CombinedMeta(mres, cores);
+        }
+        catch (RequiredParamsException e) {
+            e.printStackTrace();
+        }
+        catch (NullResponseException e) {
+            exception = e;
+        }
+
+        return response;
     }
 }

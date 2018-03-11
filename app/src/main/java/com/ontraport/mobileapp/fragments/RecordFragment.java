@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.adapters.RecordAdapter;
-import com.ontraport.mobileapp.http.NullResponseException;
+import com.ontraport.mobileapp.sdk.http.NullResponseException;
 import com.ontraport.sdk.http.RequestParams;
 
 public class RecordFragment extends Fragment {

@@ -3,7 +3,7 @@ package com.ontraport.mobileapp.tasks;
 import android.os.AsyncTask;
 import android.support.annotation.CallSuper;
 import com.ontraport.mobileapp.adapters.AsyncAdapter;
-import com.ontraport.mobileapp.http.NullResponseException;
+import com.ontraport.mobileapp.sdk.http.NullResponseException;
 import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.AbstractResponse;
 import com.ontraport.sdk.http.RequestParams;

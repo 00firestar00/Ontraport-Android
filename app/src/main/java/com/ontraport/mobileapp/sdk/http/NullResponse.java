@@ -1,4 +1,4 @@
-package com.ontraport.mobileapp.http;
+package com.ontraport.mobileapp.sdk.http;
 
 import com.ontraport.sdk.http.AbstractResponse;
 
