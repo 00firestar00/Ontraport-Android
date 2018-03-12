@@ -5,4 +5,25 @@
     <color name="colorPrimaryDark">#0F283E</color>
     <color name="colorAccent">#E65100</color>
     <color name="colorSelection">#FFF2B7</color>
+
+    <!--Theme Colors-->
+    <color name="dark_wizard">#333333</color>
+    <color name="sherpa_blue">#00524f</color>
+    <color name="tropical_rain_forest">#006c67</color>
+    <color name="ming">#327572</color>
+    <color name="thatch_green">#3b3318</color>
+    <color name="metallic_bronze">#4f4420</color>
+    <color name="chelsea_gem">#966f02</color>
+    <color name="blackberry">#52003e</color>
+    <color name="finn">#692a59</color>
+    <color name="rouge">#9e3f86</color>
+    <color name="red_beech">#842f00</color>
+    <color name="fire">#b03e02</color>
+    <color name="trinidad">#ea5202</color>
+    <color name="gulf_blue">#031f64</color>
+    <color name="resolution_blue">#032985</color>
+    <color name="torea_bay">#113a9f</color>
+    <color name="parsley">#114f22</color>
+    <color name="salem">#0e852f</color>
+    <color name="forest_green">#219e44</color>
 </resources>

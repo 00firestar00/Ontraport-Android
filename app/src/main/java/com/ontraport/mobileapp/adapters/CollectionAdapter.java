@@ -45,6 +45,10 @@ public class CollectionAdapter extends SelectableItemAdapter
         return max_count;
     }
 
+    public int getMaxPages() {
+        return (int) Math.ceil(getMaxCount() * 1.0 / 50);
+    }
+
     public void setCountTitle(String string) {
         if (!string.toLowerCase().startsWith("count:")) {
             string = "Count: " + string;
@@ -54,7 +58,7 @@ public class CollectionAdapter extends SelectableItemAdapter
 
     @Override
     public void updateInfo(CollectionInfo info) {
-        if (data != null && data.size() > 0) {
+        if (!info.isForced() && data != null && data.size() > 0) {
             System.out.println("Appending to adapter");
             this.data.addAll(Arrays.asList(info.getData()));
         }

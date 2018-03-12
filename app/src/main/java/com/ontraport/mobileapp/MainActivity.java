@@ -8,13 +8,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.ontraport.mobileapp.fragments.CollectionFragment;
+import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
+import com.ontraport.mobileapp.utils.ThemeUtils;
 import com.ontraport.sdk.http.Meta;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private SparseArray<Bundle> nav_info = new SparseArray<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,20 +34,9 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-
-//        final Menu menu = navigationView.getMenu();
-//        for (int i = 1; i <= 3; i++) {
-//            menu.add("Runtime item "+ i);
-//        }
-//        final SubMenu subMenu = menu.addSubMenu("SubMenu Title");
-//        for (int i = 1; i <= 2; i++) {
-//            subMenu.add("SubMenu Item " + i);
-//        }
-//
-
+        NavigationView nav = findViewById(R.id.nav_view);
+        nav.setNavigationItemSelectedListener(this);
+        buildNavMenu(nav);
         // Contacts Collection
         getSupportFragmentManager()
                 .beginTransaction()
@@ -85,35 +79,21 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_contacts) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container, getObjectFragment(0))
-                    .addToBackStack("collection_" + 0)
-                    .commit();
+            id = 0;
         }
-        if (id == R.id.nav_customobject1) {
+
+        Bundle bundle = nav_info.get(id);
+
+        if (bundle != null) {
+            CollectionFragment fragment = new CollectionFragment();
+            fragment.setArguments(bundle);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, getObjectFragment(10000))
-                    .addToBackStack("collection_" + 10000)
-                    .commit();
-        }
-        if (id == R.id.nav_customobject2) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container, getObjectFragment(10001))
-                    .addToBackStack("collection_" + 10001)
-                    .commit();
-        }
-        if (id == R.id.nav_customobject3) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container, getObjectFragment(10002))
-                    .addToBackStack("collection_" + 10002)
+                    .replace(R.id.container, fragment)
+                    .addToBackStack("collection_" + bundle.getInt("objectID"))
                     .commit();
         }
 
@@ -147,5 +127,32 @@ public class MainActivity extends AppCompatActivity
         bundle.putInt("objectID", object_id);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    private void buildNavMenu(NavigationView nav) {
+        OntraportApplication app = (OntraportApplication) getApplication();
+        CustomObjectResponse res = app.getCustomObjects();
+        Menu menu = nav.getMenu();
+        if (res != null && res.getData().length > 0) {
+            for (CustomObjectResponse.Data data : res.getData()) {
+                int id = Integer.parseInt(data.getId());
+
+                String name = data.getPlural();
+                int icon = ThemeUtils.getIconByName(data.getIcon());
+                int theme = ThemeUtils.getThemeByName(data.getTheme());
+
+                Bundle bundle = new Bundle();
+                bundle.putString("name", name);
+                bundle.putInt("objectID", id);
+                bundle.putInt("icon", icon);
+                bundle.putInt("theme", theme);
+                nav_info.put(id, bundle);
+
+                if (id < 10000) {
+                    continue;
+                }
+                menu.add(R.id.nav_object, id, Menu.NONE, name).setIcon(icon);
+            }
+        }
     }
 }

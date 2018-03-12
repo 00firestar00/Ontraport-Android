@@ -1,5 +1,6 @@
 package com.ontraport.mobileapp.fragments;
 
+import android.support.annotation.CallSuper;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +18,39 @@ public abstract class SelectableListFragment<A extends SelectableItemAdapter>
     protected A adapter;
     protected ActionMode action_mode;
 
-    protected RecyclerView setRecyclerView(View view, A adapter, LinearLayoutManager manager) {
+    public A getAdapter() {
+        return adapter;
+    }
+
+    public ActionMode getActionMode() {
+        return action_mode;
+    }
+
+    @CallSuper
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        mode.getMenuInflater().inflate(R.menu.menu_action, menu);
+        return true;
+    }
+
+    @CallSuper
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        menu.findItem(R.id.action_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(R.id.action_copy).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        return true;
+    }
+
+    @CallSuper
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        adapter.removeSelection();
+        if (action_mode != null) {
+            action_mode = null;
+        }
+    }
+
+    protected final RecyclerView setRecyclerView(View view, A adapter, LinearLayoutManager manager) {
         this.adapter = adapter;
 
         RecyclerView recycler_view = view.findViewById(R.id.collection);
@@ -40,29 +73,7 @@ public abstract class SelectableListFragment<A extends SelectableItemAdapter>
         return recycler_view;
     }
 
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mode.getMenuInflater().inflate(R.menu.menu_action, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        menu.findItem(R.id.action_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.findItem(R.id.action_copy).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.findItem(R.id.action_forward).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        return true;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        adapter.removeSelection();
-        if (action_mode != null) {
-            action_mode = null;
-        }
-    }
-
-    protected void onListItemSelect(int position) {
+    protected final void onListItemSelect(int position) {
         adapter.toggleSelection(position);
 
         boolean hasCheckedItems = adapter.getSelectedCount() > 0;

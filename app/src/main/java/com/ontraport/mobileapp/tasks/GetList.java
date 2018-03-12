@@ -30,7 +30,7 @@ public class GetList extends AbstractTask<CollectionAdapter, ListResponse> {
     @Override
     protected void onPostExecute(ListResponse list) {
         super.onPostExecute(list);
-        adapter.updateInfo(new CollectionInfo(list.getData(), list_fields, count));
+        adapter.updateInfo(new CollectionInfo(list.getData(), list_fields, count).force(force_network));
     }
 
     @Override

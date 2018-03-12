@@ -1,15 +1,20 @@
 package com.ontraport.mobileapp.fragments;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.ActionBarContextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,14 +35,23 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     private SwipeRefreshLayout swipe_layout;
     private RequestParams params = new RequestParams();
     private RequestParams endless = new RequestParams();
-    private int object_id;
+    private int object_id = 0;
+    @DrawableRes
+    private int icon;
+    @ColorInt
+    private int theme;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root_view = inflater.inflate(R.layout.collection_fragment, container, false);
 
         Bundle bundle = getArguments();
-        object_id = bundle != null ? bundle.getInt("objectID", 0) : 0;
+        if (bundle != null) {
+            object_id = bundle.getInt("objectID", 0);
+            icon = bundle.getInt("icon", R.drawable.ic_person_black_24dp);
+            int color = bundle.getInt("theme", R.color.colorAccent);
+            theme = getResources().getColor(color);
+        }
         params.put("objectID", object_id);
         endless.putAll(params);
         activity = (MainActivity) getActivity();
@@ -45,6 +59,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         FloatingActionButton fab = root_view.findViewById(R.id.fab);
         fab.setOnClickListener(this);
+        fab.setBackgroundTintList(ColorStateList.valueOf(theme));
         //fab.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.ic_person_add_black_24dp));
 
         swipe_layout = root_view.findViewById(R.id.swipeContainer);
@@ -56,17 +71,17 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
                 int next_count = --page * 50;
-                if (next_count >= adapter.getMaxCount() + 50) {
+                if (page >= adapter.getMaxPages()) {
                     return false;
                 }
                 System.out.println("getting more data");
                 endless.put("start", next_count);
-                OntraportApplication.getInstance().getCollection(adapter, endless);
+                OntraportApplication.getInstance().getCollection(getAdapter(), endless);
                 return true;
             }
         });
 
-        OntraportApplication.getInstance().getCollection(adapter, params);
+        OntraportApplication.getInstance().getCollection(getAdapter(), params);
         return root_view;
     }
 
@@ -87,10 +102,10 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
     @Override
     public void onRefresh() {
-        OntraportApplication.getInstance().getCollection(adapter, params, true);
+        OntraportApplication.getInstance().getCollection(getAdapter(), params, true);
         swipe_layout.setRefreshing(false);
-        if (action_mode != null) {
-            action_mode.finish();
+        if (getActionMode() != null) {
+            getActionMode().finish();
         }
     }
 
@@ -98,24 +113,24 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                SparseBooleanArray selected = adapter.getSelectedIds();
+                SparseBooleanArray selected = getAdapter().getSelectedIds();
 
                 for (int i = (selected.size() - 1); i >= 0; i--) {
                     if (selected.valueAt(i)) {
-                        Map<String, String> data = adapter.getDataAtPosition(selected.keyAt(i));
-                        adapter.notifyDataSetChanged();
+                        Map<String, String> data = getAdapter().getDataAtPosition(selected.keyAt(i));
+                        getAdapter().notifyDataSetChanged();
                     }
                 }
                 Toast.makeText(getActivity(), selected.size() + " item deleted.", Toast.LENGTH_SHORT).show();
                 mode.finish();
                 break;
             case R.id.action_copy:
-                selected = adapter.getSelectedIds();
+                selected = getAdapter().getSelectedIds();
                 int selectedMessageSize = selected.size();
 
                 for (int i = (selectedMessageSize - 1); i >= 0; i--) {
                     if (selected.valueAt(i)) {
-                        Map<String, String> data = adapter.getDataAtPosition(selected.keyAt(i));
+                        Map<String, String> data = getAdapter().getDataAtPosition(selected.keyAt(i));
                         Log.e("Selected Items", "Title - " + data.get("id") + "n" + "Sub Title - " + data.get("email"));
                     }
                 }
@@ -124,5 +139,13 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
                 break;
         }
         return false;
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        boolean ret = super.onCreateActionMode(mode, menu);
+        ActionBarContextView actionBar = activity.getWindow().getDecorView().findViewById(R.id.action_mode_bar);
+        actionBar.setBackgroundColor(theme);
+        return ret;
     }
 }

@@ -64,6 +64,10 @@ public class OntraportApplication extends Application {
         this.custom_objects = custom_objects;
     }
 
+    public CustomObjectResponse getCustomObjects() {
+        return custom_objects;
+    }
+
     public Meta.Data getMetaData(int object_id) {
         return meta.getData().get(Integer.toString(object_id));
     }
@@ -117,4 +121,5 @@ public class OntraportApplication extends Application {
         }
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
+
 }
