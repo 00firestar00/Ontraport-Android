@@ -2,6 +2,7 @@ package com.ontraport.mobileapp.adapters;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -32,13 +33,16 @@ public class CollectionAdapter extends SelectableItemAdapter
     private String[] list_fields;
     private int object_id;
     private int max_count;
+    @ColorInt
+    private int theme;
 
-    public CollectionAdapter(int object_id, RequestParams params, AppCompatActivity activity) {
+    public CollectionAdapter(int object_id, RequestParams params, AppCompatActivity activity, @ColorInt int theme) {
         this.fragment_manager = activity.getSupportFragmentManager();
         this.activity = activity;
         this.application = (OntraportApplication) activity.getApplication();
         this.params = params;
         this.object_id = object_id;
+        this.theme = theme;
     }
 
     public int getMaxCount() {
@@ -65,7 +69,7 @@ public class CollectionAdapter extends SelectableItemAdapter
         else {
             this.data = new ArrayList<>(Arrays.asList(info.getData()));
         }
-        this.list_fields = info.getListFields();
+        this.list_fields = sanitizeFields(info.getListFields());
         this.max_count = info.getCount();
         notifyDataSetChanged();
     }
@@ -82,7 +86,7 @@ public class CollectionAdapter extends SelectableItemAdapter
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.collection_card, parent, false);
 
-        return new CollectionViewHolder(view, params, fragment_manager, list_fields.length);
+        return new CollectionViewHolder(view, params, fragment_manager, list_fields.length, theme);
     }
 
     @Override
@@ -96,7 +100,11 @@ public class CollectionAdapter extends SelectableItemAdapter
         Map<String, Meta.Field> fields = meta.getFields();
 
         for (int i = 0; i < holder.getCount(); i++) {
-            String alias = fields.get(list_fields[i]).getAlias();
+            Meta.Field field = fields.get(list_fields[i]);
+            if (field == null) {
+                continue;
+            }
+            String alias = field.getAlias();
             String key = list_fields[i];
             String value = data.get(key) == null ? "" : data.get(key);
             if (key.equals("fn")) {
@@ -123,5 +131,11 @@ public class CollectionAdapter extends SelectableItemAdapter
 
     public Map<String, String> getDataAtPosition(int position) {
         return data.get(position);
+    }
+
+    private String[] sanitizeFields(String[] list_fields) {
+        ArrayList<String> fields = new ArrayList<>(Arrays.asList(list_fields));
+        fields.remove("");
+        return fields.toArray(new String[fields.size()]);
     }
 }

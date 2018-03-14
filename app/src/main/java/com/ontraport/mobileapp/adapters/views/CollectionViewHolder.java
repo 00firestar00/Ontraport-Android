@@ -2,7 +2,9 @@ package com.ontraport.mobileapp.adapters.views;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -23,13 +25,17 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
     private TextView[] values;
     private FragmentManager manager;
     private RequestParams params;
+    @ColorInt
+    private int theme;
 
-    public CollectionViewHolder(View view, RequestParams params, FragmentManager manager, int textview_count) {
+    public CollectionViewHolder(View view, RequestParams params, FragmentManager manager,
+                                int textview_count, @ColorInt int theme) {
         super(view);
         this.view = view;
         this.context = view.getContext();
         this.params = params;
         this.manager = manager;
+        this.theme = theme;
         values = new TextView[textview_count];
         labels = new TextView[textview_count];
         card = view.findViewById(R.id.card);
@@ -76,7 +82,9 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
         );
         inner.setOrientation(LinearLayout.HORIZONTAL);
-        inner.setBackground(context.getResources().getDrawable(R.drawable.border_bottom));
+        Drawable bottom_border = context.getResources().getDrawable(R.drawable.border_bottom);
+        bottom_border.setTint(theme);
+        inner.setBackground(bottom_border);
 
         TextView label = createFieldLabel();
         inner.addView(label);

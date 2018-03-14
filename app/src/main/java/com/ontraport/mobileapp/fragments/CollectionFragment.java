@@ -66,7 +66,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         swipe_layout.setOnRefreshListener(this);
 
         LinearLayoutManager manager = new LinearLayoutManager(activity);
-        RecyclerView recycler_view = setRecyclerView(root_view, new CollectionAdapter(object_id, params, activity), manager);
+        RecyclerView recycler_view = setRecyclerView(root_view, new CollectionAdapter(object_id, params, activity, theme), manager);
         recycler_view.addOnScrollListener(new EndlessScrollListener(manager) {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
