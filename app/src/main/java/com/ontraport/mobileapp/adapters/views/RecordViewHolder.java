@@ -21,7 +21,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         old_val = value;
     }
 
-    public void setParams(int object_id, String id) {
+    public void setParams(int object_id, int id) {
         params = new RequestParams();
         params.put("objectID", object_id);
         params.put("id", id);

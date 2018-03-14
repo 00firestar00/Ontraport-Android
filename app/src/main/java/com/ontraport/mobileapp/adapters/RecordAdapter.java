@@ -28,11 +28,13 @@ import java.util.Map;
 public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
         implements AsyncAdapter<RecordInfo> {
 
-    private List<String> keys;
-    private Map<String, String> data;
+    private List<String> keys = new ArrayList<>();
+    private List<String> aliases = new ArrayList<>();
+    private List<String> values = new ArrayList<>();
     private FragmentManager fragment_manager;
     private OntraportApplication application;
     private int object_id;
+    private int id;
 
     public RecordAdapter(int object_id, FragmentActivity activity) {
         this.fragment_manager = activity.getSupportFragmentManager();
@@ -42,8 +44,38 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
 
     @Override
     public void updateInfo(RecordInfo info) {
-        this.data = info.getData();
-        keys = new ArrayList<>(this.data.keySet());
+        Map<String, String> data = info.getData();
+        ArrayList<String> old_keys = new ArrayList<>(data.keySet());
+
+        Meta.Data meta = application.getMetaData(object_id);
+        Map<String, Meta.Field> fields = meta.getFields();
+
+        id = Integer.parseInt(data.get("id"));
+        for (String key : old_keys) {
+            String alias;
+            try {
+                alias = fields.get(key).getAlias();
+            }
+            catch (NullPointerException e) {
+                System.out.println("Missing: " + key);
+                data.remove(key);
+                continue;
+            }
+            if (alias == null || alias.isEmpty()) {
+                data.remove(key);
+                continue;
+            }
+
+            if (key.equals("fn")) {
+                String first = data.get("firstname") == null ? "" : data.get("firstname");
+                String last = data.get("lastname") == null ? "" : data.get("lastname");
+                data.put("fn", first + " " + last);
+            }
+
+            keys.add(key);
+            aliases.add(alias);
+            values.add(data.get(key) == null ? "" : data.get(key));
+        }
         notifyDataSetChanged();
     }
 
@@ -88,33 +120,15 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecordViewHolder holder, int position) {
-        if (data == null) {
+        if (values == null) {
             return;
         }
 
-        Meta.Data meta = application.getMetaData(object_id);
-        Map<String, Meta.Field> fields = meta.getFields();
         String key = keys.get(position);
-        String alias;
-        try {
-            alias = fields.get(key).getAlias();
-        }
-        catch (NullPointerException e) {
-            System.out.println("Missing: " + key);
-            return;
-        }
-        if (alias == null || alias.isEmpty()) {
-            return;
-        }
+        String alias = aliases.get(position);
+        String value = values.get(position);
 
-        String value = data.get(key) == null ? "" : data.get(key);
-        if (key.equals("fn")) {
-            String first = data.get("firstname") == null ? "" : data.get("firstname");
-            String last = data.get("lastname") == null ? "" : data.get("lastname");
-            value = first + " " + last;
-        }
-
-        holder.setParams(object_id, data.get("id"));
+        holder.setParams(object_id, id);
         holder.setText(key, value, alias);
     }
 
