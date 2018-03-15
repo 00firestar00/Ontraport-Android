@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray"
     tools:showIn="@layout/activity_main"
-    tools:context=".fragments.CollectionFragment">
+    tools:context=".collection.CollectionFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"

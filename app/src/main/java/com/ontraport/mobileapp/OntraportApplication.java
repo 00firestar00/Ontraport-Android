@@ -4,13 +4,13 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import com.ontraport.mobileapp.adapters.CollectionAdapter;
-import com.ontraport.mobileapp.adapters.RecordAdapter;
+import com.ontraport.mobileapp.main.collection.CollectionAdapter;
+import com.ontraport.mobileapp.main.record.RecordAdapter;
 import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
 import com.ontraport.mobileapp.sdk.http.OkClient;
-import com.ontraport.mobileapp.tasks.Create;
-import com.ontraport.mobileapp.tasks.GetInfo;
-import com.ontraport.mobileapp.tasks.GetOne;
+import com.ontraport.mobileapp.main.record.asynctasks.CreateAsyncTask;
+import com.ontraport.mobileapp.main.collection.asynctasks.GetInfoAsyncTask;
+import com.ontraport.mobileapp.main.record.asynctasks.GetOneAsyncTask;
 import com.ontraport.sdk.Ontraport;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
@@ -85,7 +85,7 @@ public class OntraportApplication extends Application {
             getClient().forceNetwork();
             getApi().setHttpClient(getClient());
         }
-        new GetInfo(adapter, params, force).execute(params);
+        new GetInfoAsyncTask(adapter, params, force).execute(params);
     }
 
     public void getRecord(RecordAdapter adapter, RequestParams params) {
@@ -97,7 +97,7 @@ public class OntraportApplication extends Application {
             getClient().forceNetwork();
             getApi().setHttpClient(getClient());
         }
-        new GetOne(adapter).execute(params);
+        new GetOneAsyncTask(adapter).execute(params);
     }
 
     public void createRecord(RecordAdapter adapter, RequestParams params) {
@@ -109,7 +109,7 @@ public class OntraportApplication extends Application {
             getClient().forceNetwork();
             getApi().setHttpClient(getClient());
         }
-        new Create(adapter).execute(params);
+        new CreateAsyncTask(adapter).execute(params);
     }
 
     public static boolean isNetworkAvailable() {
