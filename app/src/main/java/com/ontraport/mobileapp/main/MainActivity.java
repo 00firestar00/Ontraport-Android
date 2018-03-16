@@ -16,6 +16,7 @@ import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.collection.CollectionFragment;
 import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
+import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.ThemeUtils;
 import com.ontraport.sdk.http.Meta;
 
@@ -65,16 +66,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -101,7 +98,7 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container, fragment)
-                    .addToBackStack("collection_" + bundle.getInt("objectID"))
+                    .addToBackStack("collection_" + bundle.getInt(Constants.OBJECT_TYPE_ID))
                     .commit();
         }
 
@@ -150,7 +147,7 @@ public class MainActivity extends AppCompatActivity
     private CollectionFragment getObjectFragment(int object_id) {
         CollectionFragment fragment = new CollectionFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("objectID", object_id);
+        bundle.putInt(Constants.OBJECT_TYPE_ID, object_id);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -169,7 +166,7 @@ public class MainActivity extends AppCompatActivity
 
                 Bundle bundle = new Bundle();
                 bundle.putString("name", name);
-                bundle.putInt("objectID", id);
+                bundle.putInt(Constants.OBJECT_TYPE_ID, id);
                 bundle.putInt("icon", icon);
                 bundle.putInt("theme", theme);
                 nav_info.put(id, bundle);

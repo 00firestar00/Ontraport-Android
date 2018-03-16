@@ -5,24 +5,21 @@ import android.graphics.Color;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import com.ontraport.mobileapp.AsyncAdapter;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
-import com.ontraport.mobileapp.AsyncAdapter;
-import com.ontraport.mobileapp.utils.SelectableItemAdapter;
 import com.ontraport.mobileapp.main.collection.views.CollectionViewHolder;
-import com.ontraport.sdk.http.Meta;
+import com.ontraport.mobileapp.main.record.RecordInfo;
+import com.ontraport.mobileapp.utils.SelectableItemAdapter;
 import com.ontraport.sdk.http.RequestParams;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-
-public class CollectionAdapter extends SelectableItemAdapter
+public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
         implements AsyncAdapter<CollectionInfo> {
 
     private final FragmentManager fragment_manager;
@@ -30,49 +27,42 @@ public class CollectionAdapter extends SelectableItemAdapter
     private final OntraportApplication application;
 
     private RequestParams params;
-    private ArrayList<Map<String, String>> data;
+    private CollectionInfo collection = new CollectionInfo();
 
-    private String[] list_fields;
-    private int object_id;
-    private int max_count;
     @ColorInt
     private int theme;
 
-    public CollectionAdapter(int object_id, RequestParams params, AppCompatActivity activity, @ColorInt int theme) {
+    CollectionAdapter(RequestParams params, AppCompatActivity activity, @ColorInt int theme) {
         this.fragment_manager = activity.getSupportFragmentManager();
         this.activity = activity;
         this.application = (OntraportApplication) activity.getApplication();
         this.params = params;
-        this.object_id = object_id;
         this.theme = theme;
     }
 
-    public int getMaxCount() {
-        return max_count;
-    }
-
-    public int getMaxPages() {
-        return (int) Math.ceil(getMaxCount() * 1.0 / 50);
+    int getMaxPages() {
+        return (int) Math.ceil(collection.getCount() * 1.0 / 50);
     }
 
     public void setCountTitle(String string) {
         if (!string.toLowerCase().startsWith("count:")) {
             string = "Count: " + string;
         }
-        activity.getSupportActionBar().setSubtitle(string);
+        ActionBar ab = activity.getSupportActionBar();
+        if (ab != null) {
+            ab.setSubtitle(string);
+        }
     }
 
     @Override
-    public void updateInfo(CollectionInfo info) {
-        if (!info.isForced() && data != null && data.size() > 0) {
+    public void updateInfo(CollectionInfo collection) {
+        if (!collection.isForced() && !this.collection.isEmpty()) {
             System.out.println("Appending to adapter");
-            this.data.addAll(Arrays.asList(info.getData()));
+            this.collection.addAll(collection.getData());
         }
         else {
-            this.data = new ArrayList<>(Arrays.asList(info.getData()));
+            this.collection = collection;
         }
-        this.list_fields = sanitizeFields(info.getListFields());
-        this.max_count = info.getCount();
         notifyDataSetChanged();
     }
 
@@ -88,34 +78,17 @@ public class CollectionAdapter extends SelectableItemAdapter
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.collection_card, parent, false);
 
-        return new CollectionViewHolder(view, params, fragment_manager, list_fields.length, theme);
+        return new CollectionViewHolder(view, params, fragment_manager, collection.getListFieldCount(), theme);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CollectionViewHolder holder, int position) {
-        if (data == null) {
-            return;
-        }
 
-        Map<String, String> data = getDataAtPosition(position);
-        Meta.Data meta = application.getMetaData(object_id);
-        Map<String, Meta.Field> fields = meta.getFields();
+        RecordInfo data = getDataAtPosition(position);
 
         for (int i = 0; i < holder.getCount(); i++) {
-            Meta.Field field = fields.get(list_fields[i]);
-            if (field == null) {
-                continue;
-            }
-            String alias = field.getAlias();
-            String key = list_fields[i];
-            String value = data.get(key) == null ? "" : data.get(key);
-            if (key.equals("fn")) {
-                String first = data.get("firstname") == null ? "" : data.get("firstname");
-                String last = data.get("lastname") == null ? "" : data.get("lastname");
-                value = first + " " + last;
-            }
-            holder.setLabelText(i, alias);
-            holder.setValueText(i, value);
+            holder.setLabelText(i, data.getAlias(i));
+            holder.setValueText(i, data.getValue(i));
         }
 
         holder.setBackgroundTintList(selected_items.get(position)
@@ -127,16 +100,11 @@ public class CollectionAdapter extends SelectableItemAdapter
 
     @Override
     public int getItemCount() {
-        return data == null ? 0 : data.size();
+        return collection == null ? 0 : collection.size();
     }
 
-    public Map<String, String> getDataAtPosition(int position) {
-        return data.get(position);
+    public RecordInfo getDataAtPosition(int position) {
+        return collection.get(position);
     }
 
-    private String[] sanitizeFields(String[] list_fields) {
-        ArrayList<String> fields = new ArrayList<>(Arrays.asList(list_fields));
-        fields.remove("");
-        return fields.toArray(new String[fields.size()]);
-    }
 }

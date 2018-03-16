@@ -1,20 +1,31 @@
 package com.ontraport.mobileapp.main.collection;
 
 import com.ontraport.mobileapp.AbstractInfo;
+import com.ontraport.mobileapp.main.record.RecordInfo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class CollectionInfo extends AbstractInfo {
 
-    private Map<String, String>[] data;
+    private int object_id;
+    private List<RecordInfo> records = new ArrayList<>();
     private String[] list_fields;
-    private int count;
-    private boolean forced;
+    private int count = 0;
+    private boolean forced = false;
 
-    public CollectionInfo(Map<String, String>[] data, String[] list_fields, int count) {
-        this.data = data;
-        this.list_fields = list_fields;
+    public CollectionInfo() {
+    }
+
+    public CollectionInfo(int object_id, Map<String, String>[] data, String[] list_fields, int count) {
+        this.object_id = object_id;
+        this.list_fields = sanitizeFields(list_fields);
         this.count = count;
+        for (Map<String, String> record : data) {
+            records.add(new RecordInfo(object_id, record));
+        }
     }
 
     public CollectionInfo force(boolean force) {
@@ -26,15 +37,49 @@ public class CollectionInfo extends AbstractInfo {
         return forced;
     }
 
-    public Map<String, String>[] getData() {
-        return data;
+    public RecordInfo get(int pos) {
+        return records.get(pos);
+    }
+
+    public List<RecordInfo> getData() {
+        return records;
     }
 
     public String[] getListFields() {
         return list_fields;
     }
 
+    public int getListFieldCount() {
+        return list_fields.length;
+    }
+
     public int getCount() {
         return count;
+    }
+
+    public int getObjectId() {
+        return object_id;
+    }
+
+    public void add(RecordInfo new_record) {
+        records.add(new_record);
+    }
+
+    public void addAll(List<RecordInfo> new_records) {
+        records.addAll(new_records);
+    }
+
+    public boolean isEmpty() {
+        return records.isEmpty();
+    }
+
+    public int size() {
+        return records.size();
+    }
+
+    private String[] sanitizeFields(String[] list_fields) {
+        ArrayList<String> fields = new ArrayList<>(Arrays.asList(list_fields));
+        fields.remove("");
+        return fields.toArray(new String[fields.size()]);
     }
 }

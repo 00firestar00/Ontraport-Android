@@ -4,9 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import com.ontraport.mobileapp.main.collection.views.CollectionViewHolder;
 
-import java.util.Map;
-
-public abstract class SelectableItemAdapter extends RecyclerView.Adapter<CollectionViewHolder> {
+public abstract class SelectableItemAdapter<T> extends RecyclerView.Adapter<CollectionViewHolder> {
 
     protected SparseBooleanArray selected_items = new SparseBooleanArray();
 
@@ -27,7 +25,7 @@ public abstract class SelectableItemAdapter extends RecyclerView.Adapter<Collect
         return selected_items;
     }
 
-    public abstract Map<String, String> getDataAtPosition(int position);
+    public abstract T getDataAtPosition(int position);
 
     private void selectView(int position, boolean value) {
         if (value) {

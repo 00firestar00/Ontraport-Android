@@ -23,11 +23,11 @@ import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.MainActivity;
 import com.ontraport.mobileapp.main.record.RecordFragment;
+import com.ontraport.mobileapp.main.record.RecordInfo;
+import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.EndlessScrollListener;
 import com.ontraport.mobileapp.utils.SelectableListFragment;
 import com.ontraport.sdk.http.RequestParams;
-
-import java.util.Map;
 
 public class CollectionFragment extends SelectableListFragment<CollectionAdapter>
         implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, ActionMode.Callback {
@@ -48,15 +48,15 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            object_id = bundle.getInt("objectID", 0);
+            object_id = bundle.getInt(Constants.OBJECT_TYPE_ID, 0);
             icon = bundle.getInt("icon", R.drawable.ic_person_black_24dp);
             int color = bundle.getInt("theme", R.color.colorAccent);
             theme = getResources().getColor(color);
         }
-        params.put("objectID", object_id);
+        params.put(Constants.OBJECT_TYPE_ID, object_id);
         endless.putAll(params);
         activity = (MainActivity) getActivity();
-        activity.onCollectionFragmentSetTitle(params.getAsInt("objectID"));
+        activity.onCollectionFragmentSetTitle(params.getAsInt(Constants.OBJECT_TYPE_ID));
 
         FloatingActionButton fab = root_view.findViewById(R.id.fab);
         fab.setOnClickListener(this);
@@ -67,7 +67,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         swipe_layout.setOnRefreshListener(this);
 
         LinearLayoutManager manager = new LinearLayoutManager(activity);
-        RecyclerView recycler_view = setRecyclerView(root_view, new CollectionAdapter(object_id, params, activity, theme), manager);
+        RecyclerView recycler_view = setRecyclerView(root_view, new CollectionAdapter(params, activity, theme), manager);
         recycler_view.addOnScrollListener(new EndlessScrollListener(manager) {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
@@ -93,7 +93,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         if (bundle == null) {
             bundle = new Bundle();
         }
-        bundle.putInt("objectID", object_id);
+        bundle.putInt(Constants.OBJECT_TYPE_ID, object_id);
         fragment.setArguments(bundle);
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment)
@@ -118,7 +118,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
                 for (int i = (selected.size() - 1); i >= 0; i--) {
                     if (selected.valueAt(i)) {
-                        Map<String, String> data = getAdapter().getDataAtPosition(selected.keyAt(i));
+                        RecordInfo data = getAdapter().getDataAtPosition(selected.keyAt(i));
                         getAdapter().notifyDataSetChanged();
                     }
                 }
@@ -131,7 +131,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
                 for (int i = (selectedMessageSize - 1); i >= 0; i--) {
                     if (selected.valueAt(i)) {
-                        Map<String, String> data = getAdapter().getDataAtPosition(selected.keyAt(i));
+                        RecordInfo data = getAdapter().getDataAtPosition(selected.keyAt(i));
                         Log.e("Selected Items", "Title - " + data.get("id") + "n" + "Sub Title - " + data.get("email"));
                     }
                 }

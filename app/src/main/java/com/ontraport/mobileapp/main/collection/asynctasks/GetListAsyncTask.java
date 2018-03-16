@@ -13,25 +13,27 @@ import java.util.Arrays;
 
 public class GetListAsyncTask extends AbstractAsyncTask<CollectionAdapter, ListResponse> {
 
+    private int object_id;
     private String[] list_fields;
     private boolean force_network = false;
     private int count = 0;
 
-    public GetListAsyncTask(CollectionAdapter adapter, String[] list_fields, int count) {
-        this(adapter, list_fields, count, false);
+    public GetListAsyncTask(CollectionAdapter adapter, String[] list_fields, int count, int object_id) {
+        this(adapter, list_fields, count, object_id, false);
     }
 
-    public GetListAsyncTask(CollectionAdapter adapter, String[] list_fields, int count, boolean force_network) {
+    public GetListAsyncTask(CollectionAdapter adapter, String[] list_fields, int count, int object_id, boolean force_network) {
         super(adapter);
         this.force_network = force_network;
         this.list_fields = list_fields;
         this.count = count;
+        this.object_id = object_id;
     }
 
     @Override
     protected void onPostExecute(ListResponse list) {
         super.onPostExecute(list);
-        adapter.updateInfo(new CollectionInfo(list.getData(), list_fields, count).force(force_network));
+        adapter.updateInfo(new CollectionInfo(object_id, list.getData(), list_fields, count).force(force_network));
     }
 
     @Override

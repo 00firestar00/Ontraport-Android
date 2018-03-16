@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import com.ontraport.mobileapp.AsyncAdapter;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
-import com.ontraport.mobileapp.AsyncAdapter;
 import com.ontraport.mobileapp.main.record.views.DisabledViewHolder;
 import com.ontraport.mobileapp.main.record.views.DropDownViewHolder;
 import com.ontraport.mobileapp.main.record.views.EmailViewHolder;
@@ -21,63 +21,22 @@ import com.ontraport.mobileapp.main.record.views.TextViewHolder;
 import com.ontraport.mobileapp.main.record.views.TimestampViewHolder;
 import com.ontraport.mobileapp.main.record.views.UrlViewHolder;
 import com.ontraport.mobileapp.utils.FieldType;
-import com.ontraport.sdk.http.Meta;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
-        implements AsyncAdapter<com.ontraport.mobileapp.main.record.RecordInfo> {
+        implements AsyncAdapter<RecordInfo> {
 
-    private List<String> keys = new ArrayList<>();
-    private List<String> aliases = new ArrayList<>();
-    private List<String> values = new ArrayList<>();
     private FragmentManager fragment_manager;
     private OntraportApplication application;
-    private int object_id;
-    private int id;
+    private RecordInfo record;
 
-    public RecordAdapter(int object_id, FragmentActivity activity) {
+    RecordAdapter(FragmentActivity activity) {
         this.fragment_manager = activity.getSupportFragmentManager();
         this.application = (OntraportApplication) activity.getApplication();
-        this.object_id = object_id;
     }
 
     @Override
-    public void updateInfo(com.ontraport.mobileapp.main.record.RecordInfo info) {
-        Map<String, String> data = info.getData();
-        ArrayList<String> old_keys = new ArrayList<>(data.keySet());
-
-        Meta.Data meta = application.getMetaData(object_id);
-        Map<String, Meta.Field> fields = meta.getFields();
-
-        id = Integer.parseInt(data.get("id"));
-        for (String key : old_keys) {
-            String alias;
-            try {
-                alias = fields.get(key).getAlias();
-            }
-            catch (NullPointerException e) {
-                System.out.println("Missing: " + key);
-                data.remove(key);
-                continue;
-            }
-            if (alias == null || alias.isEmpty()) {
-                data.remove(key);
-                continue;
-            }
-
-            if (key.equals("fn")) {
-                String first = data.get("firstname") == null ? "" : data.get("firstname");
-                String last = data.get("lastname") == null ? "" : data.get("lastname");
-                data.put("fn", first + " " + last);
-            }
-
-            keys.add(key);
-            aliases.add(alias);
-            values.add(data.get(key) == null ? "" : data.get(key));
-        }
+    public void updateInfo(RecordInfo record) {
+        this.record = record;
         notifyDataSetChanged();
     }
 
@@ -122,69 +81,22 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecordViewHolder holder, int position) {
-        if (values == null) {
-            return;
-        }
+        String key = record.getKey(position);
+        String alias = record.getAlias(position);
+        String value = record.getValue(position);
 
-        String key = keys.get(position);
-        String alias = aliases.get(position);
-        String value = values.get(position);
-
-        holder.setParams(object_id, id);
+        holder.setParams(record.getObjectId(), record.getId());
         holder.setText(key, value, alias);
     }
 
-    @FieldType
     @Override
-    public int getItemViewType(int position) {
-        Meta.Data meta = application.getMetaData(object_id);
-        Map<String, Meta.Field> fields = meta.getFields();
-        String key = keys.get(position);
-        String type;
-        try {
-            type = fields.get(key).getType();
-        }
-        catch (NullPointerException e) {
-            System.out.println("Missing: " + key);
-            return FieldType.TEXT;
-        }
-
-        switch (key) {
-            case "id":
-            case "dla":
-            case "date":
-            case "spent":
-            case "dlm":
-            case "ip_addy":
-                return FieldType.DISABLED;
-        }
-
-        switch (type) {
-            case "phone":
-                return FieldType.PHONE;
-            case "timestamp":
-                return FieldType.TIMESTAMP;
-            case "url":
-                return FieldType.URL;
-            case "numeric":
-            case "price":
-                return FieldType.NUMERIC;
-            case "email":
-                return FieldType.EMAIL;
-            case "drop":
-                return FieldType.DROP;
-            case "list":
-                return FieldType.LIST;
-            case "parent":
-                return FieldType.PARENT;
-            case "text":
-            default:
-                return FieldType.TEXT;
-        }
+    public @FieldType
+    int getItemViewType(int position) {
+        return record.getType(position);
     }
 
     @Override
     public int getItemCount() {
-        return keys == null ? 0 : keys.size();
+        return record == null ? 0 : record.size();
     }
 }

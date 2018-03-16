@@ -10,14 +10,17 @@ import com.ontraport.sdk.http.SingleResponse;
 
 public class CreateAsyncTask extends AbstractAsyncTask<RecordAdapter, SingleResponse> {
 
-    public CreateAsyncTask(RecordAdapter adapter) {
+    private int object_id;
+
+    public CreateAsyncTask(RecordAdapter adapter, int object_id) {
         super(adapter);
+        this.object_id = object_id;
     }
 
     @Override
     protected void onPostExecute(SingleResponse one) {
         super.onPostExecute(one);
-        adapter.updateInfo(new RecordInfo(one.getData()));
+        adapter.updateInfo(new RecordInfo(object_id, one.getData()));
     }
 
     @Override

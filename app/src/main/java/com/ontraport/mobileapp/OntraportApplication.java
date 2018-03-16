@@ -5,12 +5,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.ontraport.mobileapp.main.collection.CollectionAdapter;
+import com.ontraport.mobileapp.main.collection.asynctasks.GetInfoAsyncTask;
 import com.ontraport.mobileapp.main.record.RecordAdapter;
+import com.ontraport.mobileapp.main.record.asynctasks.CreateAsyncTask;
+import com.ontraport.mobileapp.main.record.asynctasks.GetOneAsyncTask;
 import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
 import com.ontraport.mobileapp.sdk.http.OkClient;
-import com.ontraport.mobileapp.main.record.asynctasks.CreateAsyncTask;
-import com.ontraport.mobileapp.main.collection.asynctasks.GetInfoAsyncTask;
-import com.ontraport.mobileapp.main.record.asynctasks.GetOneAsyncTask;
+import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.sdk.Ontraport;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
@@ -97,7 +98,7 @@ public class OntraportApplication extends Application {
             getClient().forceNetwork();
             getApi().setHttpClient(getClient());
         }
-        new GetOneAsyncTask(adapter).execute(params);
+        new GetOneAsyncTask(adapter, params.getAsInt(Constants.OBJECT_TYPE_ID)).execute(params);
     }
 
     public void createRecord(RecordAdapter adapter, RequestParams params) {
@@ -109,7 +110,7 @@ public class OntraportApplication extends Application {
             getClient().forceNetwork();
             getApi().setHttpClient(getClient());
         }
-        new CreateAsyncTask(adapter).execute(params);
+        new CreateAsyncTask(adapter, params.getAsInt(Constants.OBJECT_TYPE_ID)).execute(params);
     }
 
     public static boolean isNetworkAvailable() {

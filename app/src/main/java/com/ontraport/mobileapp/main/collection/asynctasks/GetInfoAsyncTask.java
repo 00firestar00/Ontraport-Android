@@ -3,6 +3,7 @@ package com.ontraport.mobileapp.main.collection.asynctasks;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.AbstractAsyncTask;
 import com.ontraport.mobileapp.main.collection.CollectionAdapter;
+import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.ObjectInfo;
 import com.ontraport.sdk.http.RequestParams;
@@ -34,7 +35,11 @@ public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, Objec
             }
         }
         adapter.setCountTitle(Integer.toString(info.getCount()));
-        new GetListAsyncTask(adapter, info.getData().getListFields(), info.getCount(), force_network).execute(params);
+        new GetListAsyncTask(adapter,
+                info.getData().getListFields(),
+                info.getCount(),
+                params.getAsInt(Constants.OBJECT_TYPE_ID),
+                force_network).execute(params);
     }
 
     @Override
