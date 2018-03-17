@@ -1,6 +1,6 @@
 package com.ontraport.mobileapp.main.record;
 
-import com.ontraport.mobileapp.AbstractInfo;
+import com.ontraport.mobileapp.Info;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.utils.FieldType;
 import com.ontraport.sdk.exceptions.InvalidValueException;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class RecordInfo extends AbstractInfo {
+public class RecordInfo implements Info {
 
     private int id;
     private int object_id;

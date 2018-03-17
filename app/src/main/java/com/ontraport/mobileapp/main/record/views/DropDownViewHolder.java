@@ -10,6 +10,7 @@ import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.sdk.http.Meta;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DropDownViewHolder extends RecordViewHolder {
@@ -28,29 +29,41 @@ public class DropDownViewHolder extends RecordViewHolder {
         super.setText(key, value, alias);
         label.setText(alias);
         drop_down.setTag(key);
-        populateDropdown(key, value);
+        fetchData(key, value);
     }
 
-    public void populateDropdown(String field, String value) {
+    public Meta.Field getMetaForField(String field) {
         int object_id = params.getAsInt(Constants.OBJECT_TYPE_ID);
         Meta.Data object_meta = OntraportApplication.getInstance().getMetaData(object_id);
-        Meta.Field meta_field = object_meta.getFields().get(field);
+        return object_meta.getFields().get(field);
+    }
 
+    public void fetchData(String field, String field_value) {
+        Meta.Field meta_field = getMetaForField(field);
         if (meta_field.hasOptions()) {
             // Drop or list
             if (meta_field.getType().equals("drop")) {
                 Map<String, String> options = meta_field.getOptions();
-                ArrayList<String> values = new ArrayList<>(options.values());
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(),
-                        R.layout.record_spinner,
-                        R.id.spinnerText,
-                        values);
-                drop_down.setAdapter(adapter);
-                drop_down.setSelection(values.indexOf(value));
+                List<String> values = new ArrayList<>(options.values());
+                populateDropdown(values);
+                setDefaultValue(values.indexOf(field_value));
             }
         }
-        if (meta_field.hasParent()) {
-            int parent_id = Integer.parseInt(meta_field.getParent());
-        }
+    }
+
+    public ArrayAdapter<String> getAdapter() {
+        return new ArrayAdapter<>(view.getContext(),
+                R.layout.record_spinner,
+                R.id.spinnerText);
+    }
+
+    public void populateDropdown(List<String> values) {
+        ArrayAdapter<String> adapter = getAdapter();
+        adapter.addAll(values);
+        drop_down.setAdapter(adapter);
+    }
+
+    public void setDefaultValue(int pos) {
+        drop_down.setSelection(pos);
     }
 }

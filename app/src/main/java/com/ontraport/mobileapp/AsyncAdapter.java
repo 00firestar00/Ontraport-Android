@@ -1,8 +1,8 @@
 package com.ontraport.mobileapp;
 
-public interface AsyncAdapter<T extends AbstractInfo> {
+public interface AsyncAdapter<I extends Info> {
 
     void handleNullResponse();
 
-    void updateInfo(T info);
+    void updateInfo(I info);
 }

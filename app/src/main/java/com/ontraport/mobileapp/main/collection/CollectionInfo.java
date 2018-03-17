@@ -1,6 +1,6 @@
 package com.ontraport.mobileapp.main.collection;
 
-import com.ontraport.mobileapp.AbstractInfo;
+import com.ontraport.mobileapp.Info;
 import com.ontraport.mobileapp.main.record.RecordInfo;
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class CollectionInfo extends AbstractInfo {
+public class CollectionInfo implements Info {
 
     private int object_id;
     private List<RecordInfo> records = new ArrayList<>();
