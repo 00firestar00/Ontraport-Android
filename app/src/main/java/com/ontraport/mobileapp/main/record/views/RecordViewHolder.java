@@ -10,7 +10,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
 
     public final View view;
     protected String old_val;
-    protected RequestParams params;
+    protected RequestParams params = new RequestParams();
 
     public RecordViewHolder(View view) {
         super(view);
@@ -23,7 +23,6 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setParams(int object_id, int id) {
-        params = new RequestParams();
         params.put(Constants.OBJECT_TYPE_ID, object_id);
         params.put("id", id);
     }

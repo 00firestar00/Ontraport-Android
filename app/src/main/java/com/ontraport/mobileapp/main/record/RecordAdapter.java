@@ -15,6 +15,7 @@ import com.ontraport.mobileapp.main.record.views.DisabledViewHolder;
 import com.ontraport.mobileapp.main.record.views.DropDownViewHolder;
 import com.ontraport.mobileapp.main.record.views.EmailViewHolder;
 import com.ontraport.mobileapp.main.record.views.NumericViewHolder;
+import com.ontraport.mobileapp.main.record.views.ParentViewHolder;
 import com.ontraport.mobileapp.main.record.views.PhoneViewHolder;
 import com.ontraport.mobileapp.main.record.views.RecordViewHolder;
 import com.ontraport.mobileapp.main.record.views.TextViewHolder;
@@ -52,6 +53,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.record_card, parent, false);
 
+        View drop = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.record_card_drop, parent, false);
         switch (type) {
             case FieldType.DISABLED:
                 return new DisabledViewHolder(view);
@@ -66,13 +69,11 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
             case FieldType.EMAIL:
                 return new EmailViewHolder(view);
             case FieldType.DROP:
-                view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.record_card_drop, parent, false);
-                return new DropDownViewHolder(view);
+                return new DropDownViewHolder(drop);
             case FieldType.LIST:
                 return new TextViewHolder(view);
             case FieldType.PARENT:
-                return new TextViewHolder(view);
+                return new ParentViewHolder(drop);
             case FieldType.TEXT:
             default:
                 return new TextViewHolder(view);

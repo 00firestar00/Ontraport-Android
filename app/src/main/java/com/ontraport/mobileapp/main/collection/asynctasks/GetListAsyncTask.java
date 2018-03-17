@@ -8,7 +8,8 @@ import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.ListResponse;
 import com.ontraport.sdk.http.RequestParams;
 
-public class GetListAsyncTask<A extends AsyncAdapter<CollectionInfo>> extends AbstractAsyncTask<A, ListResponse> {
+public class GetListAsyncTask<A extends AsyncAdapter<CollectionInfo>>
+        extends AbstractAsyncTask<A, ListResponse> {
 
     private int object_id;
     private String[] list_fields;

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class CollectionInfo implements Info {
 
@@ -47,6 +48,14 @@ public class CollectionInfo implements Info {
 
     public List<RecordInfo> getData() {
         return records;
+    }
+
+    public List<String> getDataValues() {
+        List<String> strings = new ArrayList<>(size());
+        for (RecordInfo info : getData()) {
+            strings.add(Objects.toString(info, ""));
+        }
+        return strings;
     }
 
     public List<String> getListFields() {

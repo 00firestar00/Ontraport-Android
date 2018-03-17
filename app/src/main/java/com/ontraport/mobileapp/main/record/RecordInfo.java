@@ -1,5 +1,6 @@
 package com.ontraport.mobileapp.main.record;
 
+import android.text.TextUtils;
 import com.ontraport.mobileapp.Info;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.utils.FieldType;
@@ -173,5 +174,9 @@ public class RecordInfo implements Info {
 
     public int size() {
         return getKeys() == null ? 0 : getKeys().size();
+    }
+
+    public String toString() {
+        return TextUtils.join(", ", getValues());
     }
 }
