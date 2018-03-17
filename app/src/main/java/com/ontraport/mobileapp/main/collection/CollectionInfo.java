@@ -12,7 +12,7 @@ public class CollectionInfo extends AbstractInfo {
 
     private int object_id;
     private List<RecordInfo> records = new ArrayList<>();
-    private String[] list_fields;
+    private List<String> list_fields= new ArrayList<>();
     private int count = 0;
     private boolean forced = false;
 
@@ -24,7 +24,11 @@ public class CollectionInfo extends AbstractInfo {
         this.list_fields = sanitizeFields(list_fields);
         this.count = count;
         for (Map<String, String> record : data) {
-            records.add(new RecordInfo(object_id, record));
+
+            if (getListFields().contains("fn") && !record.containsKey("fn")) {
+                record.put("fn", "");
+            }
+            records.add(new RecordInfo(object_id, record, getListFields()));
         }
     }
 
@@ -45,12 +49,12 @@ public class CollectionInfo extends AbstractInfo {
         return records;
     }
 
-    public String[] getListFields() {
+    public List<String> getListFields() {
         return list_fields;
     }
 
     public int getListFieldCount() {
-        return list_fields.length;
+        return list_fields.size();
     }
 
     public int getCount() {
@@ -77,9 +81,9 @@ public class CollectionInfo extends AbstractInfo {
         return records.size();
     }
 
-    private String[] sanitizeFields(String[] list_fields) {
+    private List<String> sanitizeFields(String[] list_fields) {
         ArrayList<String> fields = new ArrayList<>(Arrays.asList(list_fields));
         fields.remove("");
-        return fields.toArray(new String[fields.size()]);
+        return fields;
     }
 }

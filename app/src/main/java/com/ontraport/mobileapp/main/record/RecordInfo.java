@@ -3,7 +3,11 @@ package com.ontraport.mobileapp.main.record;
 import com.ontraport.mobileapp.AbstractInfo;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.utils.FieldType;
+import com.ontraport.sdk.exceptions.InvalidValueException;
 import com.ontraport.sdk.http.Meta;
+import com.ontraport.sdk.objects.fields.BulkEmailStatus;
+import com.ontraport.sdk.objects.fields.BulkSMSStatus;
+import com.ontraport.sdk.objects.fields.CreditCardType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +23,17 @@ public class RecordInfo extends AbstractInfo {
     private List<Integer> types = new ArrayList<>();
 
     public RecordInfo(int object_id, Map<String, String> data) {
-        this.object_id = object_id;
+        this(object_id, data, new ArrayList<>(data.keySet()));
+    }
 
-        ArrayList<String> old_keys = new ArrayList<>(data.keySet());
+    public RecordInfo(int object_id, Map<String, String> data, List<String> order) {
+        this.object_id = object_id;
 
         Meta.Data meta = OntraportApplication.getInstance().getMetaData(object_id);
         Map<String, Meta.Field> fields = meta.getFields();
 
         id = Integer.parseInt(data.get("id"));
-        for (String key : old_keys) {
+        for (String key : order) {
             String alias;
             String type;
             int field_type;
@@ -91,7 +97,25 @@ public class RecordInfo extends AbstractInfo {
             if (key.equals("fn")) {
                 String first = data.get("firstname") == null ? "" : data.get("firstname");
                 String last = data.get("lastname") == null ? "" : data.get("lastname");
-                data.put("fn", first + " " + last);
+                data.put(key, first + " " + last);
+            }
+
+            try {
+                if (key.equals("bulk_mail")) {
+                    data.put(key, BulkEmailStatus.getNameFromValue(Integer.parseInt(data.get(key))));
+                }
+
+                if (key.equals("bulk_sms")) {
+                    data.put(key, BulkSMSStatus.getNameFromValue(Integer.parseInt(data.get(key))));
+                }
+
+                if (key.equals("cc_type")) {
+                    data.put(key, CreditCardType.getNameFromValue(Integer.parseInt(data.get(key))));
+                }
+            }
+            catch (InvalidValueException e) {
+                System.out.println("Received incorrect value from API: " + data.get(key) + " for " + key + ". You should report this");
+                continue;
             }
 
             keys.add(key);
