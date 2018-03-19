@@ -2,9 +2,17 @@ package com.ontraport.mobileapp.sdk.http;
 
 import android.support.annotation.NonNull;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.sdk.http.AbstractResponse;
 import com.ontraport.sdk.http.Client;
+import com.ontraport.sdk.http.ListResponse;
 import com.ontraport.sdk.http.RequestParams;
 import com.ontraport.sdk.http.SingleResponse;
 import okhttp3.Cache;
@@ -19,6 +27,8 @@ import okhttp3.Response;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -75,7 +85,9 @@ public class OkClient extends Client {
             force_network = false;
         }
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(ListResponse.class, new FailSafeJsonDeserializer())
+                .create();
         if (!method.equals("GET")) {
             RequestBody post_body = RequestBody.create(JSON, gson.toJson(params));
             request_builder.method(method, post_body);
@@ -124,10 +136,33 @@ public class OkClient extends Client {
             if (!OntraportApplication.isNetworkAvailable()) {
                 request = request.newBuilder()
                         .header("Cache-Control",
-                                "public, only-if-cached, max-stale=" + 7*60*60*24)
+                                "public, only-if-cached, max-stale=" + 7 * 60 * 60 * 24)
                         .build();
             }
             return chain.proceed(request);
+        }
+    }
+
+    private static final class FailSafeJsonDeserializer
+            implements JsonDeserializer<ListResponse> {
+
+        @Override
+        public ListResponse deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context)
+                throws JsonParseException {
+            JsonArray data_arr = element.getAsJsonObject().getAsJsonArray("data");
+            for (JsonElement elem : data_arr) {
+                if (elem.isJsonObject()) {
+                    JsonObject jobj= elem.getAsJsonObject();
+                    for (Iterator<Map.Entry<String, JsonElement>> it = jobj.entrySet().iterator(); it.hasNext(); ) {
+                        Map.Entry<String, JsonElement> entry = it.next();
+                        if (entry.getValue().isJsonObject()) {
+                            // Remove incorrect types
+                            it.remove();
+                        }
+                    }
+                }
+            }
+            return new Gson().fromJson(element, ListResponse.class);
         }
     }
 }

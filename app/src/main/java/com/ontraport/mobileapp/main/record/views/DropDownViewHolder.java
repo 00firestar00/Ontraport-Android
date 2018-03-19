@@ -51,14 +51,14 @@ public class DropDownViewHolder extends RecordViewHolder {
         }
     }
 
-    public ArrayAdapter<String> getAdapter() {
+    public ArrayAdapter<String> getNewAdapter() {
         return new ArrayAdapter<>(view.getContext(),
                 R.layout.record_spinner,
                 R.id.spinnerText);
     }
 
     public void populateDropdown(List<String> values) {
-        ArrayAdapter<String> adapter = getAdapter();
+        ArrayAdapter<String> adapter = getNewAdapter();
         adapter.addAll(values);
         drop_down.setAdapter(adapter);
     }

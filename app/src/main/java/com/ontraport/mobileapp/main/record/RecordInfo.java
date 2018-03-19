@@ -177,6 +177,6 @@ public class RecordInfo implements Info {
     }
 
     public String toString() {
-        return TextUtils.join(", ", getValues());
+        return TextUtils.join(" ", getValues());
     }
 }

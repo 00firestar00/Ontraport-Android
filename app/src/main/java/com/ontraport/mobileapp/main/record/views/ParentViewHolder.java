@@ -8,38 +8,48 @@ import com.ontraport.mobileapp.AsyncAdapter;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.collection.CollectionInfo;
 import com.ontraport.mobileapp.main.collection.asynctasks.GetListAsyncTask;
+import com.ontraport.mobileapp.main.record.RecordInfo;
+import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.sdk.http.Meta;
-
-import java.util.List;
+import com.ontraport.sdk.http.RequestParams;
 
 public class ParentViewHolder extends DropDownViewHolder {
 
+    private RequestParams parent_params = new RequestParams();
+    private ParentCollectionAdapter adapter;
+    private String first_value;
+
     public ParentViewHolder(View view) {
         super(view);
+        adapter = getNewAdapter();
+        drop_down.setAdapter(adapter);
     }
 
     @Override
     public void fetchData(String field, String field_value) {
         Meta.Field meta_field = getMetaForField(field);
+        first_value = field_value;
         if (meta_field.hasParent()) {
+            adapter.add(first_value);
+            setDefaultValue(0);
+
             int parent_id = Integer.parseInt(meta_field.getParent());
-            new GetListAsyncTask<>(getAdapter(),
-                    new String[]{},
-                    parent_id).execute(params);
+
+            parent_params.put(Constants.OBJECT_TYPE_ID, parent_id);
+            if (parent_id == 2) {
+                parent_params.put("listFields", "firstname,lastname");
+            }
+            new GetListAsyncTask<>(adapter,
+                    new String[]{"firstname", "lastname"},
+                    parent_id).execute(parent_params);
         }
     }
 
     @Override
-    public ParentCollectionAdapter getAdapter() {
+    public ParentCollectionAdapter getNewAdapter() {
         return new ParentCollectionAdapter(view.getContext(),
                 R.layout.record_spinner,
                 R.id.spinnerText);
-    }
-
-    public void populateDropdown(List<String> values) {
-        ArrayAdapter<String> adapter = getAdapter();
-        adapter.addAll(values);
-        drop_down.setAdapter(adapter);
     }
 
     public void setDefaultValue(int pos) {
@@ -59,7 +69,17 @@ public class ParentViewHolder extends DropDownViewHolder {
 
         @Override
         public void updateInfo(CollectionInfo collection) {
+            // Clear out the placeholder value
+            clear();
+            // Add the new values
             addAll(collection.getDataValues());
+            for (RecordInfo record : collection.getData()) {
+                if (record.getId() == Integer.parseInt(first_value))
+                {
+                    setDefaultValue(getPosition(record.toString()));
+                    break;
+                }
+            }
         }
     }
 }
