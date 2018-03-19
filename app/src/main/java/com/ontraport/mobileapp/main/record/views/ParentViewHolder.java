@@ -2,6 +2,7 @@ package com.ontraport.mobileapp.main.record.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import com.ontraport.mobileapp.AsyncAdapter;
@@ -35,12 +36,14 @@ public class ParentViewHolder extends DropDownViewHolder {
 
             int parent_id = Integer.parseInt(meta_field.getParent());
 
+            String[] list_fields = new String[]{"id"};
             parent_params.put(Constants.OBJECT_TYPE_ID, parent_id);
             if (parent_id == 2) {
-                parent_params.put("listFields", "firstname,lastname");
+                list_fields = new String[]{"firstname", "lastname"};
             }
+            parent_params.put("listFields", TextUtils.join(",", list_fields));
             new GetListAsyncTask<>(adapter,
-                    new String[]{"firstname", "lastname"},
+                    list_fields,
                     parent_id).execute(parent_params);
         }
     }
@@ -74,12 +77,16 @@ public class ParentViewHolder extends DropDownViewHolder {
             // Add the new values
             addAll(collection.getDataValues());
             for (RecordInfo record : collection.getData()) {
-                if (record.getId() == Integer.parseInt(first_value))
-                {
+                if (record.getId() == Integer.parseInt(first_value)) {
                     setDefaultValue(getPosition(record.toString()));
                     break;
                 }
             }
+        }
+
+        @Override
+        public void updateParentInfo(CollectionInfo collection) {
+            throw new UnsupportedOperationException();
         }
     }
 }

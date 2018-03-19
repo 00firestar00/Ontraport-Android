@@ -19,6 +19,8 @@ import com.ontraport.mobileapp.main.record.RecordInfo;
 import com.ontraport.mobileapp.utils.SelectableItemAdapter;
 import com.ontraport.sdk.http.RequestParams;
 
+import java.util.Map;
+
 public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
         implements AsyncAdapter<CollectionInfo> {
 
@@ -62,6 +64,23 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
         }
         else {
             this.collection = collection;
+        }
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateParentInfo(CollectionInfo collection) {
+        for (RecordInfo record : this.collection.getData()) {
+            for (Map.Entry<String, String> entry : record.getParentIds().entrySet()) {
+                int parent_id = Integer.parseInt(entry.getValue());
+                if (parent_id == collection.getObjectId()) {
+                    int current_val = Integer.parseInt(record.get(entry.getKey()));
+                    RecordInfo parent_record = collection.getById(current_val);
+                    if (parent_record != null) {
+                        record.setValue(entry.getKey(), parent_record.toString());
+                    }
+                }
+            }
         }
         notifyDataSetChanged();
     }

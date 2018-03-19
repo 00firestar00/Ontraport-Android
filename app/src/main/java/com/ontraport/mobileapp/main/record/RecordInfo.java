@@ -11,6 +11,7 @@ import com.ontraport.sdk.objects.fields.BulkSMSStatus;
 import com.ontraport.sdk.objects.fields.CreditCardType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class RecordInfo implements Info {
     private List<String> aliases = new ArrayList<>();
     private List<String> values = new ArrayList<>();
     private List<Integer> types = new ArrayList<>();
+    private Map<String, String> parent_object_ids = new HashMap<>();
 
     public RecordInfo(int object_id, Map<String, String> data) {
         this(object_id, data, new ArrayList<>(data.keySet()));
@@ -41,6 +43,9 @@ public class RecordInfo implements Info {
             try {
                 alias = fields.get(key).getAlias();
                 type = fields.get(key).getType();
+                if (fields.get(key).hasParent()) {
+                    parent_object_ids.put(key, fields.get(key).getParent());
+                }
             }
             catch (NullPointerException e) {
                 System.out.println("Missing: " + key);
@@ -150,6 +155,10 @@ public class RecordInfo implements Info {
         return types;
     }
 
+    public Map<String, String> getParentIds() {
+        return parent_object_ids;
+    }
+
     public String getAlias(int pos) {
         return aliases.get(pos);
     }
@@ -162,14 +171,30 @@ public class RecordInfo implements Info {
         return values.get(pos);
     }
 
-    public @FieldType
-    int getType(int pos) {
+    public void setValue(int pos, String value) {
+        values.set(pos, value);
+    }
+
+    public void setValue(String key, String value) {
+        values.set(indexOf(key), value);
+    }
+
+
+    public @FieldType int getType(int pos) {
         return types.get(pos);
     }
 
+    public String getParentId(String key) {
+        return parent_object_ids.get(key);
+    }
+
     public String get(String key) {
-        int index = getKeys().indexOf(key);
+        int index = indexOf(key);
         return getValues().get(index);
+    }
+
+    public int indexOf(String key) {
+        return getKeys().indexOf(key);
     }
 
     public int size() {

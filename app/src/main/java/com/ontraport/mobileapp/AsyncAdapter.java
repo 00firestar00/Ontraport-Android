@@ -5,4 +5,6 @@ public interface AsyncAdapter<I extends Info> {
     void handleNullResponse();
 
     void updateInfo(I info);
+
+    void updateParentInfo(I info);
 }

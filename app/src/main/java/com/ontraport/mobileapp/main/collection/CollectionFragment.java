@@ -35,7 +35,6 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     private MainActivity activity;
     private SwipeRefreshLayout swipe_layout;
     private RequestParams params = new RequestParams();
-    private RequestParams endless = new RequestParams();
     private int object_id = 0;
     @DrawableRes
     private int icon;
@@ -54,7 +53,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
             theme = getResources().getColor(color);
         }
         params.put(Constants.OBJECT_TYPE_ID, object_id);
-        endless.putAll(params);
+
         activity = (MainActivity) getActivity();
         activity.onCollectionFragmentSetTitle(params.getAsInt(Constants.OBJECT_TYPE_ID));
 
@@ -66,6 +65,8 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         swipe_layout = root_view.findViewById(R.id.swipeContainer);
         swipe_layout.setOnRefreshListener(this);
 
+        final RequestParams endless = new RequestParams();
+        endless.putAll(params);
         LinearLayoutManager manager = new LinearLayoutManager(activity);
         RecyclerView recycler_view = setRecyclerView(root_view, new CollectionAdapter(params, activity, theme), manager);
         recycler_view.addOnScrollListener(new EndlessScrollListener(manager) {

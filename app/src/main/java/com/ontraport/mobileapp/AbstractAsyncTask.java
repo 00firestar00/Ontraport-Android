@@ -17,6 +17,10 @@ public abstract class AbstractAsyncTask<A extends AsyncAdapter, R extends Abstra
         this.adapter = adapter;
     }
 
+    protected A getAdapter() {
+        return adapter;
+    }
+
     @Override
     @CallSuper
     protected void onPostExecute(R list) {

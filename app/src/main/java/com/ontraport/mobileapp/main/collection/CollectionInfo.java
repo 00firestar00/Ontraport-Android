@@ -1,5 +1,6 @@
 package com.ontraport.mobileapp.main.collection;
 
+import android.support.annotation.Nullable;
 import com.ontraport.mobileapp.Info;
 import com.ontraport.mobileapp.main.record.RecordInfo;
 
@@ -44,6 +45,16 @@ public class CollectionInfo implements Info {
 
     public RecordInfo get(int pos) {
         return records.get(pos);
+    }
+
+    @Nullable
+    public RecordInfo getById(int id) {
+        for (RecordInfo info : getData()) {
+            if (info.getId() == id) {
+                return info;
+            }
+        }
+        return null;
     }
 
     public List<RecordInfo> getData() {

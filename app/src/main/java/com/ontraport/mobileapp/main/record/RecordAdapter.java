@@ -42,6 +42,11 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
     }
 
     @Override
+    public void updateParentInfo(RecordInfo record) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void handleNullResponse() {
         Toast.makeText(application, "Could not retrieve information", Toast.LENGTH_SHORT).show();
         fragment_manager.popBackStack();
