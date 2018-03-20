@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import com.ontraport.mobileapp.Info;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.utils.FieldType;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.exceptions.InvalidValueException;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.objects.fields.BulkEmailStatus;
@@ -58,11 +59,12 @@ public class RecordInfo implements Info {
             }
 
             switch (key) {
-                case "id":
                 case "dla":
                 case "date":
-                case "spent":
                 case "dlm":
+                    data.put(key, FieldUtils.convertDate(data.get(key)));
+                case "id":
+                case "spent":
                 case "ip_addy":
                     field_type = FieldType.DISABLED;
                     break;
@@ -73,6 +75,8 @@ public class RecordInfo implements Info {
                             field_type = FieldType.PHONE;
                             break;
                         case "timestamp":
+                        case "fulldate":
+                            data.put(key, FieldUtils.convertDate(data.get(key)));
                             field_type = FieldType.TIMESTAMP;
                             break;
                         case "url":

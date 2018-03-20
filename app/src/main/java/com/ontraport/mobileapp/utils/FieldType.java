@@ -7,7 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 
 // Define the list of accepted constants and declare the NavigationMode annotation
 @Retention(RetentionPolicy.SOURCE)
-@IntDef({FieldType.TEXT,
+@IntDef({
+        FieldType.TEXT,
         FieldType.DISABLED,
         FieldType.PHONE,
         FieldType.TIMESTAMP,
@@ -16,7 +17,9 @@ import java.lang.annotation.RetentionPolicy;
         FieldType.EMAIL,
         FieldType.DROP,
         FieldType.LIST,
-        FieldType.PARENT})
+        FieldType.PARENT,
+        FieldType.DATE
+})
 
 public @interface FieldType {
     int TEXT = 0;
@@ -29,5 +32,6 @@ public @interface FieldType {
     int DROP = 7;
     int LIST = 8;
     int PARENT = 9;
+    int DATE = 10;
 }
 
