@@ -30,7 +30,8 @@ deploy:
   provider: releases
   api_key:
     secure: W0BGzKFn5JHyPthpuovuSFgcfRcpaxo9KLx9tZJe0psAdEgNZrkJoqHn5F/2xxlarWJEcq1CKoqYnd32xkfWe4mtUMEH7hR3SAekga/1ha+LAm69Z5nmFVsXdWujQcNvzxrF+7qfdxOF20FbWmyNL7d/rde2KAm2fjhCYo4qihjrzumx+qzmvMtS8o2uGKaRidXQuGKHBr9J3XsCVJDht90Vz6Ws/teCnuk2z+1n7TT/ELIQ8CnI0exV1ZHFyOE2z5zU36F5y5uc98lRcX+MAQC22N0e6fj5cstDgMq2UmFfKhtPMV380omSURn6SM2YRnnDnmI7adjvPkfOfK9te71jWZg4buq8wY8SMywnp5NCOFB2UC9XR+ZKqY3JCgBBdQDdnrThjvcsMUs2GntG41IZvbLD1Y4Fl1hbZfDWYA8EtRSuS9cNSAxGUdXTZEUDYx52+8owGe5tYpdUHJNQ5+cp7P8djnvAjoPRwvn5BlsfJnaHIHWstvBbm9cQGiHOsAPq9kWwzsgDUhsUu0JkX+VqrpUVn6KUnLqG+sviqxhOuRwlpnOCkKa5B6t7G+vZTRBONcQEG0THlIRrdY8u/ireOxNLk1vY+ONfdP89jfant8i08x7Zqz6r+YYEzuJjuf1Z7SJj5E5MJ69ZNbpeupgKGpYrP0OnGYsmvxiBEXE=
-  file: app/build/outputs/apk/debug/app-debug.apk
+  file: $TRAVIS_BUILD_DIR/app/build/outputs/apk/debug/*.apk
+  file_glob: true
   skip_cleanup: true
   on:
     repo: 00firestar00/Ontraport-Android
