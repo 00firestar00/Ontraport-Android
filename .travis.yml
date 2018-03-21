@@ -3,6 +3,7 @@ android:
   components:
     - tools
     - platform-tools
+    - tools
     - build-tools-27.0.3
     - android-27
   licenses:
@@ -25,3 +26,12 @@ cache:
 
 before_install:
 - yes | sdkmanager "platforms;android-27"
+
+
+deploy:
+  provider: releases
+  api_key: "GITHUB OAUTH TOKEN"
+  file: "FILE TO UPLOAD"
+  skip_cleanup: true
+  on:
+    tags: true
