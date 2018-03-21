@@ -31,7 +31,7 @@ before_deploy:
 - git config --global user.name "Travis CI"
 - export GIT_TAG=$TRAVIS_BRANCH-0.1.$TRAVIS_BUILD_NUMBER
 - git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
-- git push origin $GIT_TAG
+- git push -q https://$TAGPERM@github.com/00firestar00/Ontraport-Android --tags
 
 deploy:
   provider: releases
@@ -42,3 +42,4 @@ deploy:
   skip_cleanup: true
   on:
     repo: 00firestar00/Ontraport-Android
+    tags: false
