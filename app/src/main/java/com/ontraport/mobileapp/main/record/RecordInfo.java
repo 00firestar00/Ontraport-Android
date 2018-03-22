@@ -66,6 +66,8 @@ public class RecordInfo implements Info {
                 case "id":
                 case "spent":
                 case "ip_addy":
+                case "bulk_mail":
+                case "bulk_sms":
                     field_type = FieldType.DISABLED;
                     break;
                 default:

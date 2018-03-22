@@ -11,6 +11,7 @@ import com.ontraport.mobileapp.main.collection.CollectionInfo;
 import com.ontraport.mobileapp.main.collection.asynctasks.GetListAsyncTask;
 import com.ontraport.mobileapp.main.record.RecordInfo;
 import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
 
@@ -36,11 +37,9 @@ public class ParentViewHolder extends DropDownViewHolder {
 
             int parent_id = Integer.parseInt(meta_field.getParent());
 
-            String[] list_fields = new String[]{"id"};
+            String[] list_fields = FieldUtils.getParentLabelListFields(parent_id);
+
             parent_params.put(Constants.OBJECT_TYPE_ID, parent_id);
-            if (parent_id == 2) {
-                list_fields = new String[]{"firstname", "lastname"};
-            }
             parent_params.put("listFields", TextUtils.join(",", list_fields));
             new GetListAsyncTask<>(adapter,
                     list_fields,
