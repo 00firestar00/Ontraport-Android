@@ -35,8 +35,8 @@ before_deploy:
 
 deploy:
   provider: releases
-  body: "These are nightly releases and are not in any way considered stable.\nUse at your own risk"
-  name: "Nightly Release"
+  body: "These are nightly releases and are not in any way considered stable. Use at your own risk"
+  name: "Nightly Release $GIT_TAG"
   api_key:
     secure: $GITHUB_TOKEN
   file: "$TRAVIS_BUILD_DIR/app/build/outputs/apk/debug/*.apk"

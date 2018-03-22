@@ -11,11 +11,16 @@ import java.util.Date;
 public class FieldUtils {
 
     public static String convertDate(String unix) {
+        if (unix == null || unix.isEmpty()) {
+            return "";
+        }
+
         Date date = new Date(Long.parseLong(unix) * 1000);
         Context context = OntraportApplication.getInstance();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return android.icu.text.DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
+            String temp = android.icu.text.DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
+            return temp.replace(", ", " ");
         }
 
         String date_string;
