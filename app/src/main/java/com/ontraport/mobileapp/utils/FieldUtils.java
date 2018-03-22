@@ -38,7 +38,7 @@ public class FieldUtils {
             case ObjectType.STAFF:
                 return new String[]{"id", "firstname", "lastname"};
             case ObjectType.REFERRER:
-                return new String[]{"id", "contact_id//firstname", "contact_id//lastname", "contact_id//email", "program_id//name"};
+                return new String[]{"id", "contact_label"};
             case ObjectType.CAMPAIGN:
             case ObjectType.LEAD_SOURCE:
             case ObjectType.MEDIUM:
@@ -47,6 +47,15 @@ public class FieldUtils {
                 return new String[]{"id", "name"};
             default:
                 return new String[]{"id"};
+        }
+    }
+
+    public static boolean isSpecialField(String field) {
+        switch (field) {
+            case "parent_id//name":
+                return true;
+            default:
+                return false;
         }
     }
 }

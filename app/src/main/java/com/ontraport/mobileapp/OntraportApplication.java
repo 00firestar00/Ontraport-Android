@@ -20,7 +20,7 @@ public class OntraportApplication extends Application {
 
     private static OntraportApplication instance;
 
-    private Ontraport ontraportApi;
+    private Ontraport ontraport_api;
     private OkClient client;
     private Meta meta;
     private CustomObjectResponse custom_objects;
@@ -36,7 +36,7 @@ public class OntraportApplication extends Application {
     }
 
     public Ontraport getApi() {
-        return ontraportApi;
+        return ontraport_api;
     }
 
     public OkClient getClient() {
@@ -45,12 +45,12 @@ public class OntraportApplication extends Application {
 
     public Ontraport createApi(String api_id, String api_key) {
         client = new OkClient(getCacheDir());
-        ontraportApi = new Ontraport(api_id, api_key, client);
-        return ontraportApi;
+        ontraport_api = new Ontraport(api_id, api_key, client);
+        return ontraport_api;
     }
 
-    public void setApi(Ontraport ontraportApi) {
-        this.ontraportApi = ontraportApi;
+    public void setApi(Ontraport ontraport_api) {
+        this.ontraport_api = ontraport_api;
     }
 
     public void setMeta(Meta meta) {

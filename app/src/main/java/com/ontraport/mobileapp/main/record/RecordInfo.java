@@ -38,8 +38,8 @@ public class RecordInfo implements Info {
 
         id = Integer.parseInt(data.get("id"));
         for (String key : order) {
-            String alias;
-            String type;
+            String alias = null;
+            String type = "";
             int field_type;
             try {
                 alias = fields.get(key).getAlias();
@@ -47,15 +47,17 @@ public class RecordInfo implements Info {
                 if (fields.get(key).hasParent()) {
                     parent_object_ids.put(key, fields.get(key).getParent());
                 }
+                if (alias == null || alias.isEmpty()) {
+                    data.remove(key);
+                    continue;
+                }
             }
             catch (NullPointerException e) {
-                System.out.println("Missing: " + key);
-                data.remove(key);
-                continue;
-            }
-            if (alias == null || alias.isEmpty()) {
-                data.remove(key);
-                continue;
+                if (!FieldUtils.isSpecialField(key)) {
+                    System.out.println("Missing: " + key);
+                    data.remove(key);
+                    continue;
+                }
             }
 
             switch (key) {
@@ -186,7 +188,8 @@ public class RecordInfo implements Info {
     }
 
 
-    public @FieldType int getType(int pos) {
+    public @FieldType
+    int getType(int pos) {
         return types.get(pos);
     }
 
