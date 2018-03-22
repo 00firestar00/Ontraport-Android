@@ -58,5 +58,12 @@ public class FieldUtils {
                 return false;
         }
     }
+
+    public static boolean allowsEmptyValues(int parent_id) {
+        if (parent_id == ObjectType.STAFF) {
+            return false;
+        }
+        return true;
+    }
 }
 

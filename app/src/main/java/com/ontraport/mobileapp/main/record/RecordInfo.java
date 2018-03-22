@@ -102,30 +102,22 @@ public class RecordInfo implements Info {
                         case "parent":
                             field_type = FieldType.PARENT;
                             break;
+                        case "mergefield":
+                            field_type = FieldType.TEXT;
+                            if (key.equals("fn")) {
+                                String first = data.get("firstname") == null ? "" : data.get("firstname");
+                                String last = data.get("lastname") == null ? "" : data.get("lastname");
+                                data.put(key, first + " " + last);
+                            }
+                            break;
                         case "text":
                         default:
                             field_type = FieldType.TEXT;
                     }
             }
 
-            if (key.equals("fn")) {
-                String first = data.get("firstname") == null ? "" : data.get("firstname");
-                String last = data.get("lastname") == null ? "" : data.get("lastname");
-                data.put(key, first + " " + last);
-            }
-
             try {
-                if (key.equals("bulk_mail")) {
-                    data.put(key, BulkEmailStatus.getNameFromValue(Integer.parseInt(data.get(key))));
-                }
-
-                if (key.equals("bulk_sms")) {
-                    data.put(key, BulkSMSStatus.getNameFromValue(Integer.parseInt(data.get(key))));
-                }
-
-                if (key.equals("cc_type")) {
-                    data.put(key, CreditCardType.getNameFromValue(Integer.parseInt(data.get(key))));
-                }
+                data.put(key, convertIdToName(key, data.get(key)));
             }
             catch (InvalidValueException e) {
                 System.out.println("Received incorrect value from API: " + data.get(key) + " for " + key + ". You should report this");
@@ -187,7 +179,6 @@ public class RecordInfo implements Info {
         values.set(indexOf(key), value);
     }
 
-
     public @FieldType
     int getType(int pos) {
         return types.get(pos);
@@ -212,5 +203,20 @@ public class RecordInfo implements Info {
 
     public String toString() {
         return TextUtils.join(" ", getValues());
+    }
+
+    private String convertIdToName(String key, String val) throws InvalidValueException {
+        if (key.equals("bulk_mail")) {
+            return BulkEmailStatus.getNameFromValue(Integer.parseInt(val));
+        }
+
+        if (key.equals("bulk_sms")) {
+            return BulkSMSStatus.getNameFromValue(Integer.parseInt(val));
+        }
+
+        if (key.equals("cc_type")) {
+            return CreditCardType.getNameFromValue(Integer.parseInt(val));
+        }
+        return val;
     }
 }

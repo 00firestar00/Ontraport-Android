@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class DropDownViewHolder extends RecordViewHolder {
 
-    protected final TextView label;
-    protected final Spinner drop_down;
+    final Spinner drop_down;
+    private final TextView label;
 
     public DropDownViewHolder(View view) {
         super(view);
@@ -30,12 +30,6 @@ public class DropDownViewHolder extends RecordViewHolder {
         label.setText(alias);
         drop_down.setTag(key);
         fetchData(key, value);
-    }
-
-    public Meta.Field getMetaForField(String field) {
-        int object_id = params.getAsInt(Constants.OBJECT_TYPE_ID);
-        Meta.Data object_meta = OntraportApplication.getInstance().getMetaData(object_id);
-        return object_meta.getFields().get(field);
     }
 
     public void fetchData(String field, String field_value) {
@@ -57,13 +51,19 @@ public class DropDownViewHolder extends RecordViewHolder {
                 R.id.spinnerText);
     }
 
-    public void populateDropdown(List<String> values) {
+    public void setDefaultValue(int pos) {
+        drop_down.setSelection(pos);
+    }
+
+    Meta.Field getMetaForField(String field) {
+        int object_id = params.getAsInt(Constants.OBJECT_TYPE_ID);
+        Meta.Data object_meta = OntraportApplication.getInstance().getMetaData(object_id);
+        return object_meta.getFields().get(field);
+    }
+
+    private void populateDropdown(List<String> values) {
         ArrayAdapter<String> adapter = getNewAdapter();
         adapter.addAll(values);
         drop_down.setAdapter(adapter);
-    }
-
-    public void setDefaultValue(int pos) {
-        drop_down.setSelection(pos);
     }
 }
