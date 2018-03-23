@@ -72,13 +72,18 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
     public void updateParentInfo(CollectionInfo collection) {
         for (RecordInfo record : this.collection.getData()) {
             for (Map.Entry<String, String> entry : record.getParentIds().entrySet()) {
-                int parent_id = Integer.parseInt(entry.getValue());
-                if (parent_id == collection.getObjectId()) {
-                    int current_val = Integer.parseInt(record.get(entry.getKey()));
-                    RecordInfo parent_record = collection.getById(current_val);
-                    if (parent_record != null) {
-                        record.setValue(entry.getKey(), parent_record.toString());
+                try {
+                    int parent_id = Integer.parseInt(entry.getValue());
+                    if (parent_id == collection.getObjectId()) {
+                        int current_val = Integer.parseInt(record.get(entry.getKey()));
+                        RecordInfo parent_record = collection.getById(current_val);
+                        if (parent_record != null) {
+                            record.setValue(entry.getKey(), parent_record.toString());
+                        }
                     }
+                }
+                catch (NumberFormatException ignored) {
+                    // Already formatted.
                 }
             }
         }

@@ -18,7 +18,6 @@ import java.lang.annotation.RetentionPolicy;
         FieldType.DROP,
         FieldType.LIST,
         FieldType.PARENT,
-        FieldType.DATE,
         FieldType.MERGEFIELD
 })
 
@@ -33,7 +32,6 @@ public @interface FieldType {
     int DROP = 7;
     int LIST = 8;
     int PARENT = 9;
-    int DATE = 10;
-    int MERGEFIELD = 11;
+    int MERGEFIELD = 10;
 }
 

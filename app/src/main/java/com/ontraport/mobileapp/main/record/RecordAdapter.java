@@ -79,7 +79,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
                 return new TextViewHolder(view);
             case FieldType.PARENT:
                 return new ParentViewHolder(drop);
-            case FieldType.DATE:
             case FieldType.MERGEFIELD:
             case FieldType.TEXT:
             default:
