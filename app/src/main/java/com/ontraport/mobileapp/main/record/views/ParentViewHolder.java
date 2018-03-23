@@ -75,7 +75,7 @@ public class ParentViewHolder extends DropDownViewHolder {
             // Clear out the placeholder value
             clear();
             if (FieldUtils.allowsEmptyValues(parent_id)) {
-                add(" ");
+                add("");
             }
             // Add the new values
             addAll(collection.getDataValues());

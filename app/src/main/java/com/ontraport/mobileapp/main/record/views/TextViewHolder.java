@@ -7,15 +7,14 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.record.asynctasks.UpdateAsyncTask;
 
 public class TextViewHolder extends RecordViewHolder
         implements TextView.OnEditorActionListener, View.OnFocusChangeListener {
 
-    protected final TextInputEditText edit_text;
-    protected final TextInputLayout text_input;
+    final TextInputEditText edit_text;
+    private final TextInputLayout text_input;
 
     public TextViewHolder(View view) {
         super(view);
@@ -54,8 +53,9 @@ public class TextViewHolder extends RecordViewHolder
         }
     }
 
-    private void doUpdate(String field, String new_val) {
-        Toast.makeText(view.getContext(), "Updating to: " + new_val, Toast.LENGTH_LONG).show();
+    @Override
+    protected void doUpdate(String field, String new_val) {
+        super.doUpdate(field, new_val);
         old_val = new_val;
         params.put(field, new_val);
         new UpdateAsyncTask(view.getContext()).execute(params);

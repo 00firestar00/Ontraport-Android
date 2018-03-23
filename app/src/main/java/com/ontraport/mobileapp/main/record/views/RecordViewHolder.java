@@ -3,6 +3,7 @@ package com.ontraport.mobileapp.main.record.views;
 import android.support.annotation.CallSuper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.sdk.http.RequestParams;
 
@@ -27,4 +28,8 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         params.put("id", id);
     }
 
+    @CallSuper
+    protected void doUpdate(String field, String new_val) {
+        Toast.makeText(view.getContext(), "Updating to: " + new_val, Toast.LENGTH_LONG).show();
+    }
 }
