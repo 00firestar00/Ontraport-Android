@@ -40,7 +40,7 @@ public class DropDownViewHolder extends RecordViewHolder {
                 Map<String, String> options = meta_field.getOptions();
                 List<String> values = new ArrayList<>(options.values());
                 populateDropdown(values);
-                setDefaultValue(values.indexOf(field_value));
+                setDefaultValue(values.indexOf(options.get(field_value))+1);
             }
         }
     }
@@ -63,6 +63,7 @@ public class DropDownViewHolder extends RecordViewHolder {
 
     private void populateDropdown(List<String> values) {
         ArrayAdapter<String> adapter = getNewAdapter();
+        adapter.add(" ");
         adapter.addAll(values);
         drop_down.setAdapter(adapter);
     }
