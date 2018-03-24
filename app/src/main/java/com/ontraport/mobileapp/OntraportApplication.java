@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.SparseArray;
 import com.ontraport.mobileapp.main.collection.CollectionAdapter;
 import com.ontraport.mobileapp.main.collection.asynctasks.GetInfoAsyncTask;
 import com.ontraport.mobileapp.main.record.RecordAdapter;
@@ -11,6 +12,7 @@ import com.ontraport.mobileapp.main.record.asynctasks.CreateAsyncTask;
 import com.ontraport.mobileapp.main.record.asynctasks.GetOneAsyncTask;
 import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
 import com.ontraport.mobileapp.sdk.http.OkClient;
+import com.ontraport.mobileapp.sdk.objects.ObjectType;
 import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.sdk.Ontraport;
 import com.ontraport.sdk.http.Meta;
@@ -24,6 +26,7 @@ public class OntraportApplication extends Application {
     private OkClient client;
     private Meta meta;
     private CustomObjectResponse custom_objects;
+    private SparseArray<String> object_labels = new SparseArray<>();
 
     public OntraportApplication() {
         super();
@@ -67,6 +70,24 @@ public class OntraportApplication extends Application {
 
     public CustomObjectResponse getCustomObjects() {
         return custom_objects;
+    }
+
+    public String getObjectLabel(int object_id) {
+        String label = object_labels.get(object_id);
+        if (label == null) {
+            if (object_id == ObjectType.STAFF) {
+                label = "[First Name] [Last Name]";
+                object_labels.put(object_id, label);
+            }
+            for (CustomObjectResponse.Data data : getCustomObjects().getData()) {
+                if (Integer.parseInt(data.getId()) == object_id) {
+                    label = data.getLabel();
+                    object_labels.put(object_id, label);
+                    break;
+                }
+            }
+        }
+        return label;
     }
 
     public Meta.Data getMetaData(int object_id) {

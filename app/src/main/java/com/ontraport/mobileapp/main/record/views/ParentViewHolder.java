@@ -65,11 +65,12 @@ public class ParentViewHolder extends DropDownViewHolder {
         if (!new_val.equals(old_val)) {
 
             int set_val = true_values.get(new_val);
-
-            super.doUpdate(field, Integer.toString(set_val));
-            old_val = new_val;
-            params.put(field, set_val);
-            new UpdateAsyncTask(view.getContext()).execute(params);
+            if (!Integer.toString(set_val).equals(old_val)) {
+                super.doUpdate(field, Integer.toString(set_val));
+                old_val = new_val;
+                params.put(field, set_val);
+                new UpdateAsyncTask(view.getContext()).execute(params);
+            }
         }
     }
 

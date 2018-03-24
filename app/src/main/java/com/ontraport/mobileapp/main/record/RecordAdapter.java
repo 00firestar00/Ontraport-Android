@@ -1,8 +1,9 @@
 package com.ontraport.mobileapp.main.record;
 
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,18 +27,29 @@ import com.ontraport.mobileapp.utils.FieldType;
 public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
         implements AsyncAdapter<RecordInfo> {
 
-    private FragmentManager fragment_manager;
-    private OntraportApplication application;
+    private final AppCompatActivity activity;
+    private final FragmentManager fragment_manager;
+    private final OntraportApplication application;
     private RecordInfo record;
 
-    RecordAdapter(FragmentActivity activity) {
+    RecordAdapter(AppCompatActivity activity) {
+        this.activity = activity;
         this.fragment_manager = activity.getSupportFragmentManager();
         this.application = (OntraportApplication) activity.getApplication();
+    }
+
+    public void setTitle(RecordInfo record) {
+        ActionBar ab = activity.getSupportActionBar();
+        if (ab != null) {
+            ab.setTitle(record.toString());
+            ab.setSubtitle(null);
+        }
     }
 
     @Override
     public void updateInfo(RecordInfo record) {
         this.record = record;
+        setTitle(record);
         notifyDataSetChanged();
     }
 

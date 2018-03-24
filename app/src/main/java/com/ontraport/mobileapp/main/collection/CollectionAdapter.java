@@ -6,7 +6,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 import com.ontraport.mobileapp.AsyncAdapter;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
+import com.ontraport.mobileapp.main.MainActivity;
 import com.ontraport.mobileapp.main.collection.views.CollectionViewHolder;
 import com.ontraport.mobileapp.main.record.RecordInfo;
 import com.ontraport.mobileapp.utils.SelectableItemAdapter;
@@ -25,7 +25,7 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
         implements AsyncAdapter<CollectionInfo> {
 
     private final FragmentManager fragment_manager;
-    private final AppCompatActivity activity;
+    private final MainActivity activity;
     private final OntraportApplication application;
 
     private RequestParams params;
@@ -34,9 +34,9 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
     @ColorInt
     private int theme;
 
-    CollectionAdapter(RequestParams params, AppCompatActivity activity, @ColorInt int theme) {
-        this.fragment_manager = activity.getSupportFragmentManager();
+    CollectionAdapter(RequestParams params, MainActivity activity, @ColorInt int theme) {
         this.activity = activity;
+        this.fragment_manager = activity.getSupportFragmentManager();
         this.application = (OntraportApplication) activity.getApplication();
         this.params = params;
         this.theme = theme;
@@ -127,6 +127,7 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
         return collection == null ? 0 : collection.size();
     }
 
+    @Override
     public RecordInfo getDataAtPosition(int position) {
         return collection.get(position);
     }

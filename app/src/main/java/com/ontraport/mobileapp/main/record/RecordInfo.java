@@ -202,7 +202,12 @@ public class RecordInfo implements Info {
     }
 
     public String toString() {
-        return TextUtils.join(" ", getValues());
+        OntraportApplication app = OntraportApplication.getInstance();
+        String object_label = app.getObjectLabel(getObjectId());
+        if (object_label == null) {
+            return TextUtils.join(" ", getValues());
+        }
+        return FieldUtils.replaceMergeFields(object_label, getAliases(), getValues());
     }
 
     private String convertIdToName(String key, String val) throws InvalidValueException {

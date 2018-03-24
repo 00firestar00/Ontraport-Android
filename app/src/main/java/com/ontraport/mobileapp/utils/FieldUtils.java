@@ -8,6 +8,9 @@ import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.sdk.objects.ObjectType;
 
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FieldUtils {
 
@@ -64,6 +67,19 @@ public class FieldUtils {
             return false;
         }
         return true;
+    }
+
+    public static String replaceMergeFields(String input, List<String> aliases, List<String> values) {
+        Pattern pattern = Pattern.compile("\\[[^\\[\\]]+\\]");
+        Matcher matcher = pattern.matcher(input);
+        while (matcher.find()) {
+            String match = matcher.group();
+            int pos = aliases.indexOf(match.substring(1, match.length() - 1));
+            if (pos > -1) {
+                input = input.replace(match, values.get(pos));
+            }
+        }
+        return input.replace("()","").trim();
     }
 }
 
