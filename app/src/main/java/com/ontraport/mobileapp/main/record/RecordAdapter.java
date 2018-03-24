@@ -41,8 +41,10 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
     public void setTitle(RecordInfo record) {
         ActionBar ab = activity.getSupportActionBar();
         if (ab != null) {
-            ab.setTitle(record.toString());
-            ab.setSubtitle(null);
+            String label = record.toString();
+            int pos = label.lastIndexOf("(");
+            ab.setTitle(label.substring(0, pos));
+            ab.setSubtitle(label.substring(pos));
         }
     }
 
