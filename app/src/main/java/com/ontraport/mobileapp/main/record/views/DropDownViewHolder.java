@@ -75,8 +75,13 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
         drop_down.setSelection(pos);
     }
 
+    @Override
     protected void doUpdate(String field, String new_val) {
-        Map<String, String> options = getMetaForField(field).getOptions();
+        Meta.Field meta_field = getMetaForField(field);
+        if (!meta_field.hasOptions()) {
+            return;
+        }
+        Map<String, String> options = meta_field.getOptions();
         for (Map.Entry<String, String> entry : options.entrySet()) {
             if (entry.getValue().equals(new_val)) {
                 new_val = entry.getKey();

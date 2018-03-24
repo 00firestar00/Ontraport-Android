@@ -10,16 +10,21 @@ import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.collection.CollectionInfo;
 import com.ontraport.mobileapp.main.collection.asynctasks.GetListAsyncTask;
 import com.ontraport.mobileapp.main.record.RecordInfo;
+import com.ontraport.mobileapp.main.record.asynctasks.UpdateAsyncTask;
 import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ParentViewHolder extends DropDownViewHolder {
 
     private ParentCollectionAdapter adapter;
     private String first_value;
     private int parent_id;
+    private Map<String, Integer> true_values = new HashMap<>();
 
     public ParentViewHolder(View view) {
         super(view);
@@ -55,6 +60,19 @@ public class ParentViewHolder extends DropDownViewHolder {
                 R.id.spinnerText);
     }
 
+    @Override
+    protected void doUpdate(String field, String new_val) {
+        if (!new_val.equals(old_val)) {
+
+            int set_val = true_values.get(new_val);
+
+            super.doUpdate(field, Integer.toString(set_val));
+            old_val = new_val;
+            params.put(field, set_val);
+            new UpdateAsyncTask(view.getContext()).execute(params);
+        }
+    }
+
     public void setDefaultValue(int pos) {
         drop_down.setSelection(pos);
     }
@@ -80,9 +98,9 @@ public class ParentViewHolder extends DropDownViewHolder {
             // Add the new values
             addAll(collection.getDataValues());
             for (RecordInfo record : collection.getData()) {
+                true_values.put(record.toString(), record.getId());
                 if (record.getId() == Integer.parseInt(first_value)) {
                     setDefaultValue(getPosition(record.toString()));
-                    break;
                 }
             }
         }
