@@ -43,6 +43,9 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
         if (ab != null) {
             String label = record.toString();
             int pos = label.lastIndexOf("(");
+            if (pos < 0) {
+                pos = 0;
+            }
             ab.setTitle(label.substring(0, pos));
             ab.setSubtitle(label.substring(pos));
         }
