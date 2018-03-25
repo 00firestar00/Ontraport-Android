@@ -21,4 +21,8 @@
     <string name="action_done">Done</string>
     <string name="action_delete">delete</string>
     <string name="action_copy">copy</string>
+    <string name="action_field">Change Field</string>
+    <string name="action_sequence">Sequences</string>
+    <string name="action_campaign">Campaigns</string>
+    <string name="action_tag">Tags</string>
 </resources>

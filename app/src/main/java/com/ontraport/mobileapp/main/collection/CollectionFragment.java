@@ -128,7 +128,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
                 Toast.makeText(getActivity(), selected.size() + " item deleted.", Toast.LENGTH_SHORT).show();
                 mode.finish();
                 break;
-            case R.id.action_copy:
+            case R.id.action_field:
                 selected = getAdapter().getSelectedIds();
                 int selectedMessageSize = selected.size();
 
