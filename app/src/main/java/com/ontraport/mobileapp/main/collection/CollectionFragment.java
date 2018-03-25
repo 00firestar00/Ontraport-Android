@@ -1,6 +1,8 @@
 package com.ontraport.mobileapp.main.collection;
 
 import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -148,6 +150,11 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         boolean ret = super.onCreateActionMode(mode, menu);
         ActionBarContextView actionBar = activity.getWindow().getDecorView().findViewById(R.id.action_mode_bar);
         actionBar.setBackgroundColor(theme);
+        for (int i =0; i < menu.size(); i++) {
+            Drawable icon = menu.getItem(i).getIcon();
+            icon.mutate();
+            icon.setTint(Color.WHITE);
+        }
         return ret;
     }
 }
