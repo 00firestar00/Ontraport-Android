@@ -13,8 +13,9 @@ import com.ontraport.mobileapp.R;
 public abstract class SelectableListFragment<A extends SelectableItemAdapter>
         extends Fragment implements ActionMode.Callback {
 
-    protected A adapter;
-    protected ActionMode action_mode;
+    private A adapter;
+    private ActionMode action_mode;
+    private String format = "%d selected";
 
     public A getAdapter() {
         return adapter;
@@ -22,6 +23,14 @@ public abstract class SelectableListFragment<A extends SelectableItemAdapter>
 
     public ActionMode getActionMode() {
         return action_mode;
+    }
+
+    public void setSelectedTextFormat(String format) {
+        this.format = format;
+    }
+
+    public String getSelectedTextFormat(int count) {
+        return String.format(format, count);
     }
 
     @CallSuper
@@ -79,18 +88,15 @@ public abstract class SelectableListFragment<A extends SelectableItemAdapter>
 
         boolean hasCheckedItems = adapter.getSelectedCount() > 0;
 
-        if (hasCheckedItems && action_mode == null && getActivity() != null)
-        {
+        if (hasCheckedItems && action_mode == null && getActivity() != null) {
             action_mode = getActivity().startActionMode(this);
         }
-        else if (!hasCheckedItems && action_mode != null)
-        {
+        else if (!hasCheckedItems && action_mode != null) {
             action_mode.finish();
         }
 
-        if (action_mode != null)
-        {
-            action_mode.setTitle(String.valueOf(adapter.getSelectedCount()) + " selected");
+        if (action_mode != null) {
+            action_mode.setTitle(getSelectedTextFormat(adapter.getSelectedCount()));
         }
     }
 }

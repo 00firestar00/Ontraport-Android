@@ -20,6 +20,7 @@ import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,9 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
             activity.onCollectionFragmentSetTitle(label);
         }
 
+        setSelectedTextFormat("%d");
+        setHasOptionsMenu(true);
+
         FloatingActionButton fab = root_view.findViewById(R.id.fab);
         fab.setOnClickListener(this);
         fab.setBackgroundTintList(ColorStateList.valueOf(theme));
@@ -83,7 +87,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
                 int next_count = --page * 50;
-                if (page >= adapter.getMaxPages()) {
+                if (page >= getAdapter().getMaxPages()) {
                     return false;
                 }
                 System.out.println("getting more data");
@@ -95,6 +99,31 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         OntraportApplication.getInstance().getCollection(getAdapter(), params);
         return root_view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_collection, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        setIconsToColor(menu, Color.WHITE);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                return true;
+            case R.id.action_group:
+                return true;
+            case R.id.action_select_group:
+                return true;
+            case R.id.action_select_page:
+                return true;
+            case R.id.action_select_deselect:
+                return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -188,11 +217,17 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         boolean ret = super.onCreateActionMode(mode, menu);
         ActionBarContextView actionBar = activity.getWindow().getDecorView().findViewById(R.id.action_mode_bar);
         actionBar.setBackgroundColor(theme);
+        setIconsToColor(menu, Color.WHITE);
+        return ret;
+    }
+
+    private void setIconsToColor(Menu menu, @ColorInt int color) {
         for (int i = 0; i < menu.size(); i++) {
             Drawable icon = menu.getItem(i).getIcon();
-            icon.mutate();
-            icon.setTint(Color.WHITE);
+            if (icon != null) {
+                icon.mutate();
+                icon.setTint(color);
+            }
         }
-        return ret;
     }
 }

@@ -25,4 +25,9 @@
     <string name="action_sequence">Sequences</string>
     <string name="action_campaign">Campaigns</string>
     <string name="action_tag">Tags</string>
+    <string name="action_search">Search</string>
+    <string name="action_group">Change Group</string>
+    <string name="action_select_group">Select All in Group</string>
+    <string name="action_select_page">Select All on Page</string>
+    <string name="action_select_deselect">Deselect All</string>
 </resources>
