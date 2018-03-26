@@ -1,5 +1,6 @@
 package com.ontraport.mobileapp.main.collection;
 
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -9,9 +10,11 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.ActionBarContextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -20,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
@@ -38,6 +42,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     private SwipeRefreshLayout swipe_layout;
     private RequestParams params = new RequestParams();
     private int object_id = 0;
+    private String label;
     @DrawableRes
     private int icon;
     @ColorInt
@@ -57,7 +62,10 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         params.put(Constants.OBJECT_TYPE_ID, object_id);
 
         activity = (MainActivity) getActivity();
-        activity.onCollectionFragmentSetTitle(params.getAsInt(Constants.OBJECT_TYPE_ID));
+        if (activity != null) {
+            label = activity.getCollectionLabel(object_id);
+            activity.onCollectionFragmentSetTitle(label);
+        }
 
         FloatingActionButton fab = root_view.findViewById(R.id.fab);
         fab.setOnClickListener(this);
@@ -114,27 +122,57 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+    public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                SparseBooleanArray selected = getAdapter().getSelectedIds();
+                final SparseBooleanArray deletables = getAdapter().getSelectedIds();
 
-                for (int i = (selected.size() - 1); i >= 0; i--) {
-                    if (selected.valueAt(i)) {
-                        RecordInfo data = getAdapter().getDataAtPosition(selected.keyAt(i));
+                for (int i = (deletables.size() - 1); i >= 0; i--) {
+                    if (deletables.valueAt(i)) {
+                        RecordInfo data = getAdapter().getDataAtPosition(deletables.keyAt(i));
                         getAdapter().notifyDataSetChanged();
                     }
                 }
-                Toast.makeText(getActivity(), selected.size() + " item deleted.", Toast.LENGTH_SHORT).show();
-                mode.finish();
+
+                final int num_deleted = deletables.size();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("DELETE");
+                builder.setMessage("Are you sure you want to delete these " + num_deleted + " " + label + "?\nPlease type DELETE to confirm.");
+
+                final EditText input = new EditText(activity);
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                builder.setView(input);
+
+                builder.setNegativeButton("CANCEL",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                mode.finish();
+                                dialog.cancel();
+                            }
+                        });
+                builder.setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (input.getText().toString().equals("DELETE")) {
+                                    Toast.makeText(getActivity(), num_deleted + " item deleted.", Toast.LENGTH_SHORT).show();
+                                    mode.finish();
+                                }
+                                else {
+                                    Toast.makeText(getActivity(), "You did not type DELETE", Toast.LENGTH_SHORT).show();
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                builder.show();
                 break;
             case R.id.action_field:
-                selected = getAdapter().getSelectedIds();
-                int selectedMessageSize = selected.size();
+                final SparseBooleanArray editables = getAdapter().getSelectedIds();
+                int selectedMessageSize = editables.size();
 
                 for (int i = (selectedMessageSize - 1); i >= 0; i--) {
-                    if (selected.valueAt(i)) {
-                        RecordInfo data = getAdapter().getDataAtPosition(selected.keyAt(i));
+                    if (editables.valueAt(i)) {
+                        RecordInfo data = getAdapter().getDataAtPosition(editables.keyAt(i));
                         Log.e("Selected Items", "Title - " + data.get("id") + "n" + "Sub Title - " + data.get("email"));
                     }
                 }
@@ -150,7 +188,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         boolean ret = super.onCreateActionMode(mode, menu);
         ActionBarContextView actionBar = activity.getWindow().getDecorView().findViewById(R.id.action_mode_bar);
         actionBar.setBackgroundColor(theme);
-        for (int i =0; i < menu.size(); i++) {
+        for (int i = 0; i < menu.size(); i++) {
             Drawable icon = menu.getItem(i).getIcon();
             icon.mutate();
             icon.setTint(Color.WHITE);

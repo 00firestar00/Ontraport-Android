@@ -132,4 +132,9 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
         return collection.get(position);
     }
 
+    public void removeAt(int position) {
+        collection.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, collection.size());
+    }
 }

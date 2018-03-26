@@ -57,6 +57,10 @@ public class CollectionInfo implements Info {
         return null;
     }
 
+    public void remove(int pos) {
+        records.remove(pos);
+    }
+
     public List<RecordInfo> getData() {
         return records;
     }

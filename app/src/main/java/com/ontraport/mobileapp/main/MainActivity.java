@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity
         nav_view.setCheckedItem(R.id.nav_contacts);
     }
 
-    public void onCollectionFragmentSetTitle(int object_id) {
+    public String getCollectionLabel(int object_id) {
         OntraportApplication app = (OntraportApplication) getApplication();
         Meta.Data meta_data = app.getMetaData(object_id);
         String name = meta_data.getName();
@@ -136,6 +136,14 @@ public class MainActivity extends AppCompatActivity
         if (!name.endsWith("s")) {
             name += "s";
         }
+        return name;
+    }
+
+    public void onCollectionFragmentSetTitle(int object_id) {
+        onCollectionFragmentSetTitle(getCollectionLabel(object_id));
+    }
+
+    public void onCollectionFragmentSetTitle(String name) {
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setTitle(name);
