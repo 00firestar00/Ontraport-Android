@@ -93,7 +93,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
             case FieldType.DROP:
                 return new DropDownViewHolder(drop);
             case FieldType.LIST:
-                return new TextViewHolder(view);
+                return new DisabledViewHolder(view);
             case FieldType.PARENT:
                 return new ParentViewHolder(drop);
             case FieldType.MERGEFIELD:

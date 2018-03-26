@@ -96,6 +96,7 @@ public class RecordInfo implements Info {
                         case "drop":
                             field_type = FieldType.DROP;
                             break;
+                        case "subscription":
                         case "list":
                             field_type = FieldType.LIST;
                             break;
