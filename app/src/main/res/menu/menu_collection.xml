@@ -6,27 +6,23 @@
         android:id="@+id/action_search"
         android:title="@string/action_search"
         android:icon="@drawable/ic_search_black_24dp"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
     <item
         android:id="@+id/action_group"
         android:title="@string/action_group"
         android:icon="@drawable/ic_group_black_24dp"
-        android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_select_group"
         android:title="@string/action_select_group"
-        android:orderInCategory="100"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_select_page"
         android:title="@string/action_select_page"
-        android:orderInCategory="100"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_select_deselect"
         android:title="@string/action_select_deselect"
-        android:orderInCategory="100"
         app:showAsAction="never" />
 </menu>
