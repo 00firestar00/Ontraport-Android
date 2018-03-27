@@ -2,7 +2,6 @@ package com.ontraport.mobileapp.main.collection;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -12,12 +11,11 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.ActionBarContextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -27,7 +25,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
@@ -136,8 +133,6 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
-                return true;
             case R.id.action_group:
                 return true;
             case R.id.action_select_group:
@@ -180,45 +175,41 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         switch (item.getItemId()) {
             case R.id.action_delete:
                 final SparseBooleanArray deletables = getAdapter().getSelectedIds();
-
-                for (int i = (deletables.size() - 1); i >= 0; i--) {
-                    if (deletables.valueAt(i)) {
-                        RecordInfo data = getAdapter().getDataAtPosition(deletables.keyAt(i));
-                        getAdapter().notifyDataSetChanged();
-                    }
-                }
-
                 final int num_deleted = deletables.size();
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("DELETE");
-                builder.setMessage("Are you sure you want to delete these " + num_deleted + " " + label + "?\nPlease type DELETE to confirm.");
+                new DeleteDialog(activity, num_deleted, label) {
+                    @Override
+                    void onCancel() {
+                        mode.finish();
+                    }
 
-                final EditText input = new EditText(activity);
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-                builder.setView(input);
+                    @Override
+                    void onIncorrectInput() {
+                        Toast.makeText(getActivity(), "You did not type DELETE", Toast.LENGTH_SHORT).show();
+                    }
 
-                builder.setNegativeButton("CANCEL",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                mode.finish();
-                                dialog.cancel();
+                    @Override
+                    void onSuccess() {
+                        RequestParams delete_params = new RequestParams();
+                        delete_params.put(Constants.OBJECT_TYPE_ID, object_id);
+                        String[] ids = new String[num_deleted];
+
+                        for (int i = (deletables.size() - 1); i >= 0; i--) {
+                            if (deletables.valueAt(i)) {
+                                RecordInfo data = getAdapter().getDataAtPosition(deletables.keyAt(i));
+                                ids[i] = Integer.toString(data.getId());
+                                getAdapter().removeAt(deletables.keyAt(i));
                             }
-                        });
-                builder.setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (input.getText().toString().equals("DELETE")) {
-                                    Toast.makeText(getActivity(), num_deleted + " item deleted.", Toast.LENGTH_SHORT).show();
-                                    mode.finish();
-                                }
-                                else {
-                                    Toast.makeText(getActivity(), "You did not type DELETE", Toast.LENGTH_SHORT).show();
-                                }
-                                dialog.dismiss();
-                            }
-                        });
-                builder.show();
+                        }
+                        delete_params.put("ids", TextUtils.join(",", ids));
+
+                        //new DeleteAsyncTask(getAdapter(), delete_params).execute(delete_params);
+
+                        Toast.makeText(getActivity(), num_deleted + " item deleted.", Toast.LENGTH_SHORT).show();
+                        mode.finish();
+                    }
+
+                }.show();
                 break;
             case R.id.action_field:
                 final SparseBooleanArray editables = getAdapter().getSelectedIds();
