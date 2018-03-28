@@ -29,6 +29,11 @@ public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, Objec
     @Override
     protected void onPostExecute(ObjectInfo info) {
         super.onPostExecute(info);
+        if (info == null)
+        {
+            System.out.println("Couldn't retrieve info...");
+            return;
+        }
         ObjectInfo.FieldSettings[] settings = info.getData().getListFieldSettings();
         for (ObjectInfo.FieldSettings field : settings) {
             String sort = field.getSortDir();

@@ -42,6 +42,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     private MainActivity activity;
     private SwipeRefreshLayout swipe_layout;
     private RequestParams params = new RequestParams();
+    private RequestParams current_params = new RequestParams();
     private int object_id = 0;
     private String label;
     @DrawableRes
@@ -79,20 +80,20 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         swipe_layout = root_view.findViewById(R.id.swipeContainer);
         swipe_layout.setOnRefreshListener(this);
 
-        final RequestParams endless = new RequestParams();
-        endless.putAll(params);
+        current_params.putAll(params);
         LinearLayoutManager manager = new LinearLayoutManager(activity);
         RecyclerView recycler_view = setRecyclerView(root_view, new CollectionAdapter(params, activity, theme), manager);
         recycler_view.addOnScrollListener(new EndlessScrollListener(manager) {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
-                int next_count = --page * 50;
                 if (page >= getAdapter().getMaxPages()) {
                     return false;
                 }
                 System.out.println("getting more data");
-                endless.put("start", next_count);
-                OntraportApplication.getInstance().getCollection(getAdapter(), endless);
+
+                int next_count = --page * 50;
+                current_params.put("start", next_count);
+                OntraportApplication.getInstance().getCollection(getAdapter(), current_params);
                 return true;
             }
         });
@@ -113,11 +114,16 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         if (manager == null) {
             return;
         }
-        final SearchView search = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        MenuItem search_item = menu.findItem(R.id.action_search);
+        final SearchView search = (SearchView) search_item.getActionView();
         search.setSearchableInfo(manager.getSearchableInfo(getActivity().getComponentName()));
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                current_params.put("search", query);
+
+                OntraportApplication.getInstance().getCollection(getAdapter(), current_params, true);
+
                 Toast.makeText(getActivity(), "Searching for: " + query, Toast.LENGTH_SHORT).show();
                 search.clearFocus();
                 return true;
@@ -126,6 +132,20 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
             @Override
             public boolean onQueryTextChange(String query) {
                 return false;
+            }
+        });
+        search_item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // true here because we do want it to expand, but we aren't taking action
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                Toast.makeText(getActivity(), "close", Toast.LENGTH_SHORT).show();
+                current_params.remove("search");
+                return true;
             }
         });
     }
