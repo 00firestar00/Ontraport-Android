@@ -1,7 +1,5 @@
 package com.ontraport.mobileapp.main.collection;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -14,7 +12,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.ActionBarContextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -29,6 +26,7 @@ import android.widget.Toast;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.MainActivity;
+import com.ontraport.mobileapp.main.collection.views.ObjectSearchView;
 import com.ontraport.mobileapp.main.record.RecordFragment;
 import com.ontraport.mobileapp.main.record.RecordInfo;
 import com.ontraport.mobileapp.utils.Constants;
@@ -107,47 +105,11 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_collection, menu);
         setIconsToColor(menu, Color.WHITE);
-        if (getActivity() == null) {
-            return;
-        }
-        SearchManager manager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        if (manager == null) {
-            return;
-        }
+
         MenuItem search_item = menu.findItem(R.id.action_search);
-        final SearchView search = (SearchView) search_item.getActionView();
-        search.setSearchableInfo(manager.getSearchableInfo(getActivity().getComponentName()));
-        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                current_params.put("search", query);
-
-                OntraportApplication.getInstance().getCollection(getAdapter(), current_params, true);
-
-                Toast.makeText(getActivity(), "Searching for: " + query, Toast.LENGTH_SHORT).show();
-                search.clearFocus();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                return false;
-            }
-        });
-        search_item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                // true here because we do want it to expand, but we aren't taking action
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                Toast.makeText(getActivity(), "close", Toast.LENGTH_SHORT).show();
-                current_params.remove("search");
-                return true;
-            }
-        });
+        final ObjectSearchView view = (ObjectSearchView) search_item.getActionView();
+        view.init(getActivity(), current_params, getAdapter());
+        search_item.setOnActionExpandListener(view);
     }
 
     @Override

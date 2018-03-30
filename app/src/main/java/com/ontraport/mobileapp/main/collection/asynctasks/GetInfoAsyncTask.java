@@ -29,8 +29,7 @@ public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, Objec
     @Override
     protected void onPostExecute(ObjectInfo info) {
         super.onPostExecute(info);
-        if (info == null)
-        {
+        if (info == null) {
             System.out.println("Couldn't retrieve info...");
             return;
         }
