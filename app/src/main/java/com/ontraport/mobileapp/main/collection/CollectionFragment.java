@@ -163,7 +163,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         switch (item.getItemId()) {
             case R.id.action_tag:
-                new AddRemoveDialog(activity, label) {
+                new AddRemoveDialog(activity, R.string.action_tag) {
                     @Override
                     void onCancel() {
                         mode.finish();
@@ -177,7 +177,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
                 }.show();
                 break;
             case R.id.action_campaign:
-                new AddRemoveDialog(activity, label) {
+                new AddRemoveDialog(activity, R.string.action_campaign) {
                     @Override
                     void onCancel() {
                         mode.finish();
@@ -191,7 +191,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
                 }.show();
                 break;
             case R.id.action_sequence:
-                new AddRemoveDialog(activity, label) {
+                new AddRemoveDialog(activity, R.string.action_sequence) {
                     @Override
                     void onCancel() {
                         mode.finish();

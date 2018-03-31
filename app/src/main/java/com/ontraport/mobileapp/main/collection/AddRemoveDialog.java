@@ -3,6 +3,7 @@ package com.ontraport.mobileapp.main.collection;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,10 @@ public abstract class AddRemoveDialog extends AlertDialog {
 
     private final RadioGroup radios;
 
-    public AddRemoveDialog(@NonNull Context context, String label) {
+    public AddRemoveDialog(@NonNull Context context, @StringRes int res) {
         super(context);
-        setTitle(label);
-        setMessage(label);
+        setTitle(res);
+        setMessage(res);
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_add_remove, null);
@@ -26,8 +27,8 @@ public abstract class AddRemoveDialog extends AlertDialog {
         setPositiveButton();
     }
 
-    private void setMessage(String label) {
-        super.setMessage("Add or Remove" + label);
+    private void setMessage(@StringRes int res) {
+        super.setMessage("Add or Remove" + getContext().getString(res));
     }
 
     private void setNegativeButton() {
