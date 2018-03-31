@@ -70,5 +70,24 @@ public class CustomObjectResponse extends AbstractResponse {
         public String getLabel() {
             return object_label;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof Data) {
+                Data d = (Data) o;
+                return getId().equals(d.getId());
+            }
+            if (o instanceof String) {
+                String s = (String) o;
+                return getId().equals(s);
+            }
+            if (o instanceof Integer) {
+                String s = Integer.toString((Integer) o);
+                return getId().equals(s);
+            }
+            return false;
+        }
+
+
     }
 }

@@ -90,6 +90,19 @@ public class OntraportApplication extends Application {
         return label;
     }
 
+    @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+    public String getCollectionLabel(int object_id, int count) {
+        for (CustomObjectResponse.Data data : getCustomObjects().getData()) {
+            if (data.equals(object_id)) {
+                if (count == 1) {
+                    return data.getSingular();
+                }
+                return data.getPlural();
+            }
+        }
+        return "";
+    }
+
     public Meta.Data getMetaData(int object_id) {
         return meta.getData().get(Integer.toString(object_id));
     }

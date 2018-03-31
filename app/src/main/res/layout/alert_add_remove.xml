@@ -14,13 +14,13 @@
             android:text="@string/action_add"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_margin="@dimen/card_margin"
+            android:layout_margin="@dimen/alert_margin"
             android:id="@+id/radio_add" />
 
         <RadioButton
             android:text="@string/action_remove"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/card_margin"
+            android:layout_margin="@dimen/alert_margin"
             android:layout_width="wrap_content"
             android:id="@+id/radio_remove" />
 

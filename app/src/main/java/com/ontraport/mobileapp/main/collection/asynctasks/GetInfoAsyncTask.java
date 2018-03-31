@@ -52,7 +52,6 @@ public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, Objec
         }
         params.put("listFields", list);
 
-        adapter.setCountTitle(Integer.toString(info.getCount()));
         new GetListAsyncTask<>(adapter,
                 list_fields,
                 info.getCount(),

@@ -2,6 +2,7 @@ package com.ontraport.mobileapp.main.collection;
 
 import android.support.annotation.Nullable;
 import com.ontraport.mobileapp.Info;
+import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.main.record.RecordInfo;
 
 import java.util.ArrayList;
@@ -14,17 +15,19 @@ public class CollectionInfo implements Info {
 
     private int object_id;
     private List<RecordInfo> records = new ArrayList<>();
-    private List<String> list_fields= new ArrayList<>();
+    private List<String> list_fields = new ArrayList<>();
     private int count = 0;
     private boolean forced = false;
+    private String label = "";
 
-    public CollectionInfo() {
+    CollectionInfo() {
     }
 
     public CollectionInfo(int object_id, Map<String, String>[] data, String[] list_fields, int count) {
         this.object_id = object_id;
         this.list_fields = sanitizeFields(list_fields);
         this.count = count;
+        this.label = getCollectionLabel();
         for (Map<String, String> record : data) {
 
             if (getListFields().contains("fn") && !record.containsKey("fn")) {
@@ -41,6 +44,10 @@ public class CollectionInfo implements Info {
 
     public boolean isForced() {
         return forced;
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public RecordInfo get(int pos) {
@@ -109,5 +116,9 @@ public class CollectionInfo implements Info {
         ArrayList<String> fields = new ArrayList<>(Arrays.asList(list_fields));
         fields.remove("");
         return fields;
+    }
+
+    private String getCollectionLabel() {
+        return OntraportApplication.getInstance().getCollectionLabel(object_id, count);
     }
 }

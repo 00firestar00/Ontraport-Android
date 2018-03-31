@@ -46,13 +46,11 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
         return (int) Math.ceil(collection.getCount() * 1.0 / 50);
     }
 
-    public void setCountTitle(String string) {
-        if (!string.toLowerCase().startsWith("count:")) {
-            string = "Count: " + string;
-        }
+    public void setTitle(String string) {
         ActionBar ab = activity.getSupportActionBar();
         if (ab != null) {
-            ab.setSubtitle(string);
+            ab.setTitle(string);
+            ab.setSubtitle("Group: All");
         }
     }
 
@@ -65,6 +63,7 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
         else {
             this.collection = collection;
         }
+        setTitle(this.collection.getCount() + " " + collection.getLabel());
         notifyDataSetChanged();
     }
 

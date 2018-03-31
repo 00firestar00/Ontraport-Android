@@ -9,5 +9,5 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:inputType="textCapCharacters"
-        android:layout_margin="@dimen/card_margin"/>
+        android:layout_margin="@dimen/alert_margin"/>
 </android.support.constraint.ConstraintLayout>

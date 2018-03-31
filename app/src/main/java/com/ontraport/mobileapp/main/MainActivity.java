@@ -6,7 +6,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +18,6 @@ import com.ontraport.mobileapp.main.collection.CollectionFragment;
 import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
 import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.ThemeUtils;
-import com.ontraport.sdk.http.Meta;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -106,30 +104,6 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         nav_view.setCheckedItem(R.id.nav_contacts);
-    }
-
-    public String getCollectionLabel(int object_id) {
-        OntraportApplication app = (OntraportApplication) getApplication();
-        Meta.Data meta_data = app.getMetaData(object_id);
-        String name = meta_data.getName();
-        if (name.startsWith("o") && object_id >= 10000) {
-            name = name.substring(1);
-        }
-        if (!name.endsWith("s")) {
-            name += "s";
-        }
-        return name;
-    }
-
-    public void onCollectionFragmentSetTitle(int object_id) {
-        onCollectionFragmentSetTitle(getCollectionLabel(object_id));
-    }
-
-    public void onCollectionFragmentSetTitle(String name) {
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setTitle(name);
-        }
     }
 
     /**

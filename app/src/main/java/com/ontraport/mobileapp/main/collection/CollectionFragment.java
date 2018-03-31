@@ -9,6 +9,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.ActionBarContextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -62,8 +63,11 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         activity = (MainActivity) getActivity();
         if (activity != null) {
-            label = activity.getCollectionLabel(object_id);
-            activity.onCollectionFragmentSetTitle(label);
+            label = OntraportApplication.getInstance().getCollectionLabel(object_id, 0);
+            ActionBar ab = activity.getSupportActionBar();
+            if (ab != null) {
+                ab.setTitle(label);
+            }
         }
 
         setSelectedTextFormat("%d");
