@@ -10,13 +10,13 @@ import com.ontraport.mobileapp.main.collection.asynctasks.GetInfoAsyncTask;
 import com.ontraport.mobileapp.main.record.RecordAdapter;
 import com.ontraport.mobileapp.main.record.asynctasks.CreateAsyncTask;
 import com.ontraport.mobileapp.main.record.asynctasks.GetOneAsyncTask;
-import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
 import com.ontraport.mobileapp.sdk.http.OkClient;
-import com.ontraport.mobileapp.sdk.objects.ObjectType;
 import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.sdk.Ontraport;
+import com.ontraport.sdk.http.CustomObjectResponse;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
+import com.ontraport.sdk.objects.ObjectType;
 
 public class OntraportApplication extends Application {
 
@@ -75,7 +75,7 @@ public class OntraportApplication extends Application {
     public String getObjectLabel(int object_id) {
         String label = object_labels.get(object_id);
         if (label == null) {
-            if (object_id == ObjectType.STAFF) {
+            if (ObjectType.valueOf(object_id) == ObjectType.STAFF) {
                 label = "[First Name] [Last Name]";
                 object_labels.put(object_id, label);
             }

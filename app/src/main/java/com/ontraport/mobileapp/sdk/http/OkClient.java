@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.ontraport.mobileapp.OntraportApplication;
+import com.ontraport.sdk.exceptions.NullResponseException;
 import com.ontraport.sdk.http.AbstractResponse;
 import com.ontraport.sdk.http.Client;
 import com.ontraport.sdk.http.ListResponse;

@@ -15,6 +15,7 @@ import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
+import com.ontraport.sdk.objects.ObjectType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class ParentViewHolder extends DropDownViewHolder {
 
             parent_id = Integer.parseInt(meta_field.getParent());
 
-            String[] list_fields = FieldUtils.getParentLabelListFields(parent_id);
+            String[] list_fields = FieldUtils.getParentLabelListFields(ObjectType.valueOf(parent_id));
 
             RequestParams parent_params = new RequestParams();
             parent_params.put(Constants.OBJECT_TYPE_ID, parent_id);
@@ -93,7 +94,7 @@ public class ParentViewHolder extends DropDownViewHolder {
         public void updateInfo(CollectionInfo collection) {
             // Clear out the placeholder value
             clear();
-            if (FieldUtils.allowsEmptyValues(parent_id)) {
+            if (FieldUtils.allowsEmptyValues(ObjectType.valueOf(parent_id))) {
                 add("");
             }
             // Add the new values

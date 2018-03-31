@@ -5,7 +5,7 @@ import android.content.Context;
 import android.icu.text.DateFormat;
 import android.os.Build;
 import com.ontraport.mobileapp.OntraportApplication;
-import com.ontraport.mobileapp.sdk.objects.ObjectType;
+import com.ontraport.sdk.objects.ObjectType;
 
 import java.util.Date;
 import java.util.List;
@@ -36,17 +36,17 @@ public class FieldUtils {
         return date_string;
     }
 
-    public static String[] getParentLabelListFields(int parent_id) {
-        switch (parent_id) {
-            case ObjectType.STAFF:
+    public static String[] getParentLabelListFields(ObjectType type) {
+        switch (type) {
+            case STAFF:
                 return new String[]{"id", "firstname", "lastname"};
-            case ObjectType.REFERRER:
+            case PARTNER:
                 return new String[]{"id", "contact_label"};
-            case ObjectType.CAMPAIGN:
-            case ObjectType.LEAD_SOURCE:
-            case ObjectType.MEDIUM:
-            case ObjectType.CONTENT:
-            case ObjectType.TERM:
+            case TRACKING_CAMPAIGN:
+            case TRACKING_LEAD_SOURCE:
+            case TRACKING_MEDIUM:
+            case TRACKING_CONTENT:
+            case TRACKING_TERM:
                 return new String[]{"id", "name"};
             default:
                 return new String[]{"id"};
@@ -62,8 +62,8 @@ public class FieldUtils {
         }
     }
 
-    public static boolean allowsEmptyValues(int parent_id) {
-        if (parent_id == ObjectType.STAFF) {
+    public static boolean allowsEmptyValues(ObjectType type) {
+        if (type == ObjectType.STAFF) {
             return false;
         }
         return true;

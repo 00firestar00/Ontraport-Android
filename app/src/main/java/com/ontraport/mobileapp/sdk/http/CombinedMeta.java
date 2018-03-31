@@ -1,6 +1,7 @@
 package com.ontraport.mobileapp.sdk.http;
 
 import android.support.annotation.Nullable;
+import com.ontraport.sdk.http.CustomObjectResponse;
 import com.ontraport.sdk.http.Meta;
 
 public class CombinedMeta {

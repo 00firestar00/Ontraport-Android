@@ -15,9 +15,9 @@ import android.view.MenuItem;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.collection.CollectionFragment;
-import com.ontraport.mobileapp.sdk.http.CustomObjectResponse;
 import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.ThemeUtils;
+import com.ontraport.sdk.http.CustomObjectResponse;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,

@@ -11,6 +11,7 @@ import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.ListResponse;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
+import com.ontraport.sdk.objects.ObjectType;
 
 public class GetListAsyncTask<A extends AsyncAdapter<CollectionInfo>>
         extends AbstractAsyncTask<A, ListResponse> {
@@ -47,7 +48,7 @@ public class GetListAsyncTask<A extends AsyncAdapter<CollectionInfo>>
                 int parent_id = Integer.parseInt(meta_field.getParent());
                 RequestParams parent_params = new RequestParams();
 
-                String[] list_fields = FieldUtils.getParentLabelListFields(parent_id);
+                String[] list_fields = FieldUtils.getParentLabelListFields(ObjectType.valueOf(parent_id));
 
                 parent_params.put(Constants.OBJECT_TYPE_ID, parent_id);
                 parent_params.put("listFields", TextUtils.join(",", list_fields));
