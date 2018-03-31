@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.text.InputType;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
+import com.ontraport.mobileapp.R;
 
 public abstract class DeleteDialog extends AlertDialog {
 
@@ -16,9 +18,12 @@ public abstract class DeleteDialog extends AlertDialog {
         super(context);
         setTitle(title);
         setMessage(num_deleted, label);
-        input = new EditText(context);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-        setView(input);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_delete, null);
+        input = dialogView.findViewById(R.id.edit_text);
+        setView(dialogView);
+
         setNegativeButton();
         setPositiveButton();
     }

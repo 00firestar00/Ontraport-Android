@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/edit_text"
+        android:hint="@string/confirm"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="textCapCharacters"
+        android:layout_margin="@dimen/card_margin"/>
+</android.support.constraint.ConstraintLayout>

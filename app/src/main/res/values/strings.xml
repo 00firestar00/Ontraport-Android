@@ -19,8 +19,8 @@
     <string name="app_key">Api-Key</string>
     <string name="action_sign_in">Sign In</string>
     <string name="action_done">Done</string>
-    <string name="action_delete">delete</string>
-    <string name="action_copy">copy</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_copy">Copy</string>
     <string name="action_field">Change Field</string>
     <string name="action_sequence">Sequences</string>
     <string name="action_campaign">Campaigns</string>
@@ -30,4 +30,7 @@
     <string name="action_select_group">Select All in Group</string>
     <string name="action_select_page">Select All on Page</string>
     <string name="action_select_deselect">Deselect All</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_add">Add</string>
+    <string name="confirm">Confirm</string>
 </resources>

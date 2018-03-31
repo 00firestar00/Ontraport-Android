@@ -13,7 +13,6 @@ import android.support.v7.widget.ActionBarContextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -154,12 +153,58 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
     @Override
     public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_delete:
-                final SparseBooleanArray deletables = getAdapter().getSelectedIds();
-                final int num_deleted = deletables.size();
 
-                new DeleteDialog(activity, num_deleted, label) {
+        final SparseBooleanArray selectables = getAdapter().getSelectedIds();
+        final int num_selected = selectables.size();
+
+        switch (item.getItemId()) {
+            case R.id.action_tag:
+                new AddRemoveDialog(activity, label) {
+                    @Override
+                    void onCancel() {
+                        mode.finish();
+                    }
+
+                    @Override
+                    void onSuccess() {
+                        mode.finish();
+                    }
+
+                }.show();
+                break;
+            case R.id.action_campaign:
+                new AddRemoveDialog(activity, label) {
+                    @Override
+                    void onCancel() {
+                        mode.finish();
+                    }
+
+                    @Override
+                    void onSuccess() {
+                        mode.finish();
+                    }
+
+                }.show();
+                break;
+            case R.id.action_sequence:
+                new AddRemoveDialog(activity, label) {
+                    @Override
+                    void onCancel() {
+                        mode.finish();
+                    }
+
+                    @Override
+                    void onSuccess() {
+                        mode.finish();
+                    }
+
+                }.show();
+                break;
+            case R.id.action_field:
+                mode.finish();
+                break;
+            case R.id.action_delete:
+                new DeleteDialog(activity, num_selected, label) {
                     @Override
                     void onCancel() {
                         mode.finish();
@@ -174,37 +219,24 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
                     void onSuccess() {
                         RequestParams delete_params = new RequestParams();
                         delete_params.put(Constants.OBJECT_TYPE_ID, object_id);
-                        String[] ids = new String[num_deleted];
+                        String[] ids = new String[num_selected];
 
-                        for (int i = (deletables.size() - 1); i >= 0; i--) {
-                            if (deletables.valueAt(i)) {
-                                RecordInfo data = getAdapter().getDataAtPosition(deletables.keyAt(i));
+                        for (int i = (selectables.size() - 1); i >= 0; i--) {
+                            if (selectables.valueAt(i)) {
+                                RecordInfo data = getAdapter().getDataAtPosition(selectables.keyAt(i));
                                 ids[i] = Integer.toString(data.getId());
-                                getAdapter().removeAt(deletables.keyAt(i));
+                                getAdapter().removeAt(selectables.keyAt(i));
                             }
                         }
                         delete_params.put("ids", TextUtils.join(",", ids));
 
                         //new DeleteAsyncTask(getAdapter(), delete_params).execute(delete_params);
 
-                        Toast.makeText(getActivity(), num_deleted + " item deleted.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), num_selected + " item deleted.", Toast.LENGTH_SHORT).show();
                         mode.finish();
                     }
 
                 }.show();
-                break;
-            case R.id.action_field:
-                final SparseBooleanArray editables = getAdapter().getSelectedIds();
-                int selectedMessageSize = editables.size();
-
-                for (int i = (selectedMessageSize - 1); i >= 0; i--) {
-                    if (editables.valueAt(i)) {
-                        RecordInfo data = getAdapter().getDataAtPosition(editables.keyAt(i));
-                        Log.e("Selected Items", "Title - " + data.get("id") + "n" + "Sub Title - " + data.get("email"));
-                    }
-                }
-                Toast.makeText(activity, "You selected Copy menu.", Toast.LENGTH_SHORT).show();
-                mode.finish();
                 break;
         }
         return false;

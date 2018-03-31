@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:checkedButton="@+id/radio_add"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:text="@string/action_add"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_margin="@dimen/card_margin"
+            android:id="@+id/radio_add" />
+
+        <RadioButton
+            android:text="@string/action_remove"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_margin"
+            android:layout_width="wrap_content"
+            android:id="@+id/radio_remove" />
+
+    </RadioGroup>
+
+</android.support.constraint.ConstraintLayout>
