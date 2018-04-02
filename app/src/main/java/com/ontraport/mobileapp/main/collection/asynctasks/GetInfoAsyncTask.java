@@ -55,7 +55,7 @@ public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, Objec
         new GetListAsyncTask<>(adapter,
                 list_fields,
                 info.getCount(),
-                params.getAsInt(Constants.OBJECT_TYPE_ID),
+                params.getAsInt(Constants.OBJECT_ID),
                 force_network).execute(params);
     }
 

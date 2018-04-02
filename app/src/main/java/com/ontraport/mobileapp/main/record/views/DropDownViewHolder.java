@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class DropDownViewHolder extends RecordViewHolder implements AdapterView.OnItemSelectedListener {
 
-    final Spinner drop_down;
+    private final Spinner drop_down;
     private final TextView label;
 
     public DropDownViewHolder(View view) {
@@ -97,8 +97,12 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
         }
     }
 
+    Spinner getDropDown() {
+        return drop_down;
+    }
+
     Meta.Field getMetaForField(String field) {
-        int object_id = params.getAsInt(Constants.OBJECT_TYPE_ID);
+        int object_id = params.getAsInt(Constants.OBJECT_ID);
         Meta.Data object_meta = OntraportApplication.getInstance().getMetaData(object_id);
         return object_meta.getFields().get(field);
     }

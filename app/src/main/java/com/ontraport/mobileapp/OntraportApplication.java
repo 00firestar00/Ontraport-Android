@@ -117,8 +117,7 @@ public class OntraportApplication extends Application {
 
     public void getCollection(CollectionAdapter adapter, RequestParams params, boolean force) {
         if (force) {
-            getClient().forceNetwork();
-            getApi().setHttpClient(getClient());
+            ((OkClient) getApi().getHttpClient()).forceNetwork();
         }
         new GetInfoAsyncTask(adapter, params, force).execute(params);
     }
@@ -129,10 +128,9 @@ public class OntraportApplication extends Application {
 
     public void getRecord(RecordAdapter adapter, RequestParams params, boolean force) {
         if (force) {
-            getClient().forceNetwork();
-            getApi().setHttpClient(getClient());
+            ((OkClient) getApi().getHttpClient()).forceNetwork();
         }
-        new GetOneAsyncTask(adapter, params.getAsInt(Constants.OBJECT_TYPE_ID)).execute(params);
+        new GetOneAsyncTask(adapter, params.getAsInt(Constants.OBJECT_ID)).execute(params);
     }
 
     public void createRecord(RecordAdapter adapter, RequestParams params) {
@@ -141,10 +139,9 @@ public class OntraportApplication extends Application {
 
     public void createRecord(RecordAdapter adapter, RequestParams params, boolean force) {
         if (force) {
-            getClient().forceNetwork();
-            getApi().setHttpClient(getClient());
+            ((OkClient) getApi().getHttpClient()).forceNetwork();
         }
-        new CreateAsyncTask(adapter, params.getAsInt(Constants.OBJECT_TYPE_ID)).execute(params);
+        new CreateAsyncTask(adapter, params.getAsInt(Constants.OBJECT_ID)).execute(params);
     }
 
     public static boolean isNetworkAvailable() {

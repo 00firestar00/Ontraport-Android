@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container, fragment)
-                    .addToBackStack("collection_" + bundle.getInt(Constants.OBJECT_TYPE_ID))
+                    .addToBackStack("collection_" + bundle.getInt(Constants.OBJECT_ID))
                     .commit();
         }
 
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity
     private CollectionFragment getObjectFragment(int object_id) {
         CollectionFragment fragment = new CollectionFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(Constants.OBJECT_TYPE_ID, object_id);
+        bundle.putInt(Constants.OBJECT_ID, object_id);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity
 
                 Bundle bundle = new Bundle();
                 bundle.putString("name", name);
-                bundle.putInt(Constants.OBJECT_TYPE_ID, id);
+                bundle.putInt(Constants.OBJECT_ID, id);
                 bundle.putInt("icon", icon);
                 bundle.putInt("theme", theme);
                 nav_info.put(id, bundle);

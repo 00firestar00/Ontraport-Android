@@ -23,6 +23,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.MainActivity;
@@ -32,7 +34,10 @@ import com.ontraport.mobileapp.main.record.RecordInfo;
 import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.EndlessScrollListener;
 import com.ontraport.mobileapp.utils.SelectableListFragment;
+import com.ontraport.sdk.criteria.Condition;
+import com.ontraport.sdk.criteria.Operator;
 import com.ontraport.sdk.http.RequestParams;
+import com.ontraport.sdk.objects.ObjectType;
 
 public class CollectionFragment extends SelectableListFragment<CollectionAdapter>
         implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, ActionMode.Callback {
@@ -54,12 +59,12 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            object_id = bundle.getInt(Constants.OBJECT_TYPE_ID, 0);
+            object_id = bundle.getInt(Constants.OBJECT_ID, 0);
             icon = bundle.getInt("icon", R.drawable.ic_person_black_24dp);
             int color = bundle.getInt("theme", R.color.colorAccent);
             theme = getResources().getColor(color);
         }
-        params.put(Constants.OBJECT_TYPE_ID, object_id);
+        params.put(Constants.OBJECT_ID, object_id);
 
         activity = (MainActivity) getActivity();
         if (activity != null) {
@@ -138,7 +143,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         if (bundle == null) {
             bundle = new Bundle();
         }
-        bundle.putInt(Constants.OBJECT_TYPE_ID, object_id);
+        bundle.putInt(Constants.OBJECT_ID, object_id);
         fragment.setArguments(bundle);
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment)
@@ -163,7 +168,13 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         switch (item.getItemId()) {
             case R.id.action_tag:
-                new AddRemoveDialog(activity, R.string.action_tag) {
+                RequestParams tag_params = new RequestParams();
+                int tag_id = ObjectType.TAG.getId();
+                tag_params.put(Constants.OBJECT_ID, tag_id);
+                tag_params.put(Constants.OBJECT_TYPE_ID, object_id);
+
+
+                new AddRemoveDialog(activity, R.string.action_tag, tag_params) {
                     @Override
                     void onCancel() {
                         mode.finish();
@@ -177,7 +188,22 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
                 }.show();
                 break;
             case R.id.action_campaign:
-                new AddRemoveDialog(activity, R.string.action_campaign) {
+                int campaign_id = ObjectType.CAMPAIGN.getId();
+
+                Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+                Condition[] criteria = new Condition[]{new Condition<>(
+                        "pause",
+                        Operator.NOT_EQUALS,
+                        2
+                )};
+                RequestParams campaign_params = new RequestParams();
+                campaign_params.put(Constants.OBJECT_ID, campaign_id);
+                campaign_params.put(Constants.OBJECT_TYPE_ID, object_id);
+                campaign_params.put("sort", "name");
+                campaign_params.put("listFields", "name");
+                campaign_params.put("condition", gson.toJson(criteria));
+
+                new AddRemoveDialog(activity, R.string.action_campaign, campaign_params) {
                     @Override
                     void onCancel() {
                         mode.finish();
@@ -185,13 +211,16 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
                     @Override
                     void onSuccess() {
+                        //SubscribeAsyncTask(getAdapter()).execute(subscribe_params);
                         mode.finish();
                     }
 
                 }.show();
                 break;
             case R.id.action_sequence:
-                new AddRemoveDialog(activity, R.string.action_sequence) {
+                RequestParams sequence_params = new RequestParams();
+                int sequence_id = ObjectType.SEQUENCE.getId();
+                new AddRemoveDialog(activity, R.string.action_sequence, sequence_params) {
                     @Override
                     void onCancel() {
                         mode.finish();
@@ -222,7 +251,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
                     @Override
                     void onSuccess() {
                         RequestParams delete_params = new RequestParams();
-                        delete_params.put(Constants.OBJECT_TYPE_ID, object_id);
+                        delete_params.put(Constants.OBJECT_ID, object_id);
                         String[] ids = new String[num_selected];
 
                         for (int i = (selectables.size() - 1); i >= 0; i--) {

@@ -30,7 +30,7 @@ public class ParentViewHolder extends DropDownViewHolder {
     public ParentViewHolder(View view) {
         super(view);
         adapter = getNewAdapter();
-        drop_down.setAdapter(adapter);
+        getDropDown().setAdapter(adapter);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ParentViewHolder extends DropDownViewHolder {
             String[] list_fields = FieldUtils.getParentLabelListFields(ObjectType.valueOf(parent_id));
 
             RequestParams parent_params = new RequestParams();
-            parent_params.put(Constants.OBJECT_TYPE_ID, parent_id);
+            parent_params.put(Constants.OBJECT_ID, parent_id);
             parent_params.put("listFields", TextUtils.join(",", list_fields));
             new GetListAsyncTask<>(adapter,
                     list_fields,
@@ -76,7 +76,7 @@ public class ParentViewHolder extends DropDownViewHolder {
     }
 
     public void setDefaultValue(int pos) {
-        drop_down.setSelection(pos);
+        getDropDown().setSelection(pos);
     }
 
     class ParentCollectionAdapter extends ArrayAdapter<String> implements AsyncAdapter<CollectionInfo> {

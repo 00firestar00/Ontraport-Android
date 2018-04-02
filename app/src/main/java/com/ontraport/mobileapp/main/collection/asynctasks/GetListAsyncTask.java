@@ -50,7 +50,7 @@ public class GetListAsyncTask<A extends AsyncAdapter<CollectionInfo>>
 
                 String[] list_fields = FieldUtils.getParentLabelListFields(ObjectType.valueOf(parent_id));
 
-                parent_params.put(Constants.OBJECT_TYPE_ID, parent_id);
+                parent_params.put(Constants.OBJECT_ID, parent_id);
                 parent_params.put("listFields", TextUtils.join(",", list_fields));
                 new GetParentListAsyncTask<>(adapter,
                         list_fields,

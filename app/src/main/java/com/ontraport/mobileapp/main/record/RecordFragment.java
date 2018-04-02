@@ -26,10 +26,10 @@ public class RecordFragment extends Fragment {
         if (bundle == null) {
             return root_view;
         }
-        int object_id = bundle.getInt(Constants.OBJECT_TYPE_ID, 0);
+        int object_id = bundle.getInt(Constants.OBJECT_ID, 0);
         String id = bundle.getString("id", null);
         RequestParams params = new RequestParams();
-        params.put(Constants.OBJECT_TYPE_ID, object_id);
+        params.put(Constants.OBJECT_ID, object_id);
 
         RecordAdapter adapter = new RecordAdapter((MainActivity) getActivity());
         RecyclerView recyclerView = root_view.findViewById(R.id.record);
