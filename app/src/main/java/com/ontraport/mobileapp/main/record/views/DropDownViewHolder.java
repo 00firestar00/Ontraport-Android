@@ -23,7 +23,7 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
     public DropDownViewHolder(View view) {
         super(view);
         label = view.findViewById(R.id.label);
-        drop_down = view.findViewById(R.id.dropDown1);
+        drop_down = view.findViewById(R.id.drop_down);
         drop_down.setOnItemSelectedListener(this);
     }
 

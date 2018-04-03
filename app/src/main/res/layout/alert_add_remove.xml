@@ -32,12 +32,17 @@
         </RadioGroup>
 
         <Spinner
-            android:id="@+id/dropDown1"
+            android:id="@+id/drop_down"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/alert_margin"
             android:layout_marginEnd="@dimen/alert_margin"
             android:layout_marginBottom="@dimen/alert_margin" />
+
+        <ListView
+            android:id="@+id/list_selection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

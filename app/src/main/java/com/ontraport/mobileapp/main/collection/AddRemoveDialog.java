@@ -7,10 +7,14 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import com.ontraport.mobileapp.AsyncAdapter;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.collection.asynctasks.GetListAsyncTask;
@@ -25,8 +29,11 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
 
     private final RadioGroup radios;
     private final Spinner drop_down;
+    private final ListView list_selection;
     private SubscribeCollectionAdapter adapter;
+    private ListSelectionAdapter list_adapter;
     private Map<String, Integer> true_values = new HashMap<>();
+    private int previous_pos = -1;
 
     public AddRemoveDialog(@NonNull Context context, @StringRes int res, RequestParams params) {
         super(context);
@@ -34,6 +41,7 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
         setMessage(res);
 
         adapter = getNewAdapter();
+        adapter.add("Select...");
 
         new GetListAsyncTask<>(adapter,
                 new String[]{"name"},
@@ -42,7 +50,10 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_add_remove, null);
         radios = dialogView.findViewById(R.id.radio_group);
-        drop_down = dialogView.findViewById(R.id.dropDown1);
+        drop_down = dialogView.findViewById(R.id.drop_down);
+        list_selection = dialogView.findViewById(R.id.list_selection);
+        list_adapter = new ListSelectionAdapter(getContext(), R.layout.record_list, R.id.listText);
+        list_selection.setAdapter(list_adapter);
         drop_down.setOnItemSelectedListener(this);
         drop_down.setAdapter(adapter);
         setView(dialogView);
@@ -56,8 +67,14 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (position == previous_pos || position < 1) {
+            return;
+        }
+        previous_pos = position;
+        drop_down.setSelection(0);
         String new_value = drop_down.getItemAtPosition(position).toString();
-        String field = (String) drop_down.getTag();
+        list_adapter.add(new_value);
+        adapter.remove(new_value);
     }
 
     @Override
@@ -118,6 +135,31 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
         @Override
         public void updateParentInfo(CollectionInfo collection) {
             throw new UnsupportedOperationException();
+        }
+    }
+
+    class ListSelectionAdapter extends ArrayAdapter<String> implements View.OnClickListener {
+
+        ListSelectionAdapter(@NonNull Context context, int resource, int textViewResourceId) {
+            super(context, resource, textViewResourceId);
+        }
+
+        @NonNull
+        @Override
+        public View getView(final int position, View convert_view, @NonNull ViewGroup parent) {
+            View row = super.getView(position, convert_view, parent);
+            Button remove = row.findViewById(R.id.remove);
+            remove.setOnClickListener(this);
+            return row;
+        }
+
+
+        @Override
+        public void onClick(View v) {
+            TextView text = ((View) v.getParent()).findViewById(R.id.listText);
+            String to_remove = text.getText().toString();
+            remove(to_remove);
+            adapter.add(to_remove);
         }
     }
 }
