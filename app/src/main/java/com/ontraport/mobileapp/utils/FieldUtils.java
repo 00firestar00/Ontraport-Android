@@ -37,6 +37,12 @@ public class FieldUtils {
     }
 
     public static String[] getParentLabelListFields(ObjectType type) {
+        if (type == null) {
+            // null could just mean ObjectType doesn't have a definition.
+            // This happens in the case of custom object ids.
+            return new String[]{"id"};
+        }
+
         switch (type) {
             case STAFF:
                 return new String[]{"id", "firstname", "lastname"};
@@ -79,7 +85,7 @@ public class FieldUtils {
                 input = input.replace(match, values.get(pos));
             }
         }
-        return input.replace("()","").trim();
+        return input.replace("()", "").trim();
     }
 }
 

@@ -97,7 +97,7 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
     }
 
     private void setPositiveButton() {
-        setButton(BUTTON_POSITIVE, "SUCCESS",
+        setButton(BUTTON_POSITIVE, "SUBMIT",
                 new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         onSuccess();

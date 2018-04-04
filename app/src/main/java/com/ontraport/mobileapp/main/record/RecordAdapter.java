@@ -15,6 +15,7 @@ import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.record.views.DisabledViewHolder;
 import com.ontraport.mobileapp.main.record.views.DropDownViewHolder;
 import com.ontraport.mobileapp.main.record.views.EmailViewHolder;
+import com.ontraport.mobileapp.main.record.views.ListViewHolder;
 import com.ontraport.mobileapp.main.record.views.NumericViewHolder;
 import com.ontraport.mobileapp.main.record.views.ParentViewHolder;
 import com.ontraport.mobileapp.main.record.views.PhoneViewHolder;
@@ -77,6 +78,10 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
 
         View drop = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.record_card_drop, parent, false);
+
+        View list = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.record_card_list, parent, false);
+
         switch (type) {
             case FieldType.DISABLED:
                 return new DisabledViewHolder(view);
@@ -93,7 +98,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordViewHolder>
             case FieldType.DROP:
                 return new DropDownViewHolder(drop);
             case FieldType.LIST:
-                return new DisabledViewHolder(view);
+                return new ListViewHolder(list);
             case FieldType.PARENT:
                 return new ParentViewHolder(drop);
             case FieldType.MERGEFIELD:

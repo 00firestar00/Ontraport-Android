@@ -75,10 +75,6 @@ public class ParentViewHolder extends DropDownViewHolder {
         }
     }
 
-    public void setDefaultValue(int pos) {
-        getDropDown().setSelection(pos);
-    }
-
     class ParentCollectionAdapter extends ArrayAdapter<String> implements AsyncAdapter<CollectionInfo> {
 
         ParentCollectionAdapter(@NonNull Context context, int resource, int textViewResourceId) {
