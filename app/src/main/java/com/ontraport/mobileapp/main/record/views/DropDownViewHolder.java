@@ -19,7 +19,6 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
 
     private final Spinner drop_down;
     private final TextView label;
-    private String first_option = "";
 
     public DropDownViewHolder(View view) {
         super(view);
@@ -39,10 +38,10 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String new_value = drop_down.getItemAtPosition(position).toString();
-        String field = (String) drop_down.getTag();
-        if (old_val.equals("0") && new_value.equals(first_option)) {
+        if (old_val.equals("0") && new_value.isEmpty()) {
             new_value = "0";
         }
+        String field = (String) drop_down.getTag();
         if (!new_value.equals(old_val)) {
             doUpdate(field, new_value);
         }
@@ -70,10 +69,6 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
         return new ArrayAdapter<>(view.getContext(),
                 R.layout.record_spinner,
                 R.id.spinnerText);
-    }
-
-    protected void setFirstOptionText(String text) {
-        first_option = text;
     }
 
     protected void setDefaultValue(int pos) {
@@ -114,7 +109,7 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
 
     void populateDropdown(List<String> values) {
         ArrayAdapter<String> adapter = getNewAdapter();
-        adapter.add(first_option);
+        adapter.add("");
         adapter.addAll(values);
         drop_down.setAdapter(adapter);
     }

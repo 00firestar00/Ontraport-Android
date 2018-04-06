@@ -42,11 +42,14 @@
                 <Spinner
                     android:id="@+id/drop_down"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/alert_margin"
+                    android:layout_marginEnd="@dimen/alert_margin"
+                    android:layout_marginBottom="@dimen/alert_margin" />
 
             </LinearLayout>
 
-            <ListView
+            <com.ontraport.mobileapp.utils.NestedListView
                 android:id="@+id/list_selection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

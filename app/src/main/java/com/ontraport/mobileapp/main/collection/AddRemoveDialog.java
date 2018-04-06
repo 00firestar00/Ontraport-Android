@@ -29,11 +29,9 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
 
     private final RadioGroup radios;
     private final Spinner drop_down;
-    private final ListView list_selection;
     private SubscribeCollectionAdapter adapter;
     private ListSelectionAdapter list_adapter;
     private Map<String, Integer> true_values = new HashMap<>();
-    private int previous_pos = -1;
 
     public AddRemoveDialog(@NonNull Context context, @StringRes int res, RequestParams params) {
         super(context);
@@ -51,7 +49,7 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
         View dialogView = inflater.inflate(R.layout.alert_add_remove, null);
         radios = dialogView.findViewById(R.id.radio_group);
         drop_down = dialogView.findViewById(R.id.drop_down);
-        list_selection = dialogView.findViewById(R.id.list_selection);
+        ListView list_selection = dialogView.findViewById(R.id.list_selection);
         list_adapter = new ListSelectionAdapter(getContext(), R.layout.record_list, R.id.listText);
         list_selection.setAdapter(list_adapter);
         drop_down.setOnItemSelectedListener(this);
@@ -67,10 +65,9 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position == previous_pos || position < 1) {
+        if (position < 1) {
             return;
         }
-        previous_pos = position;
         drop_down.setSelection(0);
         String new_value = drop_down.getItemAtPosition(position).toString();
         list_adapter.add(new_value);

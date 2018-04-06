@@ -23,7 +23,7 @@ public class RecordFragment extends Fragment {
         View root_view = inflater.inflate(R.layout.record_fragment, container, false);
 
         Bundle bundle = getArguments();
-        if (bundle == null) {
+        if (bundle == null || getActivity() == null) {
             return root_view;
         }
         int object_id = bundle.getInt(Constants.OBJECT_ID, 0);
