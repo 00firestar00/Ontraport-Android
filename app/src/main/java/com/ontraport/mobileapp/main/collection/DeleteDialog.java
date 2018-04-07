@@ -2,20 +2,21 @@ package com.ontraport.mobileapp.main.collection;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import com.ontraport.mobileapp.R;
+import com.ontraport.mobileapp.utils.ThemedAlertDialog;
 
-public abstract class DeleteDialog extends AlertDialog {
+public abstract class DeleteDialog extends ThemedAlertDialog {
 
     private final String title = "DELETE";
     private final EditText input;
 
-    public DeleteDialog(@NonNull Context context, int num_deleted, String label) {
-        super(context);
+    public DeleteDialog(@NonNull Context context, @ColorInt int theme, int num_deleted, String label) {
+        super(context, theme);
         setTitle(title);
         setMessage(num_deleted, label);
 

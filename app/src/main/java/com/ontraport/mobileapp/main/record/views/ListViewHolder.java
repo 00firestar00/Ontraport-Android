@@ -91,7 +91,6 @@ public class ListViewHolder extends DropDownViewHolder {
             return row;
         }
 
-
         @Override
         public void onClick(View v) {
             TextView text = ((View) v.getParent()).findViewById(R.id.listText);

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -162,114 +163,27 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
     @Override
     public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
-
-        final SparseBooleanArray selectables = getAdapter().getSelectedIds();
-        final int num_selected = selectables.size();
-
         switch (item.getItemId()) {
             case R.id.action_tag:
-                RequestParams tag_params = new RequestParams();
-                int tag_id = ObjectType.TAG.getId();
-                tag_params.put(Constants.OBJECT_ID, tag_id);
-                tag_params.put(Constants.OBJECT_TYPE_ID, object_id);
-
-
-                new AddRemoveDialog(activity, R.string.action_tag, tag_params) {
-                    @Override
-                    void onCancel() {
-                        mode.finish();
-                    }
-
-                    @Override
-                    void onSuccess() {
-                        mode.finish();
-                    }
-
-                }.show();
+                showAddRemoveDialog(mode, R.string.action_tag, ObjectType.TAG.getId(), null);
                 break;
             case R.id.action_campaign:
-                int campaign_id = ObjectType.CAMPAIGN.getId();
-
                 Gson gson = new GsonBuilder().disableHtmlEscaping().create();
                 Condition[] criteria = new Condition[]{new Condition<>(
                         "pause",
                         Operator.NOT_EQUALS,
                         2
                 )};
-                RequestParams campaign_params = new RequestParams();
-                campaign_params.put(Constants.OBJECT_ID, campaign_id);
-                campaign_params.put(Constants.OBJECT_TYPE_ID, object_id);
-                campaign_params.put("sort", "name");
-                campaign_params.put("listFields", "name");
-                campaign_params.put("condition", gson.toJson(criteria));
-
-                new AddRemoveDialog(activity, R.string.action_campaign, campaign_params) {
-                    @Override
-                    void onCancel() {
-                        mode.finish();
-                    }
-
-                    @Override
-                    void onSuccess() {
-                        //SubscribeAsyncTask(getAdapter()).execute(subscribe_params);
-                        mode.finish();
-                    }
-
-                }.show();
+                showAddRemoveDialog(mode, R.string.action_campaign, ObjectType.CAMPAIGN.getId(), gson.toJson(criteria));
                 break;
             case R.id.action_sequence:
-                RequestParams sequence_params = new RequestParams();
-                int sequence_id = ObjectType.SEQUENCE.getId();
-                new AddRemoveDialog(activity, R.string.action_sequence, sequence_params) {
-                    @Override
-                    void onCancel() {
-                        mode.finish();
-                    }
-
-                    @Override
-                    void onSuccess() {
-                        mode.finish();
-                    }
-
-                }.show();
+                showAddRemoveDialog(mode, R.string.action_sequence, ObjectType.SEQUENCE.getId(), null);
                 break;
             case R.id.action_field:
                 mode.finish();
                 break;
             case R.id.action_delete:
-                new DeleteDialog(activity, num_selected, label) {
-                    @Override
-                    void onCancel() {
-                        mode.finish();
-                    }
-
-                    @Override
-                    void onIncorrectInput() {
-                        Toast.makeText(getActivity(), "You did not type DELETE", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    void onSuccess() {
-                        RequestParams delete_params = new RequestParams();
-                        delete_params.put(Constants.OBJECT_ID, object_id);
-                        String[] ids = new String[num_selected];
-
-                        for (int i = (selectables.size() - 1); i >= 0; i--) {
-                            if (selectables.valueAt(i)) {
-                                RecordInfo data = getAdapter().getDataAtPosition(selectables.keyAt(i));
-                                ids[i] = Integer.toString(data.getId());
-                                getAdapter().removeAt(selectables.keyAt(i));
-                            }
-                        }
-                        delete_params.put("ids", TextUtils.join(",", ids));
-
-                        //new DeleteAsyncTask(getAdapter(), delete_params).execute(delete_params);
-
-                        Toast.makeText(getActivity(), num_selected + " item deleted.", Toast.LENGTH_SHORT).show();
-                        mode.finish();
-                    }
-
-                }.show();
+                showDeleteDialog(mode);
                 break;
         }
         return false;
@@ -282,6 +196,71 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         actionBar.setBackgroundColor(theme);
         setIconsToColor(menu, Color.WHITE);
         return ret;
+    }
+
+    private void showAddRemoveDialog(final ActionMode mode, @StringRes int string_res, int object_type_id, String condition) {
+        RequestParams action_params = new RequestParams();
+        action_params.put(Constants.OBJECT_ID, object_type_id);
+        action_params.put(Constants.OBJECT_TYPE_ID, object_id);
+        action_params.put("sort", "name");
+        action_params.put("listFields", "name");
+
+        if (condition != null) {
+            action_params.put("condition", condition);
+        }
+
+        new AddRemoveDialog(activity, string_res, theme, action_params) {
+            @Override
+            void onCancel() {
+                mode.finish();
+            }
+
+            @Override
+            void onSuccess() {
+                //SubscribeAsyncTask(getAdapter()).execute(subscribe_params);
+                mode.finish();
+            }
+
+        }.show();
+    }
+
+    private void showDeleteDialog(final ActionMode mode) {
+        final SparseBooleanArray selectables = getAdapter().getSelectedIds();
+        final int num_selected = selectables.size();
+
+        new DeleteDialog(activity, theme, num_selected, label) {
+            @Override
+            void onCancel() {
+                mode.finish();
+            }
+
+            @Override
+            void onIncorrectInput() {
+                Toast.makeText(getActivity(), "You did not type DELETE", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            void onSuccess() {
+                RequestParams delete_params = new RequestParams();
+                delete_params.put(Constants.OBJECT_ID, object_id);
+                String[] ids = new String[num_selected];
+
+                for (int i = (selectables.size() - 1); i >= 0; i--) {
+                    if (selectables.valueAt(i)) {
+                        RecordInfo data = getAdapter().getDataAtPosition(selectables.keyAt(i));
+                        ids[i] = Integer.toString(data.getId());
+                        getAdapter().removeAt(selectables.keyAt(i));
+                    }
+                }
+                delete_params.put("ids", TextUtils.join(",", ids));
+
+                //new DeleteAsyncTask(getAdapter(), delete_params).execute(delete_params);
+
+                Toast.makeText(getActivity(), num_selected + " item deleted.", Toast.LENGTH_SHORT).show();
+                mode.finish();
+            }
+
+        }.show();
     }
 
     private void setIconsToColor(Menu menu, @ColorInt int color) {

@@ -2,9 +2,11 @@ package com.ontraport.mobileapp.main.collection;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -20,12 +23,13 @@ import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.collection.asynctasks.GetListAsyncTask;
 import com.ontraport.mobileapp.main.record.RecordInfo;
 import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.ThemedAlertDialog;
 import com.ontraport.sdk.http.RequestParams;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AddRemoveDialog extends AlertDialog implements AdapterView.OnItemSelectedListener {
+public abstract class AddRemoveDialog extends ThemedAlertDialog implements AdapterView.OnItemSelectedListener, RadioGroup.OnCheckedChangeListener {
 
     private final RadioGroup radios;
     private final Spinner drop_down;
@@ -33,8 +37,9 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
     private ListSelectionAdapter list_adapter;
     private Map<String, Integer> true_values = new HashMap<>();
 
-    public AddRemoveDialog(@NonNull Context context, @StringRes int res, RequestParams params) {
-        super(context);
+    public AddRemoveDialog(@NonNull Context context, @StringRes int res, @ColorInt int theme, RequestParams params) {
+        super(context, theme);
+
         setTitle(res);
         setMessage(res);
 
@@ -48,6 +53,7 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_add_remove, null);
         radios = dialogView.findViewById(R.id.radio_group);
+        radios.setOnCheckedChangeListener(this);
         drop_down = dialogView.findViewById(R.id.drop_down);
         ListView list_selection = dialogView.findViewById(R.id.list_selection);
         list_adapter = new ListSelectionAdapter(getContext(), R.layout.record_list, R.id.listText);
@@ -57,6 +63,7 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
         setView(dialogView);
         setNegativeButton();
         setPositiveButton();
+        setRadioColor();
     }
 
     abstract void onCancel();
@@ -107,6 +114,24 @@ public abstract class AddRemoveDialog extends AlertDialog implements AdapterView
         return new SubscribeCollectionAdapter(getContext(),
                 R.layout.record_spinner,
                 R.id.spinnerText);
+    }
+
+    private void setRadioColor() {
+        RadioButton radio_add = radios.findViewById(R.id.radio_add);
+        RadioButton radio_remove = radios.findViewById(R.id.radio_remove);
+        ColorStateList colors = new ColorStateList(
+                new int[][]{new int[]{-android.R.attr.state_checked}, //disabled
+                        new int[]{android.R.attr.state_checked} //enabled
+                },
+                new int[]{Color.WHITE /*disabled*/, getTheme() //enabled
+                }
+        );
+        radio_add.setButtonTintList(colors);
+        radio_remove.setButtonTintList(colors);
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
     }
 
     class SubscribeCollectionAdapter extends ArrayAdapter<String> implements AsyncAdapter<CollectionInfo> {
