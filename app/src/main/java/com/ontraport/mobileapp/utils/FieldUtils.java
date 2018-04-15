@@ -4,7 +4,6 @@ package com.ontraport.mobileapp.utils;
 import android.content.Context;
 import android.icu.text.DateFormat;
 import android.os.Build;
-import android.text.TextUtils;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.sdk.objects.ObjectType;
 
@@ -90,7 +89,7 @@ public class FieldUtils {
     }
 
     public static String[] legacyListToArray(String legacy) {
-        return TextUtils.split(legacy, "\\*\\/\\*");
+        return legacy.split("\\*\\/\\*");
     }
 }
 

@@ -33,4 +33,7 @@
     <string name="action_remove">Remove</string>
     <string name="action_add">Add</string>
     <string name="confirm">Confirm</string>
+    <string name="action_rule">Rules</string>
+    <string name="action_form">Forms</string>
+    <string name="action_message">Messages</string>
 </resources>

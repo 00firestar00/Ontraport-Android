@@ -33,14 +33,12 @@ public abstract class SelectableListFragment<A extends SelectableItemAdapter>
         return String.format(format, count);
     }
 
-    @CallSuper
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         mode.getMenuInflater().inflate(R.menu.menu_action, menu);
         return true;
     }
 
-    @CallSuper
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         menu.findItem(R.id.action_tag).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);

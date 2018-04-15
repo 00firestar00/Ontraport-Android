@@ -1,30 +1,38 @@
 package com.ontraport.mobileapp.main;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.collection.CollectionFragment;
 import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.SelectableExpandableDrawerItem;
 import com.ontraport.mobileapp.utils.ThemeUtils;
 import com.ontraport.sdk.http.CustomObjectResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
+        implements Drawer.OnDrawerItemClickListener,
         FragmentManager.OnBackStackChangedListener {
 
     private SparseArray<Bundle> nav_info = new SparseArray<>();
-    private NavigationView nav_view;
+    private Drawer drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +41,34 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        drawer = new DrawerBuilder()
+                .withActivity(this)
+                .withOnDrawerItemClickListener(this)
+                .withAccountHeader(
+                        new AccountHeaderBuilder()
+                                .withActivity(this)
+                                .withHeaderBackground(R.drawable.side_nav_bar)
+                                .withSelectionListEnabledForSingleProfile(false)
+                                .withProfileImagesClickable(false)
+                                .addProfiles(
+                                        new ProfileDrawerItem()
+                                                .withName("ONTRAPORT")
+                                                .withIcon(R.drawable.ic_launcher_round)
+                                ).build()
+                ).build();
 
-        nav_view = findViewById(R.id.nav_view);
-        nav_view.setNavigationItemSelectedListener(this);
-        buildNavMenu(nav_view);
-        nav_view.setCheckedItem(R.id.nav_contacts);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer.getDrawerLayout(), toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setActionBarDrawerToggle(toggle);
+        drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+
+        List<IDrawerItem> drawer_items = buildObjectsNavMenu(drawer.getAdapter());
+        drawer_items.add(new DividerDrawerItem());
+        drawer_items.addAll(getAccountActionsNavMenu());
+
+        for (IDrawerItem item : drawer_items) {
+            drawer.addItem(item);
+        }
 
         // Contacts Collection
         getSupportFragmentManager().addOnBackStackChangedListener(this);
@@ -53,57 +79,46 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-        else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_contacts) {
-            id = 0;
+    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+        Integer id = (Integer) drawerItem.getTag();
+        if (id == null) {
+            return false;
         }
 
         Bundle bundle = nav_info.get(id);
-
-        if (bundle != null) {
-            CollectionFragment fragment = new CollectionFragment();
-            fragment.setArguments(bundle);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .addToBackStack("collection_" + bundle.getInt(Constants.OBJECT_ID))
-                    .commit();
+        if (bundle == null) {
+            return false;
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        CollectionFragment fragment = new CollectionFragment();
+        fragment.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack("collection_" + bundle.getInt(Constants.OBJECT_ID))
+                .commit();
+
+        if (drawerItem instanceof SelectableExpandableDrawerItem) {
+            ((SelectableExpandableDrawerItem) drawerItem).collapse();
+        }
+
+        drawer.closeDrawer();
         return true;
     }
 
     @Override
     public void onBackStackChanged() {
-        int count = getSupportFragmentManager().getBackStackEntryCount();
-        if (count > 0) {
-            String tag = getSupportFragmentManager().getBackStackEntryAt(count - 1).getName();
-            if (tag.contains("collection_")) {
-                String object_id = tag.split("collection_")[1];
-                int item_id = Integer.parseInt(object_id);
-                if (item_id == 0) {
-                    item_id = R.id.nav_contacts;
-                }
-                nav_view.setCheckedItem(item_id);
-            }
-            return;
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen()) {
+            drawer.closeDrawer();
         }
-        nav_view.setCheckedItem(R.id.nav_contacts);
+        else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -120,10 +135,23 @@ public class MainActivity extends AppCompatActivity
         return fragment;
     }
 
-    private void buildNavMenu(NavigationView nav) {
+    private List<IDrawerItem> buildObjectsNavMenu(FastAdapter<IDrawerItem> adapter) {
+
+        List<IDrawerItem> objects = new ArrayList<>();
+
+        objects.add(new SelectableExpandableDrawerItem(adapter)
+                .withName("Contacts")
+                .withTag(0)
+                .withIcon(R.drawable.ic_person_black_24dp)
+                .withSelectable(true)
+                .withSubItems(getNewSubMenuItems())
+                .withIconTintingEnabled(true)
+                .withIconColorRes(R.color.colorAccent)
+                .withSelectedIconColorRes(R.color.colorAccent));
+
         OntraportApplication app = (OntraportApplication) getApplication();
         CustomObjectResponse res = app.getCustomObjects();
-        Menu menu = nav.getMenu();
+
         if (res != null && res.getData().length > 0) {
             for (CustomObjectResponse.Data data : res.getData()) {
                 int id = Integer.parseInt(data.getId());
@@ -142,9 +170,39 @@ public class MainActivity extends AppCompatActivity
                 if (id < 10000) {
                     continue;
                 }
-                menu.add(R.id.nav_object, id, Menu.NONE, name).setCheckable(true).setIcon(icon);
+
+                objects.add(new SelectableExpandableDrawerItem(adapter)
+                        .withName(name)
+                        .withTag(id)
+                        .withIcon(icon)
+                        .withSelectable(true)
+                        .withSubItems(getNewSubMenuItems())
+                        .withIconTintingEnabled(true)
+                        .withIconColorRes(theme)
+                        .withSelectedIconColorRes(theme));
+
             }
         }
-        menu.setGroupCheckable(R.id.nav_object, true, true);
+        return objects;
+    }
+
+    private List<IDrawerItem> getNewSubMenuItems() {
+        List<IDrawerItem> sub = new ArrayList<>();
+        sub.add(new SecondaryDrawerItem().withName(R.string.action_campaign).withLevel(2));
+        sub.add(new SecondaryDrawerItem().withName(R.string.action_sequence).withLevel(2));
+        sub.add(new SecondaryDrawerItem().withName(R.string.action_rule).withLevel(2));
+        sub.add(new SecondaryDrawerItem().withName(R.string.action_form).withLevel(2));
+        sub.add(new SecondaryDrawerItem().withName(R.string.action_message).withLevel(2));
+        return sub;
+    }
+
+    private List<IDrawerItem> getAccountActionsNavMenu() {
+        List<IDrawerItem> sub = new ArrayList<>();
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_account).withIcon(R.drawable.ic_person_black_24dp).withSelectable(true));
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_admin).withIcon(R.drawable.ic_settings_black_24dp).withSelectable(true));
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_users).withIcon(R.drawable.ic_supervisor_account_black_24dp).withSelectable(true));
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_profile).withIcon(R.drawable.ic_account_box_black_24dp).withSelectable(true));
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_logout).withIcon(R.drawable.ic_logout_24dp).withSelectable(true));
+        return sub;
     }
 }

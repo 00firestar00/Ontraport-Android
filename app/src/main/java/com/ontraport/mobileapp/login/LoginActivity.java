@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
         login_form = findViewById(R.id.email_login_form);
         progress_spinner = findViewById(R.id.login_progress);
+        attemptLogin();
     }
 
     private void attemptLogin() {

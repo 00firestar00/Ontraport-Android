@@ -64,7 +64,12 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
             icon = bundle.getInt("icon", R.drawable.ic_person_black_24dp);
             int color = bundle.getInt("theme", R.color.colorAccent);
             theme = getResources().getColor(color);
+
+            if (bundle.getBoolean("hasFab", true)) {
+                setHasFab(root_view);
+            }
         }
+
         params.put(Constants.OBJECT_ID, object_id);
 
         activity = (MainActivity) getActivity();
@@ -78,11 +83,6 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         setSelectedTextFormat("%d");
         setHasOptionsMenu(true);
-
-        FloatingActionButton fab = root_view.findViewById(R.id.fab);
-        fab.setOnClickListener(this);
-        fab.setBackgroundTintList(ColorStateList.valueOf(theme));
-        //fab.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.ic_person_add_black_24dp));
 
         swipe_layout = root_view.findViewById(R.id.swipeContainer);
         swipe_layout.setOnRefreshListener(this);
@@ -196,6 +196,23 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         actionBar.setBackgroundColor(theme);
         setIconsToColor(menu, Color.WHITE);
         return ret;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        menu.findItem(R.id.action_tag).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(R.id.action_campaign).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(R.id.action_sequence).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(R.id.action_field).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(R.id.action_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        return true;
+    }
+
+    protected void setHasFab(View view) {
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
+        fab.setOnClickListener(this);
+        fab.setBackgroundTintList(ColorStateList.valueOf(theme));
     }
 
     private void showAddRemoveDialog(final ActionMode mode, @StringRes int string_res, int object_type_id, String condition) {
