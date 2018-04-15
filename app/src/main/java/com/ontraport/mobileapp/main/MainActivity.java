@@ -28,8 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements Drawer.OnDrawerItemClickListener,
-        FragmentManager.OnBackStackChangedListener {
+        implements Drawer.OnDrawerItemClickListener {
 
     private SparseArray<Bundle> nav_info = new SparseArray<>();
     private Drawer drawer;
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity
 
         drawer = new DrawerBuilder()
                 .withActivity(this)
+                .withToolbar(toolbar)
                 .withOnDrawerItemClickListener(this)
                 .withAccountHeader(
                         new AccountHeaderBuilder()
@@ -104,11 +104,6 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer();
         return true;
-    }
-
-    @Override
-    public void onBackStackChanged() {
-
     }
 
     @Override
