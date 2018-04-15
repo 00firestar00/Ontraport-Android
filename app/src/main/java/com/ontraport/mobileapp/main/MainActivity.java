@@ -1,7 +1,6 @@
 package com.ontraport.mobileapp.main;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -71,10 +70,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         // Contacts Collection
-        getSupportFragmentManager().addOnBackStackChangedListener(this);
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container, getObjectFragment(0))
+                .add(R.id.container, getObjectFragment(0, null))
                 .commit();
     }
 
@@ -90,11 +88,9 @@ public class MainActivity extends AppCompatActivity
             return false;
         }
 
-        CollectionFragment fragment = new CollectionFragment();
-        fragment.setArguments(bundle);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, fragment)
+                .replace(R.id.container, getObjectFragment(0, bundle))
                 .addToBackStack("collection_" + bundle.getInt(Constants.OBJECT_ID))
                 .commit();
 
@@ -122,10 +118,12 @@ public class MainActivity extends AppCompatActivity
      * @param object_id The id of the object for the collection
      * @return a new CollectionFragment
      */
-    private CollectionFragment getObjectFragment(int object_id) {
+    private CollectionFragment getObjectFragment(int object_id, Bundle bundle) {
         CollectionFragment fragment = new CollectionFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(Constants.OBJECT_ID, object_id);
+        if (bundle == null) {
+            bundle = new Bundle();
+            bundle.putInt(Constants.OBJECT_ID, object_id);
+        }
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -193,11 +191,11 @@ public class MainActivity extends AppCompatActivity
 
     private List<IDrawerItem> getAccountActionsNavMenu() {
         List<IDrawerItem> sub = new ArrayList<>();
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_account).withIcon(R.drawable.ic_person_black_24dp).withSelectable(true));
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_admin).withIcon(R.drawable.ic_settings_black_24dp).withSelectable(true));
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_users).withIcon(R.drawable.ic_supervisor_account_black_24dp).withSelectable(true));
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_profile).withIcon(R.drawable.ic_account_box_black_24dp).withSelectable(true));
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_logout).withIcon(R.drawable.ic_logout_24dp).withSelectable(true));
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_account).withIcon(R.drawable.ic_person_black_24dp));
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_admin).withIcon(R.drawable.ic_settings_black_24dp));
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_users).withIcon(R.drawable.ic_supervisor_account_black_24dp));
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_profile).withIcon(R.drawable.ic_account_box_black_24dp));
+        sub.add(new PrimaryDrawerItem().withName(R.string.menu_logout).withIcon(R.drawable.ic_logout_24dp));
         return sub;
     }
 }
