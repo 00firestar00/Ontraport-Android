@@ -9,6 +9,7 @@ import com.ontraport.sdk.objects.ObjectType;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -90,6 +91,18 @@ public class FieldUtils {
 
     public static String[] legacyListToArray(String legacy) {
         return legacy.split("\\*\\/\\*");
+    }
+
+    public static String findIdField(Map<String, String> fields) {
+
+        String[] possible_fields = new String[]{"id", "drip_id", "form_id"};
+
+        for (String possible : possible_fields) {
+            if (fields.containsKey(possible)) {
+                return possible;
+            }
+        }
+        return "id";
     }
 }
 

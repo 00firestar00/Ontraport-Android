@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.View;
 import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -22,6 +23,7 @@ import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.SelectableExpandableDrawerItem;
 import com.ontraport.mobileapp.utils.ThemeUtils;
 import com.ontraport.sdk.http.CustomObjectResponse;
+import com.ontraport.sdk.objects.ObjectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,12 +87,26 @@ public class MainActivity extends AppCompatActivity
 
         Bundle bundle = nav_info.get(id);
         if (bundle == null) {
-            return false;
+            IItem parent = drawerItem.getParent();
+            Integer parent_id = (Integer) parent.getTag();
+            if (parent_id == null) {
+                return false;
+            }
+
+            bundle = nav_info.get(parent_id);
+            if (bundle == null) {
+                return false;
+            }
+
+            bundle = new Bundle(bundle);
+            bundle.putInt(Constants.OBJECT_ID, id);
+            bundle.putInt(Constants.OBJECT_TYPE_ID, parent_id);
+            bundle.putBoolean("hasFab", false);
         }
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, getObjectFragment(0, bundle))
+                .replace(R.id.container, getObjectFragment(id, bundle))
                 .addToBackStack("collection_" + bundle.getInt(Constants.OBJECT_ID))
                 .commit();
 
@@ -132,15 +148,15 @@ public class MainActivity extends AppCompatActivity
 
         List<IDrawerItem> objects = new ArrayList<>();
 
-        objects.add(new SelectableExpandableDrawerItem(adapter)
+        SelectableExpandableDrawerItem contact_item = new SelectableExpandableDrawerItem(adapter)
                 .withName("Contacts")
                 .withTag(0)
                 .withIcon(R.drawable.ic_person_black_24dp)
                 .withSelectable(true)
-                .withSubItems(getNewSubMenuItems())
                 .withIconTintingEnabled(true)
                 .withIconColorRes(R.color.colorAccent)
-                .withSelectedIconColorRes(R.color.colorAccent));
+                .withSelectedIconColorRes(R.color.colorAccent);
+        objects.add(contact_item.withSubItems(getNewSubMenuItems(contact_item)));
 
         OntraportApplication app = (OntraportApplication) getApplication();
         CustomObjectResponse res = app.getCustomObjects();
@@ -154,7 +170,6 @@ public class MainActivity extends AppCompatActivity
                 int theme = ThemeUtils.getThemeByName(data.getTheme());
 
                 Bundle bundle = new Bundle();
-                bundle.putString("name", name);
                 bundle.putInt(Constants.OBJECT_ID, id);
                 bundle.putInt("icon", icon);
                 bundle.putInt("theme", theme);
@@ -164,38 +179,64 @@ public class MainActivity extends AppCompatActivity
                     continue;
                 }
 
-                objects.add(new SelectableExpandableDrawerItem(adapter)
+                SelectableExpandableDrawerItem orm_item = new SelectableExpandableDrawerItem(adapter)
                         .withName(name)
                         .withTag(id)
                         .withIcon(icon)
                         .withSelectable(true)
-                        .withSubItems(getNewSubMenuItems())
                         .withIconTintingEnabled(true)
                         .withIconColorRes(theme)
-                        .withSelectedIconColorRes(theme));
+                        .withSelectedIconColorRes(theme);
+                objects.add(orm_item.withSubItems(getNewSubMenuItems(orm_item)));
 
             }
         }
         return objects;
     }
 
-    private List<IDrawerItem> getNewSubMenuItems() {
+    private List<IDrawerItem> getNewSubMenuItems(IDrawerItem parent) {
         List<IDrawerItem> sub = new ArrayList<>();
-        sub.add(new SecondaryDrawerItem().withName(R.string.action_campaign).withLevel(2));
-        sub.add(new SecondaryDrawerItem().withName(R.string.action_sequence).withLevel(2));
-        sub.add(new SecondaryDrawerItem().withName(R.string.action_rule).withLevel(2));
-        sub.add(new SecondaryDrawerItem().withName(R.string.action_form).withLevel(2));
-        sub.add(new SecondaryDrawerItem().withName(R.string.action_message).withLevel(2));
+
+        sub.add(new SecondaryDrawerItem()
+                .withName(R.string.action_campaign)
+                .withTag(ObjectType.CAMPAIGN.getId())
+                .withParent(parent));
+        sub.add(new SecondaryDrawerItem()
+                .withName(R.string.action_sequence)
+                .withTag(ObjectType.SEQUENCE.getId())
+                .withParent(parent));
+        sub.add(new SecondaryDrawerItem()
+                .withName(R.string.action_rule)
+                .withTag(ObjectType.RULE.getId())
+                .withParent(parent));
+        sub.add(new SecondaryDrawerItem()
+                .withName(R.string.action_form)
+                .withTag(ObjectType.FORM.getId())
+                .withParent(parent));
+        sub.add(new SecondaryDrawerItem()
+                .withName(R.string.action_message)
+                .withTag(ObjectType.MESSAGE.getId())
+                .withParent(parent));
         return sub;
     }
 
     private List<IDrawerItem> getAccountActionsNavMenu() {
         List<IDrawerItem> sub = new ArrayList<>();
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_account).withIcon(R.drawable.ic_person_black_24dp));
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_admin).withIcon(R.drawable.ic_settings_black_24dp));
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_users).withIcon(R.drawable.ic_supervisor_account_black_24dp));
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_profile).withIcon(R.drawable.ic_account_box_black_24dp));
-        sub.add(new PrimaryDrawerItem().withName(R.string.menu_logout).withIcon(R.drawable.ic_logout_24dp));
+        sub.add(new PrimaryDrawerItem()
+                .withName(R.string.menu_account)
+                .withIcon(R.drawable.ic_person_black_24dp));
+        sub.add(new PrimaryDrawerItem()
+                .withName(R.string.menu_admin)
+                .withIcon(R.drawable.ic_settings_black_24dp));
+        sub.add(new PrimaryDrawerItem()
+                .withName(R.string.menu_users)
+                .withIcon(R.drawable.ic_supervisor_account_black_24dp));
+        sub.add(new PrimaryDrawerItem()
+                .withName(R.string.menu_profile)
+                .withIcon(R.drawable.ic_account_box_black_24dp));
+        sub.add(new PrimaryDrawerItem()
+                .withName(R.string.menu_logout)
+                .withIcon(R.drawable.ic_logout_24dp));
         return sub;
     }
 }

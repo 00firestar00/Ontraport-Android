@@ -36,7 +36,7 @@ public class RecordInfo implements Info {
         Meta.Data meta = OntraportApplication.getInstance().getMetaData(object_id);
         Map<String, Meta.Field> fields = meta.getFields();
 
-        id = Integer.parseInt(data.get("id"));
+        id = Integer.parseInt(data.get(FieldUtils.findIdField(data)));
         for (String key : order) {
             String alias = null;
             String type = "";

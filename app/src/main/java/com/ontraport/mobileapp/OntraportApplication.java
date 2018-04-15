@@ -100,7 +100,12 @@ public class OntraportApplication extends Application {
                 return data.getPlural();
             }
         }
-        return "";
+
+        String name = getMetaData(object_id).getName();
+        if (count == 1) {
+            return name;
+        }
+        return name + "s";
     }
 
     public Meta.Data getMetaData(int object_id) {

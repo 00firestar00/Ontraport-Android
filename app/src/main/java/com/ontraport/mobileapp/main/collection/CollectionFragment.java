@@ -48,6 +48,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     private RequestParams params = new RequestParams();
     private RequestParams current_params = new RequestParams();
     private int object_id = 0;
+    private int object_type_id = 0;
     private String label;
     @DrawableRes
     private int icon;
@@ -61,6 +62,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         Bundle bundle = getArguments();
         if (bundle != null) {
             object_id = bundle.getInt(Constants.OBJECT_ID, 0);
+            object_type_id = bundle.getInt(Constants.OBJECT_TYPE_ID, 0);
             icon = bundle.getInt("icon", R.drawable.ic_person_black_24dp);
             int color = bundle.getInt("theme", R.color.colorAccent);
             theme = getResources().getColor(color);
@@ -71,6 +73,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         }
 
         params.put(Constants.OBJECT_ID, object_id);
+        params.put(Constants.OBJECT_TYPE_ID, object_type_id);
 
         activity = (MainActivity) getActivity();
         if (activity != null) {

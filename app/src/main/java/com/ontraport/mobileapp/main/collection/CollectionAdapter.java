@@ -118,7 +118,7 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
                 ? application.getResources().getColorStateList(R.color.colorSelection)
                 : ColorStateList.valueOf(Color.WHITE));
 
-        holder.setTag(data.get("id"));
+        holder.setTag(Integer.toString(data.getId()));
     }
 
     @Override
