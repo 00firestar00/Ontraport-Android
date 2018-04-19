@@ -50,6 +50,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
     private int object_id = 0;
     private int object_type_id = 0;
     private String label;
+    private boolean has_record = true;
     @DrawableRes
     private int icon;
     @ColorInt
@@ -61,11 +62,12 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         Bundle bundle = getArguments();
         if (bundle != null) {
+            int color = bundle.getInt("theme", R.color.colorAccent);
             object_id = bundle.getInt(Constants.OBJECT_ID, 0);
             object_type_id = bundle.getInt(Constants.OBJECT_TYPE_ID, 0);
             icon = bundle.getInt("icon", R.drawable.ic_person_black_24dp);
-            int color = bundle.getInt("theme", R.color.colorAccent);
             theme = getResources().getColor(color);
+            has_record = bundle.getBoolean("hasRecord", true);
 
             if (bundle.getBoolean("hasFab", true)) {
                 setHasFab(root_view);
@@ -92,7 +94,8 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
         current_params.putAll(params);
         LinearLayoutManager manager = new LinearLayoutManager(activity);
-        RecyclerView recycler_view = setRecyclerView(root_view, new CollectionAdapter(params, activity, theme), manager);
+        CollectionAdapter collection_adapter = new CollectionAdapter(params, activity, theme, has_record);
+        RecyclerView recycler_view = setRecyclerView(root_view, collection_adapter, manager);
         recycler_view.addOnScrollListener(new EndlessScrollListener(manager) {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {

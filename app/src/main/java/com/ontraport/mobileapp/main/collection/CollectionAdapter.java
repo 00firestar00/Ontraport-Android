@@ -27,6 +27,7 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
     private final FragmentManager fragment_manager;
     private final MainActivity activity;
     private final OntraportApplication application;
+    private final boolean has_record;
 
     private RequestParams params;
     private CollectionInfo collection = new CollectionInfo();
@@ -34,12 +35,13 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
     @ColorInt
     private int theme;
 
-    CollectionAdapter(RequestParams params, MainActivity activity, @ColorInt int theme) {
+    CollectionAdapter(RequestParams params, MainActivity activity, @ColorInt int theme, boolean has_record) {
         this.activity = activity;
         this.fragment_manager = activity.getSupportFragmentManager();
         this.application = (OntraportApplication) activity.getApplication();
         this.params = params;
         this.theme = theme;
+        this.has_record = has_record;
     }
 
     int getMaxPages() {
@@ -101,7 +103,7 @@ public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.collection_card, parent, false);
 
-        return new CollectionViewHolder(view, params, fragment_manager, collection.getListFieldCount(), theme);
+        return new CollectionViewHolder(view, params, fragment_manager, collection.getListFieldCount(), theme, has_record);
     }
 
     @Override

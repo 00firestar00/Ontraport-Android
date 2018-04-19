@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
         // Contacts Collection
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container, getObjectFragment(0, null))
+                .add(R.id.container, getObjectFragment(ObjectType.CONTACT.getId(), null))
                 .commit();
     }
 
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity
             bundle.putInt(Constants.OBJECT_ID, id);
             bundle.putInt(Constants.OBJECT_TYPE_ID, parent_id);
             bundle.putBoolean("hasFab", false);
+            bundle.putBoolean("hasRecord", false);
         }
 
         getSupportFragmentManager()
@@ -145,7 +146,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private List<IDrawerItem> buildObjectsNavMenu(FastAdapter<IDrawerItem> adapter) {
-
         List<IDrawerItem> objects = new ArrayList<>();
 
         SelectableExpandableDrawerItem contact_item = new SelectableExpandableDrawerItem(adapter)
@@ -199,22 +199,27 @@ public class MainActivity extends AppCompatActivity
 
         sub.add(new SecondaryDrawerItem()
                 .withName(R.string.action_campaign)
+                .withLevel(2)
                 .withTag(ObjectType.CAMPAIGN.getId())
                 .withParent(parent));
         sub.add(new SecondaryDrawerItem()
                 .withName(R.string.action_sequence)
+                .withLevel(2)
                 .withTag(ObjectType.SEQUENCE.getId())
                 .withParent(parent));
         sub.add(new SecondaryDrawerItem()
                 .withName(R.string.action_rule)
+                .withLevel(2)
                 .withTag(ObjectType.RULE.getId())
                 .withParent(parent));
         sub.add(new SecondaryDrawerItem()
                 .withName(R.string.action_form)
+                .withLevel(2)
                 .withTag(ObjectType.FORM.getId())
                 .withParent(parent));
         sub.add(new SecondaryDrawerItem()
                 .withName(R.string.action_message)
+                .withLevel(2)
                 .withTag(ObjectType.MESSAGE.getId())
                 .withParent(parent));
         return sub;
@@ -222,6 +227,7 @@ public class MainActivity extends AppCompatActivity
 
     private List<IDrawerItem> getAccountActionsNavMenu() {
         List<IDrawerItem> sub = new ArrayList<>();
+
         sub.add(new PrimaryDrawerItem()
                 .withName(R.string.menu_account)
                 .withIcon(R.drawable.ic_person_black_24dp));

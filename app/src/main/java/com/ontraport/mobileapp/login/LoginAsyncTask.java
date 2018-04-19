@@ -50,7 +50,6 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, CombinedMeta> {
             editor.apply();
 
             Intent intent = new Intent(activity, MainActivity.class);
-            activity.showProgress(false);
             activity.startActivity(intent);
             activity.finish();
         }

@@ -21,24 +21,26 @@ import com.ontraport.sdk.http.RequestParams;
 
 public class CollectionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private View view;
-    private CardView card;
-    private Context context;
-    private TextView[] labels;
-    private TextView[] values;
-    private FragmentManager manager;
-    private RequestParams params;
+    private final boolean has_record;
+    private final View view;
+    private final CardView card;
+    private final Context context;
+    private final TextView[] labels;
+    private final TextView[] values;
+    private final FragmentManager manager;
+    private final RequestParams params;
     @ColorInt
-    private int theme;
+    private final int theme;
 
     public CollectionViewHolder(View view, RequestParams params, FragmentManager manager,
-                                int textview_count, @ColorInt int theme) {
+                                int textview_count, @ColorInt int theme, boolean has_record) {
         super(view);
         this.view = view;
         this.context = view.getContext();
         this.params = params;
         this.manager = manager;
         this.theme = theme;
+        this.has_record = has_record;
         values = new TextView[textview_count];
         labels = new TextView[textview_count];
         card = view.findViewById(R.id.card);
@@ -52,6 +54,10 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
 
     @Override
     public void onClick(View v) {
+        if (!has_record) {
+            return;
+        }
+
         String object_id = params.getVal(Constants.OBJECT_ID);
         String id = (String) v.getTag();
 
