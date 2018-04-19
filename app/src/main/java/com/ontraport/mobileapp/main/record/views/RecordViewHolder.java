@@ -4,7 +4,7 @@ import android.support.annotation.CallSuper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
-import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.http.RequestParams;
 
 public class RecordViewHolder extends RecyclerView.ViewHolder {
@@ -24,7 +24,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setParams(int object_id, int id) {
-        params.put(Constants.OBJECT_ID, object_id);
+        params.put(FieldUtils.OBJECT_ID, object_id);
         params.put("id", id);
     }
 

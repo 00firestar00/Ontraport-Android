@@ -5,7 +5,6 @@ import com.ontraport.mobileapp.AbstractAsyncTask;
 import com.ontraport.mobileapp.AsyncAdapter;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.main.collection.CollectionInfo;
-import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.ListResponse;
@@ -50,7 +49,7 @@ public class GetListAsyncTask<A extends AsyncAdapter<CollectionInfo>>
 
                 String[] list_fields = FieldUtils.getParentLabelListFields(ObjectType.valueOf(parent_id));
 
-                parent_params.put(Constants.OBJECT_ID, parent_id);
+                parent_params.put(FieldUtils.OBJECT_ID, parent_id);
                 parent_params.put("listFields", TextUtils.join(",", list_fields));
                 new GetParentListAsyncTask<>(adapter,
                         list_fields,

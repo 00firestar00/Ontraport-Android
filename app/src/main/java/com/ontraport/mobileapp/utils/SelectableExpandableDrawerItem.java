@@ -63,7 +63,7 @@ public class SelectableExpandableDrawerItem
     }
 
     @Override
-    public void bindView(SelectableExpandableDrawerItem.ViewHolder viewHolder, List payloads) {
+    public void bindView(SelectableExpandableDrawerItem.ViewHolder viewHolder, List<Object> payloads) {
         super.bindView(viewHolder, payloads);
 
         //bind the basic view parts
@@ -122,14 +122,14 @@ public class SelectableExpandableDrawerItem
     }
 
     public void collapse() {
-        ExpandableExtension extension = adapter.getExtension(ExpandableExtension.class);
+        ExpandableExtension<IDrawerItem> extension = adapter.getExtension(ExpandableExtension.class);
         if (extension != null) {
             extension.collapse();
         }
     }
 
     private void toggleExpandable(int pos) {
-        ExpandableExtension extension = adapter.getExtension(ExpandableExtension.class);
+        ExpandableExtension<IDrawerItem> extension = adapter.getExtension(ExpandableExtension.class);
         if (extension != null) {
             extension.toggleExpandable(pos);
         }

@@ -19,7 +19,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.collection.CollectionFragment;
-import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.mobileapp.utils.SelectableExpandableDrawerItem;
 import com.ontraport.mobileapp.utils.ThemeUtils;
 import com.ontraport.sdk.http.CustomObjectResponse;
@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity
             }
 
             bundle = new Bundle(bundle);
-            bundle.putInt(Constants.OBJECT_ID, id);
-            bundle.putInt(Constants.OBJECT_TYPE_ID, parent_id);
+            bundle.putInt(FieldUtils.OBJECT_ID, id);
+            bundle.putInt(FieldUtils.OBJECT_TYPE_ID, parent_id);
             bundle.putBoolean("hasFab", false);
             bundle.putBoolean("hasRecord", false);
         }
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, getObjectFragment(id, bundle))
-                .addToBackStack("collection_" + bundle.getInt(Constants.OBJECT_ID))
+                .addToBackStack("collection_" + bundle.getInt(FieldUtils.OBJECT_ID))
                 .commit();
 
         if (drawerItem instanceof SelectableExpandableDrawerItem) {
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         CollectionFragment fragment = new CollectionFragment();
         if (bundle == null) {
             bundle = new Bundle();
-            bundle.putInt(Constants.OBJECT_ID, object_id);
+            bundle.putInt(FieldUtils.OBJECT_ID, object_id);
         }
         fragment.setArguments(bundle);
         return fragment;
@@ -149,8 +149,8 @@ public class MainActivity extends AppCompatActivity
         List<IDrawerItem> objects = new ArrayList<>();
 
         SelectableExpandableDrawerItem contact_item = new SelectableExpandableDrawerItem(adapter)
-                .withName("Contacts")
-                .withTag(0)
+                .withName(R.string.contacts)
+                .withTag(ObjectType.CONTACT.getId())
                 .withIcon(R.drawable.ic_person_black_24dp)
                 .withSelectable(true)
                 .withIconTintingEnabled(true)
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity
                 int theme = ThemeUtils.getThemeByName(data.getTheme());
 
                 Bundle bundle = new Bundle();
-                bundle.putInt(Constants.OBJECT_ID, id);
+                bundle.putInt(FieldUtils.OBJECT_ID, id);
                 bundle.putInt("icon", icon);
                 bundle.putInt("theme", theme);
                 nav_info.put(id, bundle);
@@ -191,6 +191,28 @@ public class MainActivity extends AppCompatActivity
 
             }
         }
+
+        int icon = ThemeUtils.getIconByName("");
+        int theme = ThemeUtils.getThemeByName("ussr-theme-blue-800");
+        int id = ObjectType.LANDINGPAGE.getId();
+        Bundle bundle = new Bundle();
+        bundle.putInt(FieldUtils.OBJECT_ID, id);
+        bundle.putInt("icon", icon);
+        bundle.putInt("theme", theme);
+        bundle.putBoolean("hasFab", false);
+        bundle.putBoolean("hasRecord", false);
+        nav_info.put(id, bundle);
+
+        PrimaryDrawerItem landingpage_item = new PrimaryDrawerItem()
+                .withName(R.string.action_landingpage)
+                .withTag(id)
+                .withIcon(icon)
+                .withSelectable(true)
+                .withIconTintingEnabled(true)
+                .withIconColorRes(theme)
+                .withSelectedIconColorRes(theme);
+        objects.add(landingpage_item);
+
         return objects;
     }
 

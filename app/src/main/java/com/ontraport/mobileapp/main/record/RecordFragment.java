@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.MainActivity;
-import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.exceptions.NullResponseException;
 import com.ontraport.sdk.http.RequestParams;
 
@@ -26,10 +26,10 @@ public class RecordFragment extends Fragment {
         if (bundle == null || getActivity() == null) {
             return root_view;
         }
-        int object_id = bundle.getInt(Constants.OBJECT_ID, 0);
+        int object_id = bundle.getInt(FieldUtils.OBJECT_ID, 0);
         String id = bundle.getString("id", null);
         RequestParams params = new RequestParams();
-        params.put(Constants.OBJECT_ID, object_id);
+        params.put(FieldUtils.OBJECT_ID, object_id);
 
         RecordAdapter adapter = new RecordAdapter((MainActivity) getActivity());
         RecyclerView recyclerView = root_view.findViewById(R.id.record);

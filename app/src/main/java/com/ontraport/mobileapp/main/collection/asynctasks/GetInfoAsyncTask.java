@@ -4,7 +4,7 @@ import android.text.TextUtils;
 import com.ontraport.mobileapp.AbstractAsyncTask;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.main.collection.CollectionAdapter;
-import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.exceptions.RequiredParamsException;
 import com.ontraport.sdk.http.ObjectInfo;
 import com.ontraport.sdk.http.RequestParams;
@@ -55,7 +55,7 @@ public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, Objec
         new GetListAsyncTask<>(adapter,
                 list_fields,
                 info.getCount(),
-                params.getAsInt(Constants.OBJECT_ID),
+                params.getAsInt(FieldUtils.OBJECT_ID),
                 force_network).execute(params);
     }
 

@@ -11,7 +11,7 @@ import com.ontraport.mobileapp.main.record.RecordAdapter;
 import com.ontraport.mobileapp.main.record.asynctasks.CreateAsyncTask;
 import com.ontraport.mobileapp.main.record.asynctasks.GetOneAsyncTask;
 import com.ontraport.mobileapp.sdk.http.OkClient;
-import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.Ontraport;
 import com.ontraport.sdk.http.CustomObjectResponse;
 import com.ontraport.sdk.http.Meta;
@@ -102,10 +102,16 @@ public class OntraportApplication extends Application {
         }
 
         String name = getMetaData(object_id).getName();
-        if (count == 1) {
-            return name;
+        switch (name) {
+            case "CampaignBuilder":
+                name = "Campaign";
+                break;
+            case "SmartFormFE":
+                name = "Form";
+                break;
         }
-        return name + "s";
+
+        return (count == 1) ? name : name + "s";
     }
 
     public Meta.Data getMetaData(int object_id) {
@@ -135,7 +141,7 @@ public class OntraportApplication extends Application {
         if (force) {
             ((OkClient) getApi().getHttpClient()).forceNetwork();
         }
-        new GetOneAsyncTask(adapter, params.getAsInt(Constants.OBJECT_ID)).execute(params);
+        new GetOneAsyncTask(adapter, params.getAsInt(FieldUtils.OBJECT_ID)).execute(params);
     }
 
     public void createRecord(RecordAdapter adapter, RequestParams params) {
@@ -146,7 +152,7 @@ public class OntraportApplication extends Application {
         if (force) {
             ((OkClient) getApi().getHttpClient()).forceNetwork();
         }
-        new CreateAsyncTask(adapter, params.getAsInt(Constants.OBJECT_ID)).execute(params);
+        new CreateAsyncTask(adapter, params.getAsInt(FieldUtils.OBJECT_ID)).execute(params);
     }
 
     public static boolean isNetworkAvailable() {

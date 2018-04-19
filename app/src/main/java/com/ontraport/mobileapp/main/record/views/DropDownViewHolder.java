@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.record.asynctasks.UpdateAsyncTask;
-import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.http.Meta;
 
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
     }
 
     Meta.Field getMetaForField(String field) {
-        int object_id = params.getAsInt(Constants.OBJECT_ID);
+        int object_id = params.getAsInt(FieldUtils.OBJECT_ID);
         Meta.Data object_meta = OntraportApplication.getInstance().getMetaData(object_id);
         return object_meta.getFields().get(field);
     }

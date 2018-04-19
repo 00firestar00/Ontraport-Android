@@ -15,6 +15,9 @@ import java.util.regex.Pattern;
 
 public class FieldUtils {
 
+    public static final String OBJECT_ID = "objectID";
+    public static final String OBJECT_TYPE_ID = "object_type_id";
+
     public static String convertDate(String unix) {
         if (unix == null || unix.isEmpty()) {
             return "";

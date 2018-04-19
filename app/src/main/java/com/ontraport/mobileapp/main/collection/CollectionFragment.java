@@ -32,8 +32,8 @@ import com.ontraport.mobileapp.main.MainActivity;
 import com.ontraport.mobileapp.main.collection.views.ObjectSearchView;
 import com.ontraport.mobileapp.main.record.RecordFragment;
 import com.ontraport.mobileapp.main.record.RecordInfo;
-import com.ontraport.mobileapp.utils.Constants;
 import com.ontraport.mobileapp.utils.EndlessScrollListener;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.mobileapp.utils.SelectableListFragment;
 import com.ontraport.sdk.criteria.Condition;
 import com.ontraport.sdk.criteria.Operator;
@@ -63,8 +63,8 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         Bundle bundle = getArguments();
         if (bundle != null) {
             int color = bundle.getInt("theme", R.color.colorAccent);
-            object_id = bundle.getInt(Constants.OBJECT_ID, 0);
-            object_type_id = bundle.getInt(Constants.OBJECT_TYPE_ID, 0);
+            object_id = bundle.getInt(FieldUtils.OBJECT_ID, 0);
+            object_type_id = bundle.getInt(FieldUtils.OBJECT_TYPE_ID, 0);
             icon = bundle.getInt("icon", R.drawable.ic_person_black_24dp);
             theme = getResources().getColor(color);
             has_record = bundle.getBoolean("hasRecord", true);
@@ -74,8 +74,8 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
             }
         }
 
-        params.put(Constants.OBJECT_ID, object_id);
-        params.put(Constants.OBJECT_TYPE_ID, object_type_id);
+        params.put(FieldUtils.OBJECT_ID, object_id);
+        params.put(FieldUtils.OBJECT_TYPE_ID, object_type_id);
 
         activity = (MainActivity) getActivity();
         if (activity != null) {
@@ -150,7 +150,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
         if (bundle == null) {
             bundle = new Bundle();
         }
-        bundle.putInt(Constants.OBJECT_ID, object_id);
+        bundle.putInt(FieldUtils.OBJECT_ID, object_id);
         fragment.setArguments(bundle);
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment)
@@ -223,8 +223,8 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
 
     private void showAddRemoveDialog(final ActionMode mode, @StringRes int string_res, int object_type_id, String condition) {
         RequestParams action_params = new RequestParams();
-        action_params.put(Constants.OBJECT_ID, object_type_id);
-        action_params.put(Constants.OBJECT_TYPE_ID, object_id);
+        action_params.put(FieldUtils.OBJECT_ID, object_type_id);
+        action_params.put(FieldUtils.OBJECT_TYPE_ID, object_id);
         action_params.put("sort", "name");
         action_params.put("listFields", "name");
 
@@ -265,7 +265,7 @@ public class CollectionFragment extends SelectableListFragment<CollectionAdapter
             @Override
             void onSuccess() {
                 RequestParams delete_params = new RequestParams();
-                delete_params.put(Constants.OBJECT_ID, object_id);
+                delete_params.put(FieldUtils.OBJECT_ID, object_id);
                 String[] ids = new String[num_selected];
 
                 for (int i = (selectables.size() - 1); i >= 0; i--) {

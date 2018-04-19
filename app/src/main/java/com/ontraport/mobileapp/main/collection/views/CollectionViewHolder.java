@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.record.RecordFragment;
-import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.http.RequestParams;
 
 public class CollectionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -58,12 +58,12 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
             return;
         }
 
-        String object_id = params.getVal(Constants.OBJECT_ID);
+        String object_id = params.getVal(FieldUtils.OBJECT_ID);
         String id = (String) v.getTag();
 
         RecordFragment fragment = new RecordFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(Constants.OBJECT_ID, Integer.valueOf(object_id));
+        bundle.putInt(FieldUtils.OBJECT_ID, Integer.valueOf(object_id));
         bundle.putString("id", id);
         fragment.setArguments(bundle);
         manager.beginTransaction()

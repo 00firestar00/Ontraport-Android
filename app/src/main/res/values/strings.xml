@@ -12,7 +12,6 @@
     <string name="menu_logout">Log Out</string>
 
     <string name="contacts">Contacts</string>
-    <string name="not_contacts">Not Contacts</string>
     <string name="todo">TODO</string>
     <string name="ontraport">Ontraport</string>
     <string name="app_id">Api-Appid</string>
@@ -36,4 +35,5 @@
     <string name="action_rule">Rules</string>
     <string name="action_form">Forms</string>
     <string name="action_message">Messages</string>
+    <string name="action_landingpage">Landingpages</string>
 </resources>

@@ -22,7 +22,7 @@ import com.ontraport.mobileapp.AsyncAdapter;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.collection.asynctasks.GetListAsyncTask;
 import com.ontraport.mobileapp.main.record.RecordInfo;
-import com.ontraport.mobileapp.utils.Constants;
+import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.mobileapp.utils.ThemedAlertDialog;
 import com.ontraport.sdk.http.RequestParams;
 
@@ -48,7 +48,7 @@ public abstract class AddRemoveDialog extends ThemedAlertDialog implements Adapt
 
         new GetListAsyncTask<>(adapter,
                 new String[]{"name"},
-                params.getAsInt(Constants.OBJECT_ID)).execute(params);
+                params.getAsInt(FieldUtils.OBJECT_ID)).execute(params);
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_add_remove, null);

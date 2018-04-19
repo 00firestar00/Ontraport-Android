@@ -11,27 +11,27 @@ public class ThemeUtils {
     public static int getIconByName(String name) {
         // @formatter:off
         switch (name) {
-            case "airplane":              return R.drawable.ic_person_black_24dp;
-            case "add-alert":             return R.drawable.ic_person_black_24dp;
-            case "alarm-clock":           return R.drawable.ic_person_black_24dp;
+            case "airplane":              return R.drawable.ic_airplanemode_active_black_24dp;
+            case "add-alert":             return R.drawable.ic_add_alert_black_24dp;
+            case "alarm-clock":           return R.drawable.ic_access_alarm_black_24dp;
             case "badge":                 return R.drawable.ic_person_black_24dp;
             case "bang-burst":            return R.drawable.ic_person_black_24dp;
             case "basket":                return R.drawable.ic_person_black_24dp;
-            case "birthday-cake":         return R.drawable.ic_person_black_24dp;
-            case "bookmark-2":            return R.drawable.ic_person_black_24dp;
-            case "bookmark":              return R.drawable.ic_person_black_24dp;
+            case "birthday-cake":         return R.drawable.ic_cake_black_24dp;
+            case "bookmark-2":            return R.drawable.ic_book_black_24dp;
+            case "bookmark":              return R.drawable.ic_bookmark_black_24dp;
             case "briefcase-credit-card": return R.drawable.ic_person_black_24dp;
             case "briefcase-lay-button":  return R.drawable.ic_person_black_24dp;
             case "briefcase":             return R.drawable.ic_person_black_24dp;
-            case "bug":                   return R.drawable.ic_person_black_24dp;
+            case "bug":                   return R.drawable.ic_bug_report_black_24dp;
             case "business-2":            return R.drawable.ic_person_black_24dp;
             case "business":              return R.drawable.ic_person_black_24dp;
             case "calendar":              return R.drawable.ic_person_black_24dp;
-            case "camera":                return R.drawable.ic_person_black_24dp;
+            case "camera":                return R.drawable.ic_camera_alt_black_24dp;
             case "carriage":              return R.drawable.ic_person_black_24dp;
             case "chair":                 return R.drawable.ic_person_black_24dp;
-            case "circle-checkmark":      return R.drawable.ic_person_black_24dp;
-            case "circle-cloud":          return R.drawable.ic_person_black_24dp;
+            case "circle-checkmark":      return R.drawable.ic_check_circle_black_24dp;
+            case "circle-cloud":          return R.drawable.ic_cloud_circle_black_24dp;
             case "circle-face":           return R.drawable.ic_face_black_24dp;
             case "circle-star":           return R.drawable.ic_person_black_24dp;
             case "cloud":                 return R.drawable.ic_person_black_24dp;
@@ -74,7 +74,7 @@ public class ThemeUtils {
             case "phone-ring":            return R.drawable.ic_person_black_24dp;
             case "planet-earth":          return R.drawable.ic_person_black_24dp;
             case "plane-land":            return R.drawable.ic_person_black_24dp;
-            case "pregnant":              return R.drawable.ic_person_black_24dp;
+            case "pregnant":              return R.drawable.ic_pregnant_woman_black_24dp;
             case "propeller":             return R.drawable.ic_person_black_24dp;
             case "puzzle-piece":          return R.drawable.ic_person_black_24dp;
             case "radio":                 return R.drawable.ic_person_black_24dp;
@@ -98,11 +98,11 @@ public class ThemeUtils {
             case "beaker":                return R.drawable.ic_person_black_24dp;
             case "boat":                  return R.drawable.ic_person_black_24dp;
             case "boot":                  return R.drawable.ic_person_black_24dp;
-            case "car":                   return R.drawable.ic_person_black_24dp;
-            case "castle":                return R.drawable.ic_person_black_24dp;
+            case "car":                   return R.drawable.ic_directions_car_black_24dp;
+            case "castle":                return R.drawable.ic_castle_black_24dp;
             case "cat":                   return R.drawable.ic_person_black_24dp;
             case "dog":                   return R.drawable.ic_person_black_24dp;
-            case "dollar-bill":           return R.drawable.ic_person_black_24dp;
+            case "dollar-bill":           return R.drawable.ic_attach_money_black_24dp;
             case "hat":                   return R.drawable.ic_person_black_24dp;
             case "nuclear":               return R.drawable.ic_person_black_24dp;
             case "person-circle-slash":   return R.drawable.ic_person_black_24dp;
@@ -126,6 +126,7 @@ public class ThemeUtils {
     public static int getThemeByName(String name) {
         // @formatter:off
         switch (name) {
+            case "ussr-theme-blue-800":             return R.color.blue_800;
             case "ussr-theme-dark-wizard":          return R.color.dark_wizard;
             case "ussr-theme-sherpa-blue":          return R.color.sherpa_blue;
             case "ussr-theme-tropical-rain-forest": return R.color.tropical_rain_forest;
