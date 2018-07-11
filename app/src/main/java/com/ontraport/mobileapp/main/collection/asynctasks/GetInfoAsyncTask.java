@@ -57,6 +57,12 @@ public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, Objec
                 info.getCount(),
                 params.getAsInt(FieldUtils.OBJECT_ID),
                 force_network).execute(params);
+
+        new GetFieldsAsyncTask<>(adapter,
+                list_fields,
+                info.getCount(),
+                params.getAsInt(FieldUtils.OBJECT_ID),
+                force_network).execute(params);
     }
 
     @Override
