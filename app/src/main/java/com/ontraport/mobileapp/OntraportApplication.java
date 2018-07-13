@@ -17,7 +17,13 @@ import com.ontraport.sdk.http.CustomObjectResponse;
 import com.ontraport.sdk.http.FieldEditorResponse;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
+import com.ontraport.sdk.http.SectionResponse;
+import com.ontraport.sdk.models.fieldeditor.ObjectSection;
 import com.ontraport.sdk.objects.ObjectType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class OntraportApplication extends Application {
 
@@ -26,7 +32,7 @@ public class OntraportApplication extends Application {
     private Ontraport ontraport_api;
     private OkClient client;
     private Meta meta;
-    private FieldEditorResponse field_editor;
+    private List<ObjectSection> sections = new ArrayList<>();
     private CustomObjectResponse custom_objects;
     private SparseArray<String> object_labels = new SparseArray<>();
 
@@ -66,12 +72,16 @@ public class OntraportApplication extends Application {
         return meta;
     }
 
-    public void setFieldEditorResponse(FieldEditorResponse field_editor) {
-        this.field_editor = field_editor;
+    public void setFieldSections(FieldEditorResponse field_editor) {
+        Map<String, SectionResponse.Section> data = field_editor.getData();
+        for (Map.Entry<String, SectionResponse.Section> entry : data.entrySet())
+        {
+            sections.add(ObjectSection.createFromResponse(entry.getValue()));
+        }
     }
 
-    public FieldEditorResponse getFieldEditor() {
-        return field_editor;
+    public List<ObjectSection> getFieldSections() {
+        return sections;
     }
 
     public void setCustomObjects(CustomObjectResponse custom_objects) {
