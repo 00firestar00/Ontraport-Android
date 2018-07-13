@@ -34,9 +34,9 @@ public class GetFieldsAsyncTask<A extends AsyncAdapter<CollectionInfo>>
     }
 
     @Override
-    protected void onPostExecute(FieldEditorResponse list) {
-        super.onPostExecute(list);
-
+    protected void onPostExecute(FieldEditorResponse field_editor) {
+        super.onPostExecute(field_editor);
+        OntraportApplication.getInstance().setFieldEditorResponse(field_editor);
     }
 
     @Override

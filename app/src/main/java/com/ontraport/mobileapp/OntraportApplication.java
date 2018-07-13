@@ -14,6 +14,7 @@ import com.ontraport.mobileapp.sdk.http.OkClient;
 import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.Ontraport;
 import com.ontraport.sdk.http.CustomObjectResponse;
+import com.ontraport.sdk.http.FieldEditorResponse;
 import com.ontraport.sdk.http.Meta;
 import com.ontraport.sdk.http.RequestParams;
 import com.ontraport.sdk.objects.ObjectType;
@@ -25,6 +26,7 @@ public class OntraportApplication extends Application {
     private Ontraport ontraport_api;
     private OkClient client;
     private Meta meta;
+    private FieldEditorResponse field_editor;
     private CustomObjectResponse custom_objects;
     private SparseArray<String> object_labels = new SparseArray<>();
 
@@ -62,6 +64,14 @@ public class OntraportApplication extends Application {
 
     public Meta getMeta() {
         return meta;
+    }
+
+    public void setFieldEditorResponse(FieldEditorResponse field_editor) {
+        this.field_editor = field_editor;
+    }
+
+    public FieldEditorResponse getFieldEditor() {
+        return field_editor;
     }
 
     public void setCustomObjects(CustomObjectResponse custom_objects) {
