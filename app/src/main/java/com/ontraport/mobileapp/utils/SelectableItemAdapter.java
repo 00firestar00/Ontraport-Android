@@ -2,9 +2,8 @@ package com.ontraport.mobileapp.utils;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
-import com.ontraport.mobileapp.main.collection.views.CollectionViewHolder;
 
-public abstract class SelectableItemAdapter<T> extends RecyclerView.Adapter<CollectionViewHolder> {
+public abstract class SelectableItemAdapter<T, V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
 
     protected SparseBooleanArray selected_items = new SparseBooleanArray();
 

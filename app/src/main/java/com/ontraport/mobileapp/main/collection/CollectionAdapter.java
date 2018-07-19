@@ -21,7 +21,7 @@ import com.ontraport.sdk.http.RequestParams;
 
 import java.util.Map;
 
-public class CollectionAdapter extends SelectableItemAdapter<RecordInfo>
+public class CollectionAdapter extends SelectableItemAdapter<RecordInfo, CollectionViewHolder>
         implements AsyncAdapter<CollectionInfo> {
 
     private final FragmentManager fragment_manager;

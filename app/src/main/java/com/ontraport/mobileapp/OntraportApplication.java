@@ -84,6 +84,10 @@ public class OntraportApplication extends Application {
         return sections;
     }
 
+    public ObjectSection getFieldSectionAtPosition(int pos) {
+        return sections.get(pos);
+    }
+
     public void setCustomObjects(CustomObjectResponse custom_objects) {
         this.custom_objects = custom_objects;
     }
