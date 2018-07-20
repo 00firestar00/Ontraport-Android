@@ -67,7 +67,7 @@ public class RecordAdapter extends SelectableItemAdapter<RecordInfo, SectionView
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.record_section_card, parent, false);
 
-        return new SectionViewHolder(view, record);
+        return new SectionViewHolder(view, record, fragment_manager);
     }
 
     @Override

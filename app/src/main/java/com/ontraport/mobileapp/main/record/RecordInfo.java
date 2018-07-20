@@ -1,5 +1,7 @@
 package com.ontraport.mobileapp.main.record;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import com.ontraport.mobileapp.Info;
 import com.ontraport.mobileapp.OntraportApplication;
@@ -16,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecordInfo implements Info {
+public class RecordInfo implements Info, Parcelable {
 
     private int id;
     private int object_id;
@@ -224,5 +226,42 @@ public class RecordInfo implements Info {
             return CreditCardType.getNameFromValue(Integer.parseInt(val));
         }
         return val;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(object_id);
+        dest.writeList(keys);
+        dest.writeList(aliases);
+        dest.writeList(values);
+        dest.writeList(types);
+        dest.writeMap(parent_object_ids);
+    }
+
+    public static final Parcelable.Creator<RecordInfo> CREATOR
+            = new Parcelable.Creator<RecordInfo>() {
+        public RecordInfo createFromParcel(Parcel in) {
+            return new RecordInfo(in);
+        }
+
+        public RecordInfo[] newArray(int size) {
+            return new RecordInfo[size];
+        }
+    };
+
+    private RecordInfo(Parcel in) {
+        id = in.readInt();
+        object_id = in.readInt();
+        in.readList(keys, String.class.getClassLoader());
+        in.readList(aliases, String.class.getClassLoader());
+        in.readList(values, String.class.getClassLoader());
+        in.readList(types, Integer.class.getClassLoader());
+        in.readMap(parent_object_ids, String.class.getClassLoader());
     }
 }
