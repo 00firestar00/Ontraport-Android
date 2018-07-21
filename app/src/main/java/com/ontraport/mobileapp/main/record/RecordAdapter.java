@@ -67,13 +67,13 @@ public class RecordAdapter extends SelectableItemAdapter<RecordInfo, SectionView
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.record_section_card, parent, false);
 
-        return new SectionViewHolder(view, record, fragment_manager);
+        return new SectionViewHolder(view, fragment_manager);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SectionViewHolder holder, int position) {
         ObjectSection section = OntraportApplication.getInstance().getFieldSectionAtPosition(position);
-        holder.bind(section);
+        holder.bind(section, record);
     }
 
     @Override
