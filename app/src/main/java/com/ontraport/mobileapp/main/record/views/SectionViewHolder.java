@@ -19,6 +19,7 @@ public class SectionViewHolder extends RecyclerView.ViewHolder implements View.O
 
     private RecordInfo record;
     private ObjectSection section;
+    private int index;
 
     public SectionViewHolder(View view, FragmentManager manager) {
         super(view);
@@ -29,7 +30,8 @@ public class SectionViewHolder extends RecyclerView.ViewHolder implements View.O
         layout_view.setOnClickListener(this);
     }
 
-    public void bind(ObjectSection section, RecordInfo record) {
+    public void bind(int index, ObjectSection section, RecordInfo record) {
+        this.index = index;
         this.section = section;
         this.record = record;
         title.setText(section.getName());
@@ -41,6 +43,7 @@ public class SectionViewHolder extends RecyclerView.ViewHolder implements View.O
         SectionFragment fragment = new SectionFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("record", record);
+        bundle.putInt("index", index);
         fragment.setArguments(bundle);
         manager.beginTransaction()
                 .replace(R.id.container, fragment)

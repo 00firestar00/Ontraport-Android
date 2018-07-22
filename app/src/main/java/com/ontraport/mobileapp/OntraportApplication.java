@@ -32,7 +32,7 @@ public class OntraportApplication extends Application {
     private Ontraport ontraport_api;
     private OkClient client;
     private Meta meta;
-    private List<ObjectSection> sections = new ArrayList<>();
+    private SparseArray<List<ObjectSection>> sections = new SparseArray<>();
     private CustomObjectResponse custom_objects;
     private SparseArray<String> object_labels = new SparseArray<>();
 
@@ -72,20 +72,22 @@ public class OntraportApplication extends Application {
         return meta;
     }
 
-    public void setFieldSections(FieldEditorResponse field_editor) {
+    public void setFieldSections(int object_id, FieldEditorResponse field_editor) {
         Map<String, SectionResponse.Section> data = field_editor.getData();
+        List<ObjectSection> list = new ArrayList<>(data.size());
         for (Map.Entry<String, SectionResponse.Section> entry : data.entrySet())
         {
-            sections.add(ObjectSection.createFromResponse(entry.getValue()));
+            list.add(ObjectSection.createFromResponse(entry.getValue()));
         }
+        sections.append(object_id, list);
     }
 
-    public List<ObjectSection> getFieldSections() {
-        return sections;
+    public List<ObjectSection> getFieldSections(int object_id) {
+        return sections.get(object_id);
     }
 
-    public ObjectSection getFieldSectionAtPosition(int pos) {
-        return sections.get(pos);
+    public ObjectSection getFieldSectionAtPosition(int object_id, int pos) {
+        return sections.get(object_id).get(pos);
     }
 
     public void setCustomObjects(CustomObjectResponse custom_objects) {

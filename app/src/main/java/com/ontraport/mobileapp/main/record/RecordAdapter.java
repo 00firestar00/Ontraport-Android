@@ -72,13 +72,17 @@ public class RecordAdapter extends SelectableItemAdapter<RecordInfo, SectionView
 
     @Override
     public void onBindViewHolder(@NonNull SectionViewHolder holder, int position) {
-        ObjectSection section = OntraportApplication.getInstance().getFieldSectionAtPosition(position);
-        holder.bind(section, record);
+        if (record == null) {
+            return;
+        }
+        ObjectSection section = OntraportApplication.getInstance()
+                .getFieldSectionAtPosition(record.getObjectId(), position);
+        holder.bind(position, section, record);
     }
 
     @Override
     public int getItemCount() {
-        return OntraportApplication.getInstance().getFieldSections().size();
+        return OntraportApplication.getInstance().getFieldSections(record.getObjectId()).size();
     }
 
     @Override

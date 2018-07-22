@@ -9,6 +9,7 @@ import com.ontraport.mobileapp.utils.FieldType;
 import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.exceptions.InvalidValueException;
 import com.ontraport.sdk.http.Meta;
+import com.ontraport.sdk.models.fieldeditor.ObjectSection;
 import com.ontraport.sdk.objects.fields.BulkEmailStatus;
 import com.ontraport.sdk.objects.fields.BulkSMSStatus;
 import com.ontraport.sdk.objects.fields.CreditCardType;
@@ -35,6 +36,7 @@ public class RecordInfo implements Info, Parcelable {
     public RecordInfo(int object_id, Map<String, String> data, List<String> order) {
         this.object_id = object_id;
 
+        List<ObjectSection> sections = OntraportApplication.getInstance().getFieldSections(object_id);
         Meta.Data meta = OntraportApplication.getInstance().getMetaData(object_id);
         Map<String, Meta.Field> fields = meta.getFields();
 
@@ -264,4 +266,9 @@ public class RecordInfo implements Info, Parcelable {
         in.readList(types, Integer.class.getClassLoader());
         in.readMap(parent_object_ids, String.class.getClassLoader());
     }
+
+    class RecordSection {
+
+    }
+
 }
