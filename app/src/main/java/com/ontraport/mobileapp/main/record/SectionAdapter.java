@@ -25,6 +25,8 @@ import com.ontraport.mobileapp.main.record.views.TimestampViewHolder;
 import com.ontraport.mobileapp.main.record.views.UrlViewHolder;
 import com.ontraport.mobileapp.utils.FieldType;
 
+import java.util.List;
+
 public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
         implements AsyncAdapter<RecordInfo> {
 
@@ -110,6 +112,10 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecordViewHolder holder, int position) {
+        if (record == null) {
+            return;
+        }
+        List<String> keys_in_section = record.getKeysInSection(position);
         String key = record.getKey(position);
         String alias = record.getAlias(position);
         String value = record.getValue(position);

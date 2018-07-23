@@ -3,12 +3,14 @@ package com.ontraport.mobileapp.main.record;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import com.ontraport.mobileapp.Info;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.utils.FieldType;
 import com.ontraport.mobileapp.utils.FieldUtils;
 import com.ontraport.sdk.exceptions.InvalidValueException;
 import com.ontraport.sdk.http.Meta;
+import com.ontraport.sdk.models.fieldeditor.ObjectField;
 import com.ontraport.sdk.models.fieldeditor.ObjectSection;
 import com.ontraport.sdk.objects.fields.BulkEmailStatus;
 import com.ontraport.sdk.objects.fields.BulkSMSStatus;
@@ -24,6 +26,7 @@ public class RecordInfo implements Info, Parcelable {
     private int id;
     private int object_id;
     private List<String> keys = new ArrayList<>();
+    private SparseArray<List<String>> keys_in_section = new SparseArray<>();
     private List<String> aliases = new ArrayList<>();
     private List<String> values = new ArrayList<>();
     private List<Integer> types = new ArrayList<>();
@@ -36,7 +39,6 @@ public class RecordInfo implements Info, Parcelable {
     public RecordInfo(int object_id, Map<String, String> data, List<String> order) {
         this.object_id = object_id;
 
-        List<ObjectSection> sections = OntraportApplication.getInstance().getFieldSections(object_id);
         Meta.Data meta = OntraportApplication.getInstance().getMetaData(object_id);
         Map<String, Meta.Field> fields = meta.getFields();
 
@@ -150,6 +152,32 @@ public class RecordInfo implements Info, Parcelable {
 
     public List<String> getKeys() {
         return keys;
+    }
+
+    public List<String> getKeysInSection(int pos) {
+        if (keys_in_section.get(pos) != null)
+        {
+            return keys_in_section.get(pos);
+        }
+
+        List<ObjectSection> sections = OntraportApplication.getInstance().getFieldSections(object_id);
+
+        for (int i = 0; i < sections.size(); i++) {
+            keys_in_section.append(i, new ArrayList<String>());
+        }
+
+        for (String key : keys) {
+
+            for (int i = 0; i < sections.size(); i++) {
+                ObjectSection s = sections.get(i);
+                ObjectField f = s.getField(key);
+                if (f == null) {
+                    continue;
+                }
+                keys_in_section.get(i).add(key);
+            }
+        }
+        return keys_in_section.get(pos);
     }
 
     public List<String> getValues() {

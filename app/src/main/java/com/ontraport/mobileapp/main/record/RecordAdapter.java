@@ -82,7 +82,7 @@ public class RecordAdapter extends SelectableItemAdapter<RecordInfo, SectionView
 
     @Override
     public int getItemCount() {
-        return OntraportApplication.getInstance().getFieldSections(record.getObjectId()).size();
+        return record == null ? 0 : OntraportApplication.getInstance().getFieldSections(record.getObjectId()).size();
     }
 
     @Override
