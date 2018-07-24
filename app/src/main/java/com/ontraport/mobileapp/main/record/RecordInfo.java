@@ -27,6 +27,7 @@ public class RecordInfo implements Info, Parcelable {
     private int object_id;
     private List<String> keys = new ArrayList<>();
     private SparseArray<List<String>> keys_in_section = new SparseArray<>();
+    private Map<String, String> key_to_value = new HashMap<>();
     private List<String> aliases = new ArrayList<>();
     private List<String> values = new ArrayList<>();
     private List<Integer> types = new ArrayList<>();
@@ -130,7 +131,7 @@ public class RecordInfo implements Info, Parcelable {
                 System.out.println("Received incorrect value from API: " + data.get(key) + " for " + key + ". You should report this");
                 continue;
             }
-
+            key_to_value.put(key, alias);
             keys.add(key);
             aliases.add(alias);
             values.add(data.get(key) == null ? "" : data.get(key));
@@ -182,6 +183,10 @@ public class RecordInfo implements Info, Parcelable {
 
     public List<String> getValues() {
         return values;
+    }
+
+    public String getValue(String key) {
+        return key_to_value.get(key);
     }
 
     public List<Integer> getTypes() {

@@ -24,6 +24,8 @@ import com.ontraport.mobileapp.main.record.views.TextViewHolder;
 import com.ontraport.mobileapp.main.record.views.TimestampViewHolder;
 import com.ontraport.mobileapp.main.record.views.UrlViewHolder;
 import com.ontraport.mobileapp.utils.FieldType;
+import com.ontraport.sdk.models.fieldeditor.ObjectField;
+import com.ontraport.sdk.models.fieldeditor.ObjectSection;
 
 import java.util.List;
 
@@ -33,10 +35,12 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
     private final AppCompatActivity activity;
     private final FragmentManager fragment_manager;
     private final OntraportApplication application;
+    private final int index;
     private RecordInfo record;
 
-    SectionAdapter(AppCompatActivity activity) {
+    SectionAdapter(AppCompatActivity activity, int index) {
         this.activity = activity;
+        this.index = index;
         this.fragment_manager = activity.getSupportFragmentManager();
         this.application = (OntraportApplication) activity.getApplication();
     }
@@ -115,10 +119,14 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
         if (record == null) {
             return;
         }
-        List<String> keys_in_section = record.getKeysInSection(position);
-        String key = record.getKey(position);
-        String alias = record.getAlias(position);
-        String value = record.getValue(position);
+        List<String> keys_in_section = record.getKeysInSection(index);
+        String key = keys_in_section.get(position);
+
+        ObjectSection section = OntraportApplication.getInstance().getFieldSectionAtPosition(record.getObjectId(), index);
+        ObjectField field = section.getField(key);
+
+        String alias = field.getAlias();
+        String value = record.getValue(key);
 
         holder.setParams(record.getObjectId(), record.getId());
         holder.setText(key, value, alias);
@@ -132,6 +140,6 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
 
     @Override
     public int getItemCount() {
-        return record == null ? 0 : record.size();
+        return record == null ? 0 : record.getKeysInSection(index).size();
     }
 }

@@ -22,8 +22,9 @@ public class SectionFragment extends Fragment {
             return root_view;
         }
         RecordInfo record = bundle.getParcelable("record");
+        int index = bundle.getInt("index");
 
-        SectionAdapter adapter = new SectionAdapter((MainActivity) getActivity());
+        SectionAdapter adapter = new SectionAdapter((MainActivity) getActivity(), index);
         RecyclerView recyclerView = root_view.findViewById(R.id.record);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
