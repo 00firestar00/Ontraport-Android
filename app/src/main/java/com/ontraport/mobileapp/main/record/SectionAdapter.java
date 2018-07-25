@@ -25,9 +25,6 @@ import com.ontraport.mobileapp.main.record.views.TimestampViewHolder;
 import com.ontraport.mobileapp.main.record.views.UrlViewHolder;
 import com.ontraport.mobileapp.utils.FieldType;
 import com.ontraport.sdk.models.fieldeditor.ObjectField;
-import com.ontraport.sdk.models.fieldeditor.ObjectSection;
-
-import java.util.List;
 
 public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
         implements AsyncAdapter<RecordInfo> {
@@ -93,10 +90,11 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
                 return new DisabledViewHolder(view);
             case FieldType.PHONE:
                 return new PhoneViewHolder(view);
-            case FieldType.TIMESTAMP:
+            case FieldType.FULLDATE:
                 return new TimestampViewHolder(view);
             case FieldType.URL:
                 return new UrlViewHolder(view);
+            case FieldType.PRICE:
             case FieldType.NUMERIC:
                 return new NumericViewHolder(view);
             case FieldType.EMAIL:
@@ -109,6 +107,12 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
                 return new ParentViewHolder(drop);
             case FieldType.MERGEFIELD:
             case FieldType.TEXT:
+            case FieldType.ADDRESS:
+            case FieldType.CHECK:
+            case FieldType.COUNTRY:
+            case FieldType.LONGTEXT:
+            case FieldType.SMS:
+            case FieldType.STATE:
             default:
                 return new TextViewHolder(view);
         }
@@ -119,11 +123,8 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
         if (record == null) {
             return;
         }
-        List<String> keys_in_section = record.getKeysInSection(index);
-        String key = keys_in_section.get(position);
-
-        ObjectSection section = OntraportApplication.getInstance().getFieldSectionAtPosition(record.getObjectId(), index);
-        ObjectField field = section.getField(key);
+        String key = record.getKeysInSection(index).get(position);
+        ObjectField field = record.getField(key, index);
 
         String alias = field.getAlias();
         String value = record.getValue(key);
@@ -135,7 +136,9 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
     @Override
     public @FieldType
     int getItemViewType(int position) {
-        return record.getType(position);
+        String key = record.getKeysInSection(index).get(position);
+        ObjectField field = record.getField(key, index);
+        return field.getType().ordinal();
     }
 
     @Override

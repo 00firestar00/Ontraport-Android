@@ -88,7 +88,7 @@ public class RecordInfo implements Info, Parcelable {
                         case "timestamp":
                         case "fulldate":
                             data.put(key, FieldUtils.convertDate(data.get(key)));
-                            field_type = FieldType.TIMESTAMP;
+                            field_type = FieldType.FULLDATE;
                             break;
                         case "url":
                             field_type = FieldType.URL;
@@ -131,7 +131,7 @@ public class RecordInfo implements Info, Parcelable {
                 System.out.println("Received incorrect value from API: " + data.get(key) + " for " + key + ". You should report this");
                 continue;
             }
-            key_to_value.put(key, alias);
+            key_to_value.put(key, data.get(key) == null ? "" : data.get(key));
             keys.add(key);
             aliases.add(alias);
             values.add(data.get(key) == null ? "" : data.get(key));
@@ -191,6 +191,12 @@ public class RecordInfo implements Info, Parcelable {
 
     public List<Integer> getTypes() {
         return types;
+    }
+
+    public ObjectField getField(String key, int index) {
+        ObjectSection section = OntraportApplication.getInstance()
+                .getFieldSectionAtPosition(getObjectId(), index);
+        return section.getField(key);
     }
 
     public Map<String, String> getParentIds() {
@@ -299,9 +305,4 @@ public class RecordInfo implements Info, Parcelable {
         in.readList(types, Integer.class.getClassLoader());
         in.readMap(parent_object_ids, String.class.getClassLoader());
     }
-
-    class RecordSection {
-
-    }
-
 }
