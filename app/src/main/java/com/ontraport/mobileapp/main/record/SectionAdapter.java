@@ -90,6 +90,7 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
                 return new DisabledViewHolder(view);
             case FieldType.PHONE:
                 return new PhoneViewHolder(view);
+            case FieldType.TIMESTAMP:
             case FieldType.FULLDATE:
                 return new TimestampViewHolder(view);
             case FieldType.URL:
@@ -101,6 +102,7 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
                 return new EmailViewHolder(view);
             case FieldType.DROP:
                 return new DropDownViewHolder(drop);
+            case FieldType.SUBSCRIPTION:
             case FieldType.LIST:
                 return new ListViewHolder(list);
             case FieldType.PARENT:
@@ -113,6 +115,7 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
             case FieldType.LONGTEXT:
             case FieldType.SMS:
             case FieldType.STATE:
+            case FieldType.TIMEZONE:
             default:
                 return new TextViewHolder(view);
         }
@@ -138,7 +141,12 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
     int getItemViewType(int position) {
         String key = record.getKeysInSection(index).get(position);
         ObjectField field = record.getField(key, index);
-        return field.getType().ordinal();
+        com.ontraport.sdk.objects.fields.FieldType ft = field.getType();
+        if (ft != null ) {
+            return ft.ordinal();
+        }
+        System.out.println("unknown field type for " + field);
+        return FieldType.DISABLED;
     }
 
     @Override

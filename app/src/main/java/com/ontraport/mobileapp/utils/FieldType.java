@@ -11,40 +11,46 @@ import java.lang.annotation.RetentionPolicy;
         FieldType.ADDRESS,
         FieldType.CHECK,
         FieldType.COUNTRY,
+        FieldType.DROP,
+        FieldType.EMAIL,
         FieldType.FULLDATE,
         FieldType.LIST,
         FieldType.LONGTEXT,
-        FieldType.NUMERIC,
-        FieldType.PRICE,
-        FieldType.PHONE,
-        FieldType.STATE,
-        FieldType.DROP,
-        FieldType.TEXT,
-        FieldType.EMAIL,
-        FieldType.SMS,
         FieldType.MERGEFIELD,
+        FieldType.NUMERIC,
         FieldType.PARENT,
+        FieldType.PHONE,
+        FieldType.PRICE,
+        FieldType.SMS,
+        FieldType.STATE,
+        FieldType.SUBSCRIPTION,
+        FieldType.TEXT,
+        FieldType.TIMESTAMP,
+        FieldType.TIMEZONE,
         FieldType.URL,
-        FieldType.DISABLED
+        FieldType.DISABLED,
 })
 
 public @interface FieldType {
     int ADDRESS = 0;
     int CHECK = 1;
     int COUNTRY = 2;
-    int FULLDATE = 3;
-    int LIST = 4;
-    int LONGTEXT = 5;
-    int NUMERIC = 6;
-    int PRICE = 7;
-    int PHONE = 8;
-    int STATE = 9;
-    int DROP = 10;
-    int TEXT = 11;
-    int EMAIL = 12;
+    int DROP = 3;
+    int EMAIL = 4;
+    int FULLDATE = 5;
+    int LIST = 6;
+    int LONGTEXT = 7;
+    int MERGEFIELD = 8;
+    int NUMERIC = 9;
+    int PARENT = 10;
+    int PHONE = 11;
+    int PRICE = 12;
     int SMS = 13;
-    int MERGEFIELD = 14;
-    int PARENT = 15;
-    int URL = 16;
+    int STATE = 14;
+    int SUBSCRIPTION = 15;
+    int TEXT = 16;
+    int TIMESTAMP = 17;
+    int TIMEZONE = 18;
+    int URL = 19;
     int DISABLED = -1;
 }
