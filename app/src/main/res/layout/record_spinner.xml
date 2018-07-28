@@ -7,6 +7,9 @@
         android:id="@+id/spinnerText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/card_margin"
+        android:layout_marginEnd="@dimen/card_margin"
+        android:padding="@dimen/card_margin"
         android:layout_gravity="center"
         android:textSize="@dimen/card_text" />
 
