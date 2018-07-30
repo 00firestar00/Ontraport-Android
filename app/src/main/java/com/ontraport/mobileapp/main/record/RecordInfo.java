@@ -189,10 +189,6 @@ public class RecordInfo implements Info, Parcelable {
         return key_to_value.get(key);
     }
 
-    public List<Integer> getTypes() {
-        return types;
-    }
-
     public ObjectField getField(String key, int index) {
         ObjectSection section = OntraportApplication.getInstance()
                 .getFieldSectionAtPosition(getObjectId(), index);
@@ -207,29 +203,12 @@ public class RecordInfo implements Info, Parcelable {
         return aliases.get(pos);
     }
 
-    public String getKey(int pos) {
-        return keys.get(pos);
-    }
-
     public String getValue(int pos) {
         return values.get(pos);
     }
 
-    public void setValue(int pos, String value) {
-        values.set(pos, value);
-    }
-
     public void setValue(String key, String value) {
         values.set(indexOf(key), value);
-    }
-
-    public @FieldType
-    int getType(int pos) {
-        return types.get(pos);
-    }
-
-    public String getParentId(String key) {
-        return parent_object_ids.get(key);
     }
 
     public String get(String key) {
@@ -304,5 +283,42 @@ public class RecordInfo implements Info, Parcelable {
         in.readList(values, String.class.getClassLoader());
         in.readList(types, Integer.class.getClassLoader());
         in.readMap(parent_object_ids, String.class.getClassLoader());
+    }
+
+    class RecordSection {
+        ObjectSection section;
+        List<RecordField> fields = new ArrayList<>();
+
+        public RecordSection(ObjectSection section, Map<String, String> key_value_pairs) {
+            for (Map.Entry<String, String> entry : key_value_pairs.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                ObjectField field = section.getField(key);
+                if (field == null) {
+                    continue;
+                }
+                fields.add(new RecordField(field, value));
+            }
+        }
+    }
+
+    class RecordField {
+        ObjectField field;
+        String value;
+
+        RecordField(ObjectField field, String value) {
+            this.field = field;
+            this.value = value;
+        }
+
+        public @FieldType int getFieldType() {
+            com.ontraport.sdk.objects.fields.FieldType ft = field.getType();
+            if (ft != null ) {
+                return ft.ordinal();
+            }
+            System.out.println("unknown field type for " + field);
+            return FieldType.DISABLED;
+        }
     }
 }
