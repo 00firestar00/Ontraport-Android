@@ -24,7 +24,6 @@ import com.ontraport.mobileapp.main.record.views.TextViewHolder;
 import com.ontraport.mobileapp.main.record.views.TimestampViewHolder;
 import com.ontraport.mobileapp.main.record.views.UrlViewHolder;
 import com.ontraport.mobileapp.utils.FieldType;
-import com.ontraport.sdk.models.fieldeditor.ObjectField;
 
 public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
         implements AsyncAdapter<RecordInfo> {
@@ -32,12 +31,12 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
     private final AppCompatActivity activity;
     private final FragmentManager fragment_manager;
     private final OntraportApplication application;
-    private final int index;
+    private final int section_id;
     private RecordInfo record;
 
-    SectionAdapter(AppCompatActivity activity, int index) {
+    SectionAdapter(AppCompatActivity activity, int section_id) {
         this.activity = activity;
-        this.index = index;
+        this.section_id = section_id;
         this.fragment_manager = activity.getSupportFragmentManager();
         this.application = (OntraportApplication) activity.getApplication();
     }
@@ -126,11 +125,13 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
         if (record == null) {
             return;
         }
-        String key = record.getKeysInSection(index).get(position);
-        ObjectField field = record.getField(key, index);
 
-        String alias = field.getAlias();
-        String value = record.getValue(key);
+        RecordInfo.RecordSection record_section = record.getSection(section_id);
+        RecordInfo.RecordField record_field = record_section.getField(position);
+
+        String key = record_field.getField();
+        String alias = record_field.getAlias();
+        String value = record_field.getValue();
 
         holder.setParams(record.getObjectId(), record.getId());
         holder.setText(key, value, alias);
@@ -139,18 +140,13 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
     @Override
     public @FieldType
     int getItemViewType(int position) {
-        String key = record.getKeysInSection(index).get(position);
-        ObjectField field = record.getField(key, index);
-        com.ontraport.sdk.objects.fields.FieldType ft = field.getType();
-        if (ft != null ) {
-            return ft.ordinal();
-        }
-        System.out.println("unknown field type for " + field);
-        return FieldType.DISABLED;
+        RecordInfo.RecordSection record_section = record.getSection(section_id);
+        RecordInfo.RecordField record_field = record_section.getField(position);
+        return record_field.getFieldType();
     }
 
     @Override
     public int getItemCount() {
-        return record == null ? 0 : record.getKeysInSection(index).size();
+        return record == null ? 0 : record.getSection(section_id).size();
     }
 }

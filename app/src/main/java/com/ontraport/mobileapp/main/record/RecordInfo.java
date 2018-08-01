@@ -26,11 +26,10 @@ public class RecordInfo implements Info, Parcelable {
     private int id;
     private int object_id;
     private List<String> keys = new ArrayList<>();
-    private SparseArray<List<String>> keys_in_section = new SparseArray<>();
-    private Map<String, String> key_to_value = new HashMap<>();
     private List<String> aliases = new ArrayList<>();
     private List<String> values = new ArrayList<>();
-    private List<Integer> types = new ArrayList<>();
+    private SparseArray<RecordSection> sections = new SparseArray<>();
+    private Map<String, String> key_to_value = new HashMap<>();
     private Map<String, String> parent_object_ids = new HashMap<>();
 
     public RecordInfo(int object_id, Map<String, String> data) {
@@ -42,15 +41,11 @@ public class RecordInfo implements Info, Parcelable {
 
         Meta.Data meta = OntraportApplication.getInstance().getMetaData(object_id);
         Map<String, Meta.Field> fields = meta.getFields();
-
         id = Integer.parseInt(data.get(FieldUtils.findIdField(data)));
         for (String key : order) {
             String alias = null;
-            String type = "";
-            int field_type;
             try {
                 alias = fields.get(key).getAlias();
-                type = fields.get(key).getType();
                 if (fields.get(key).hasParent()) {
                     parent_object_ids.put(key, fields.get(key).getParent());
                 }
@@ -67,63 +62,6 @@ public class RecordInfo implements Info, Parcelable {
                 }
             }
 
-            switch (key) {
-                case "dla":
-                case "date":
-                case "dlm":
-                    data.put(key, FieldUtils.convertDate(data.get(key)));
-                case "id":
-                case "spent":
-                case "ip_addy":
-                case "bulk_mail":
-                case "bulk_sms":
-                    field_type = FieldType.DISABLED;
-                    break;
-                default:
-                    // if not disabled, check actual type
-                    switch (type) {
-                        case "phone":
-                            field_type = FieldType.PHONE;
-                            break;
-                        case "timestamp":
-                        case "fulldate":
-                            data.put(key, FieldUtils.convertDate(data.get(key)));
-                            field_type = FieldType.FULLDATE;
-                            break;
-                        case "url":
-                            field_type = FieldType.URL;
-                            break;
-                        case "numeric":
-                        case "price":
-                            field_type = FieldType.NUMERIC;
-                            break;
-                        case "email":
-                            field_type = FieldType.EMAIL;
-                            break;
-                        case "drop":
-                            field_type = FieldType.DROP;
-                            break;
-                        case "subscription":
-                        case "list":
-                            field_type = FieldType.LIST;
-                            break;
-                        case "parent":
-                            field_type = FieldType.PARENT;
-                            break;
-                        case "mergefield":
-                            field_type = FieldType.TEXT;
-                            if (key.equals("fn")) {
-                                String first = data.get("firstname") == null ? "" : data.get("firstname");
-                                String last = data.get("lastname") == null ? "" : data.get("lastname");
-                                data.put(key, first + " " + last);
-                            }
-                            break;
-                        case "text":
-                        default:
-                            field_type = FieldType.TEXT;
-                    }
-            }
-
             try {
                 data.put(key, convertIdToName(key, data.get(key)));
             }
@@ -135,7 +73,6 @@ public class RecordInfo implements Info, Parcelable {
             keys.add(key);
             aliases.add(alias);
             values.add(data.get(key) == null ? "" : data.get(key));
-            types.add(field_type);
         }
     }
 
@@ -147,52 +84,8 @@ public class RecordInfo implements Info, Parcelable {
         return object_id;
     }
 
-    public List<String> getAliases() {
-        return aliases;
-    }
-
-    public List<String> getKeys() {
-        return keys;
-    }
-
-    public List<String> getKeysInSection(int pos) {
-        if (keys_in_section.get(pos) != null)
-        {
-            return keys_in_section.get(pos);
-        }
-
-        List<ObjectSection> sections = OntraportApplication.getInstance().getFieldSections(object_id);
-
-        for (int i = 0; i < sections.size(); i++) {
-            keys_in_section.append(i, new ArrayList<String>());
-        }
-
-        for (String key : keys) {
-
-            for (int i = 0; i < sections.size(); i++) {
-                ObjectSection s = sections.get(i);
-                ObjectField f = s.getField(key);
-                if (f == null) {
-                    continue;
-                }
-                keys_in_section.get(i).add(key);
-            }
-        }
-        return keys_in_section.get(pos);
-    }
-
     public List<String> getValues() {
         return values;
-    }
-
-    public String getValue(String key) {
-        return key_to_value.get(key);
-    }
-
-    public ObjectField getField(String key, int index) {
-        ObjectSection section = OntraportApplication.getInstance()
-                .getFieldSectionAtPosition(getObjectId(), index);
-        return section.getField(key);
     }
 
     public Map<String, String> getParentIds() {
@@ -208,20 +101,26 @@ public class RecordInfo implements Info, Parcelable {
     }
 
     public void setValue(String key, String value) {
-        values.set(indexOf(key), value);
+        values.set(keys.indexOf(key), value);
     }
 
     public String get(String key) {
-        int index = indexOf(key);
+        int index = keys.indexOf(key);
         return getValues().get(index);
     }
 
-    public int indexOf(String key) {
-        return getKeys().indexOf(key);
+    public RecordSection getSection(int id) {
+        if (sections.size() == 0) {
+            List<ObjectSection> object_sections = OntraportApplication.getInstance().getFieldSections(object_id);
+            for (ObjectSection section : object_sections) {
+                sections.append(section.getId(), new RecordSection(section, key_to_value));
+            }
+        }
+        return sections.get(id);
     }
 
     public int size() {
-        return getKeys() == null ? 0 : getKeys().size();
+        return keys == null ? 0 : keys.size();
     }
 
     public String toString() {
@@ -230,7 +129,7 @@ public class RecordInfo implements Info, Parcelable {
         if (object_label == null) {
             return TextUtils.join(" ", getValues());
         }
-        return FieldUtils.replaceMergeFields(object_label, getAliases(), getValues());
+        return FieldUtils.replaceMergeFields(object_label, aliases, getValues());
     }
 
     private String convertIdToName(String key, String val) throws InvalidValueException {
@@ -260,7 +159,6 @@ public class RecordInfo implements Info, Parcelable {
         dest.writeList(keys);
         dest.writeList(aliases);
         dest.writeList(values);
-        dest.writeList(types);
         dest.writeMap(parent_object_ids);
     }
 
@@ -281,7 +179,6 @@ public class RecordInfo implements Info, Parcelable {
         in.readList(keys, String.class.getClassLoader());
         in.readList(aliases, String.class.getClassLoader());
         in.readList(values, String.class.getClassLoader());
-        in.readList(types, Integer.class.getClassLoader());
         in.readMap(parent_object_ids, String.class.getClassLoader());
     }
 
@@ -289,7 +186,8 @@ public class RecordInfo implements Info, Parcelable {
         ObjectSection section;
         List<RecordField> fields = new ArrayList<>();
 
-        public RecordSection(ObjectSection section, Map<String, String> key_value_pairs) {
+        RecordSection(ObjectSection section, Map<String, String> key_value_pairs) {
+            this.section = section;
             for (Map.Entry<String, String> entry : key_value_pairs.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
@@ -300,6 +198,14 @@ public class RecordInfo implements Info, Parcelable {
                 }
                 fields.add(new RecordField(field, value));
             }
+        }
+
+        public RecordField getField(int pos) {
+            return fields.get(pos);
+        }
+
+        public int size() {
+            return fields.size();
         }
     }
 
@@ -312,13 +218,31 @@ public class RecordInfo implements Info, Parcelable {
             this.value = value;
         }
 
-        public @FieldType int getFieldType() {
+        public @FieldType
+        int getFieldType() {
+            if (!field.isEditable()) {
+                return FieldType.DISABLED;
+            }
+
             com.ontraport.sdk.objects.fields.FieldType ft = field.getType();
-            if (ft != null ) {
+            if (ft != null) {
                 return ft.ordinal();
             }
+
             System.out.println("unknown field type for " + field);
             return FieldType.DISABLED;
+        }
+
+        public String getAlias() {
+            return field.getAlias();
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getField() {
+            return field.getField();
         }
     }
 }

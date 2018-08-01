@@ -43,11 +43,11 @@ public class SectionViewHolder extends RecyclerView.ViewHolder implements View.O
         SectionFragment fragment = new SectionFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("record", record);
-        bundle.putInt("index", index);
+        bundle.putInt("section_id", section.getId());
         fragment.setArguments(bundle);
         manager.beginTransaction()
                 .replace(R.id.container, fragment)
-                .addToBackStack("record_section_" + section.getName())
+                .addToBackStack("record_section_" + section.getId())
                 .commit();
     }
 }
