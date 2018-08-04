@@ -10,6 +10,7 @@ import com.ontraport.sdk.http.ObjectInfo;
 import com.ontraport.sdk.http.RequestParams;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, ObjectInfo> {
 
@@ -33,7 +34,7 @@ public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, Objec
             System.out.println("Couldn't retrieve info...");
             return;
         }
-        ObjectInfo.FieldSettings[] settings = info.getData().getListFieldSettings();
+        List<ObjectInfo.FieldSettings> settings = info.getData().getListFieldSettings();
         for (ObjectInfo.FieldSettings field : settings) {
             String sort = field.getSortDir();
             if (sort != null) {
