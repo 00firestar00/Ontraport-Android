@@ -63,7 +63,14 @@ public class RecordInfo implements Info, Parcelable {
             }
 
             try {
-                data.put(key, convertIdToName(key, data.get(key)));
+                if (key.equals("fn")) {
+                    String first = data.get("firstname") == null ? "" : data.get("firstname");
+                    String last = data.get("lastname") == null ? "" : data.get("lastname");
+                    data.put(key, first + " " + last);
+                }
+                else {
+                    data.put(key, convertIdToName(key, data.get(key)));
+                }
             }
             catch (InvalidValueException e) {
                 System.out.println("Received incorrect value from API: " + data.get(key) + " for " + key + ". You should report this");
