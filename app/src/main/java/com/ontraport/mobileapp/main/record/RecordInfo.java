@@ -195,15 +195,15 @@ public class RecordInfo implements Info, Parcelable {
 
         RecordSection(ObjectSection section, Map<String, String> key_value_pairs) {
             this.section = section;
-            for (Map.Entry<String, String> entry : key_value_pairs.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
+            for (int i = 0; i < 3; i++) {
+                ObjectSection.Column column = section.getColumn(i);
+                for (ObjectField field : column) {
 
-                ObjectField field = section.getField(key);
-                if (field == null) {
-                    continue;
+                    if (field == null) {
+                        continue;
+                    }
+                    fields.add(new RecordField(field, key_value_pairs.get(field.getField())));
                 }
-                fields.add(new RecordField(field, value));
             }
         }
 
