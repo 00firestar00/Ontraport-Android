@@ -15,16 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DropDownViewHolder extends RecordViewHolder implements AdapterView.OnItemSelectedListener {
+public class StateViewHolder extends DropDownViewHolder {
 
-    protected final Spinner drop_down;
-    protected final TextView label;
-
-    public DropDownViewHolder(View view) {
+    public StateViewHolder(View view) {
         super(view);
-        label = view.findViewById(R.id.label);
-        drop_down = view.findViewById(R.id.drop_down);
-        drop_down.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -65,16 +59,6 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
         }
     }
 
-    public ArrayAdapter<String> getNewAdapter() {
-        return new ArrayAdapter<>(view.getContext(),
-                R.layout.record_spinner,
-                R.id.spinnerText);
-    }
-
-    protected void setDefaultValue(int pos) {
-        drop_down.setSelection(pos);
-    }
-
     @Override
     protected void doUpdate(String field, String new_val) {
         Meta.Field meta_field = getMetaForField(field);
@@ -95,10 +79,6 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
             params.put(field, new_val);
             new UpdateAsyncTask(view.getContext()).execute(params);
         }
-    }
-
-    Spinner getDropDown() {
-        return drop_down;
     }
 
     Meta.Field getMetaForField(String field) {

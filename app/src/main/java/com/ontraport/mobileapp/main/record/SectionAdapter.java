@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.ontraport.mobileapp.AsyncAdapter;
 import com.ontraport.mobileapp.OntraportApplication;
 import com.ontraport.mobileapp.R;
+import com.ontraport.mobileapp.main.record.views.CountryViewHolder;
 import com.ontraport.mobileapp.main.record.views.DisabledViewHolder;
 import com.ontraport.mobileapp.main.record.views.DropDownViewHolder;
 import com.ontraport.mobileapp.main.record.views.EmailViewHolder;
@@ -20,6 +21,7 @@ import com.ontraport.mobileapp.main.record.views.NumericViewHolder;
 import com.ontraport.mobileapp.main.record.views.ParentViewHolder;
 import com.ontraport.mobileapp.main.record.views.PhoneViewHolder;
 import com.ontraport.mobileapp.main.record.views.RecordViewHolder;
+import com.ontraport.mobileapp.main.record.views.StateViewHolder;
 import com.ontraport.mobileapp.main.record.views.TextViewHolder;
 import com.ontraport.mobileapp.main.record.views.TimestampViewHolder;
 import com.ontraport.mobileapp.main.record.views.UrlViewHolder;
@@ -99,6 +101,10 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
                 return new NumericViewHolder(view);
             case FieldType.EMAIL:
                 return new EmailViewHolder(view);
+            case FieldType.COUNTRY:
+                return new CountryViewHolder(drop);
+            case FieldType.STATE:
+                return new StateViewHolder(drop);
             case FieldType.DROP:
                 return new DropDownViewHolder(drop);
             case FieldType.SUBSCRIPTION:
@@ -110,10 +116,8 @@ public class SectionAdapter extends RecyclerView.Adapter<RecordViewHolder>
             case FieldType.TEXT:
             case FieldType.ADDRESS:
             case FieldType.CHECK:
-            case FieldType.COUNTRY:
             case FieldType.LONGTEXT:
             case FieldType.SMS:
-            case FieldType.STATE:
             case FieldType.TIMEZONE:
             default:
                 return new TextViewHolder(view);
