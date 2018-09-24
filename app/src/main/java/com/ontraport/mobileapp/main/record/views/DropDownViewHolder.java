@@ -71,6 +71,23 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
                 R.id.spinnerText);
     }
 
+    Spinner getDropDown() {
+        return drop_down;
+    }
+
+    Meta.Field getMetaForField(String field) {
+        int object_id = params.getAsInt(FieldUtils.OBJECT_ID);
+        Meta.Data object_meta = OntraportApplication.getInstance().getMetaData(object_id);
+        return object_meta.getFields().get(field);
+    }
+
+    void populateDropdown(List<String> values) {
+        ArrayAdapter<String> adapter = getNewAdapter();
+        adapter.add("");
+        adapter.addAll(values);
+        drop_down.setAdapter(adapter);
+    }
+
     protected void setDefaultValue(int pos) {
         drop_down.setSelection(pos);
     }
@@ -95,22 +112,5 @@ public class DropDownViewHolder extends RecordViewHolder implements AdapterView.
             params.put(field, new_val);
             new UpdateAsyncTask(view.getContext()).execute(params);
         }
-    }
-
-    Spinner getDropDown() {
-        return drop_down;
-    }
-
-    Meta.Field getMetaForField(String field) {
-        int object_id = params.getAsInt(FieldUtils.OBJECT_ID);
-        Meta.Data object_meta = OntraportApplication.getInstance().getMetaData(object_id);
-        return object_meta.getFields().get(field);
-    }
-
-    void populateDropdown(List<String> values) {
-        ArrayAdapter<String> adapter = getNewAdapter();
-        adapter.add("");
-        adapter.addAll(values);
-        drop_down.setAdapter(adapter);
     }
 }
