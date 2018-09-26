@@ -199,7 +199,7 @@ public class RecordInfo implements Info, Parcelable {
                 ObjectSection.Column column = section.getColumn(i);
                 for (ObjectField field : column) {
 
-                    if (field == null) {
+                    if (field == null || field.getField().equals("fn")) {
                         continue;
                     }
                     fields.add(new RecordField(field, key_value_pairs.get(field.getField())));
