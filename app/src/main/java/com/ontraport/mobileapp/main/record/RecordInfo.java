@@ -227,7 +227,7 @@ public class RecordInfo implements Info, Parcelable {
 
         public @FieldType
         int getFieldType() {
-            if (!field.isEditable()) {
+            if (!field.isEditable() && !field.getType().equals(com.ontraport.sdk.objects.fields.FieldType.PARENT)) {
                 return FieldType.DISABLED;
             }
 
