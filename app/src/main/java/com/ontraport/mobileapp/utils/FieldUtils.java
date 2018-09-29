@@ -57,6 +57,8 @@ public class FieldUtils {
             case TRACKING_MEDIUM:
             case TRACKING_CONTENT:
             case TRACKING_TERM:
+            case DEAL:
+            case COMPANY:
                 return new String[]{"id", "name"};
             default:
                 return new String[]{"id"};
