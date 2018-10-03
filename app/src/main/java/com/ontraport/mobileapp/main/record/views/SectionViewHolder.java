@@ -2,9 +2,9 @@ package com.ontraport.mobileapp.main.record.views;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.ontraport.mobileapp.R;
 import com.ontraport.mobileapp.main.record.RecordInfo;
@@ -26,7 +26,7 @@ public class SectionViewHolder extends RecyclerView.ViewHolder implements View.O
         this.manager = manager;
         title = view.findViewById(R.id.title);
         description = view.findViewById(R.id.description);
-        LinearLayout layout_view = view.findViewById(R.id.card_layout);
+        CardView layout_view = view.findViewById(R.id.card_layout);
         layout_view.setOnClickListener(this);
     }
 

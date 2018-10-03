@@ -13,6 +13,7 @@
     <dimen name="nav_indent">32dp</dimen>
 
     <dimen name="title">36sp</dimen>
+    <dimen name="card_title">24sp</dimen>
     <dimen name="card_text">16sp</dimen>
     <dimen name="nav_text">14sp</dimen>
 </resources>
