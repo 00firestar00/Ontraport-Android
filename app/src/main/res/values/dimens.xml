@@ -8,12 +8,13 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="card_corner">4dp</dimen>
     <dimen name="card_margin">8dp</dimen>
+    <dimen name="card_margin_large">16dp</dimen>
     <dimen name="card_label">24dp</dimen>
     <dimen name="nav_margin">14dp</dimen>
     <dimen name="nav_indent">32dp</dimen>
 
     <dimen name="title">36sp</dimen>
-    <dimen name="card_title">24sp</dimen>
+    <dimen name="card_title">20sp</dimen>
     <dimen name="card_text">16sp</dimen>
     <dimen name="nav_text">14sp</dimen>
 </resources>
