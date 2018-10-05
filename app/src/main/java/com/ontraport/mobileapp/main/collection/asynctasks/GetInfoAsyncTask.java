@@ -53,17 +53,21 @@ public class GetInfoAsyncTask extends AbstractAsyncTask<CollectionAdapter, Objec
         }
         params.put("listFields", list);
 
+        int object_id = params.getAsInt(FieldUtils.OBJECT_ID);
+
         new GetListAsyncTask<>(adapter,
                 list_fields,
                 info.getCount(),
-                params.getAsInt(FieldUtils.OBJECT_ID),
+                object_id,
                 force_network).execute(params);
 
-        new GetFieldsAsyncTask<>(adapter,
-                list_fields,
-                info.getCount(),
-                params.getAsInt(FieldUtils.OBJECT_ID),
-                force_network).execute(params);
+        if (OntraportApplication.getInstance().isCustomObject(object_id)) {
+            new GetFieldsAsyncTask<>(adapter,
+                    list_fields,
+                    info.getCount(),
+                    object_id,
+                    force_network).execute(params);
+        }
     }
 
     @Override

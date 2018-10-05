@@ -16,8 +16,6 @@
         android:layout_gravity="center_vertical"
         android:paddingBottom="@dimen/material_drawer_item_primary_icon_padding"
         android:paddingEnd="@dimen/material_drawer_item_primary_icon_padding_right"
-        android:paddingLeft="0dp"
-        android:paddingRight="@dimen/material_drawer_item_primary_icon_padding_right"
         android:paddingStart="0dp"
         android:paddingTop="@dimen/material_drawer_item_primary_icon_padding" />
 
@@ -64,8 +62,7 @@
         android:paddingLeft="@dimen/material_drawer_padding"
         android:paddingRight="@dimen/material_drawer_padding"
         android:paddingStart="@dimen/material_drawer_padding"
-        android:layout_marginEnd="-8dp"
-        android:layout_marginRight="-8dp">
+        android:layout_marginEnd="-8dp">
 
         <ImageView
             android:id="@+id/material_drawer_arrow"

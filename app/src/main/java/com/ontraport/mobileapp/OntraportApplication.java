@@ -98,6 +98,15 @@ public class OntraportApplication extends Application {
         return custom_objects;
     }
 
+    public boolean isCustomObject(int object_id) {
+        for (CustomObjectResponse.Data data : getCustomObjects().getData()) {
+            if (Integer.parseInt(data.getId()) == object_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getObjectLabel(int object_id) {
         String label = object_labels.get(object_id);
         if (label == null) {
